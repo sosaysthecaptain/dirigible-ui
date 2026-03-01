@@ -1,10 +1,10 @@
 # Typography
 
-Type system design tokens for the Dirigible design system. Dirigible uses a carefully curated font stack optimized for code-first applications with proportional typography for published content.
+Type system design tokens for the design system. The system uses a carefully curated font stack optimized for code-first applications with proportional typography for published content.
 
 ## Font Stacks
 
-Dirigible supports four font families, each with specific use cases:
+The system supports four font families, each with specific use cases:
 
 | Font Stack | CSS Variable | Primary Usage |
 |-----------|--------------|---------------|
@@ -26,7 +26,7 @@ Dirigible supports four font families, each with specific use cases:
 
 ## Type Scale
 
-The Dirigible type scale is based on a consistent 4px baseline grid with specific line height relationships optimized for code and content readability.
+The type scale is based on a consistent 4px baseline grid with specific line height relationships optimized for code and content readability.
 
 ### Scale Table
 
@@ -90,7 +90,7 @@ The Dirigible type scale is based on a consistent 4px baseline grid with specifi
 
 ## Font Weights
 
-Dirigible uses three font weight levels for clear typographic hierarchy:
+The system uses three font weight levels for clear typographic hierarchy:
 
 | Weight | Value | Usage |
 |--------|-------|-------|

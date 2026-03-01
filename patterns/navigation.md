@@ -2,7 +2,7 @@
 
 ## Description
 
-How users move through the Dirigible app. Navigation is hierarchical and always visible, supporting fast movement through deep collections and libraries.
+How users move through the app. Navigation is hierarchical and always visible, supporting fast movement through deep collections and libraries.
 
 ## Patterns
 

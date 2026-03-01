@@ -2,7 +2,7 @@
 
 ## Description
 
-A versatile interactive element used to trigger actions throughout the Dirigible app. Buttons come in three distinct variants (Primary, Secondary, Danger) to clearly communicate the importance and nature of the action they represent.
+A versatile interactive element used to trigger actions throughout the app. Buttons come in three distinct variants (Primary, Secondary, Danger) to clearly communicate the importance and nature of the action they represent.
 
 ## When to Use
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overview — Dirigible UI</title>
+  <title>How to Update — dirigible-ui</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -209,9 +209,9 @@
       <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
     </div>
-    <a href="index.html" class="active">Overview</a>
+    <a href="index.html">Overview</a>
     <a href="how-to-use.html">How to Use</a>
-    <a href="how-to-update.html">How to Update</a>
+    <a href="how-to-update.html" class="active">How to Update</a>
 
         <div class="nav-section">
           <div class="nav-section-title">Tokens</div>
@@ -262,78 +262,93 @@
         </div>
   </nav>
   <main class="main">
-    <h1>dirigible-ui</h1>
-<blockquote>
-<p>An agent-first UI framework. Standalone HTML specs with live demos, designed to be read by AI coding assistants and browsed by humans. Born from <a href="https://dirigible.app">Dirigible</a>.</p>
-</blockquote>
+    <h1>How to Update</h1>
+
+<p>dirigible-ui is designed to be maintained by AI coding assistants. You describe what you want changed in natural language, Claude (or similar) edits the HTML files directly, and you review the result in a browser. There is no build step.</p>
+
 <h2>Philosophy</h2>
-<p>The UI is <strong>quiet, monospaced, and warm</strong>. It looks like a tool a thoughtful person built for themselves. Every element earns its place — no decorative flourishes, no gratuitous color, no rounded-everything friendliness. The aesthetic sits somewhere between a terminal and a well-typeset book.</p>
-<h3>Core Principles</h3>
+
+<p>Every page in dirigible-ui is a standalone HTML file with inline styles and live interactive demos. This is deliberate:</p>
+
+<ul>
+<li><strong>No abstraction layer.</strong> There's no Sass, no CSS-in-JS, no component library to compile. The HTML files are both the source and the output. What you see in the browser is what Claude reads when building your app.</li>
+<li><strong>AI-native authoring.</strong> These files are written to be read and modified by language models. The inline styles, the detailed spec tables, the code examples — they're all structured so an AI can parse them reliably and produce consistent output.</li>
+<li><strong>Human-reviewable.</strong> Open a file in a browser, look at it, decide if it's right. No build logs to parse, no dev server to start. The feedback loop is: describe a change → AI edits → refresh browser → approve or iterate.</li>
+<li><strong>Single source of truth.</strong> The live demo and the spec text live in the same file. They can't drift apart because there's nothing to keep in sync — it's all one document.</li>
+</ul>
+
+<h2>Tweaking a Component</h2>
+
+<p>To change how a component looks or behaves, tell your AI assistant what you want. Be specific about the visual change:</p>
+
+<pre><code># Example prompts:
+"Make primary buttons use a 2px border instead of 3px"
+"Change the accent color to #E8915A across all files"
+"Add a hover state to the badge component — subtle background fill"
+"The modal tabs should use the accent color for the active underline, not foreground"</code></pre>
+
+<p>The AI will:</p>
 <ol>
-<li><p><strong>Monospace-first.</strong> JetBrains Mono is the default for everything — sidebar, buttons, table cells, form labels. Serif and sans options exist for content, but the app itself speaks in monospace.</p>
-</li>
-<li><p><strong>Warm neutrals.</strong> The light theme is cream, not white. The dark theme is brown, not gray. Borders are soft (<code>#e0ddd8</code>), not clinical (<code>#e0e0e0</code>). This warmth is the single most distinctive visual quality.</p>
-</li>
-<li><p><strong>Sparse color.</strong> Accent color (<code>#3d8ad3</code>, a muted blue) is used sparingly — active tabs, primary actions, status dots. Most of the UI is foreground-on-background with muted secondary text. Color means something happened.</p>
-</li>
-<li><p><strong>2px borders on interactive elements.</strong> Buttons, inputs, toggles, cards — anything you can click gets a 2px solid border. Dividers and table rules get 1px. This creates a clear visual distinction between &quot;things&quot; and &quot;structure.&quot;</p>
-</li>
-<li><p><strong>Information density.</strong> Tables show everything. Columns for title, artist, album, year, duration, file size — all visible, no hiding behind &quot;more&quot; menus. Density is a feature.</p>
-</li>
-<li><p><strong>Semantic headings only.</strong> Headings use weight (semibold) and size. No text-transform, no letter-spacing tricks, no uppercase labels.</p>
-</li>
+<li>Read the relevant component file (e.g., <code>components/button.html</code>)</li>
+<li>Edit the inline styles in the live render demo</li>
+<li>Update the spec tables, CSS examples, and rules to match</li>
+<li>Optionally propagate the change to other files if it touches shared values (like accent color)</li>
 </ol>
-<h2>File Structure</h2>
-<pre><code>dirigible-ui/
-  index.html                        ← You are here
-  how-to-use.html                   ← Including in a project, pointing Claude at it
-  how-to-update.html                ← Tweaking, adding, maintaining the system
-  tokens/
-    colors.html                     ← Color tokens, themes, semantic usage
-    typography.html                 ← Font stacks, type scale, rules
-    spacing.html                    ← Spacing scale, borders, radius, shadows
-  components/
-    badge.html                      ← Status badges and pills
-    breadcrumb.html                 ← Navigation breadcrumbs
-    button.html                     ← Button variants and states
-    color-swatch.html               ← Color swatch pickers
-    context-menu.html               ← Right-click and kebab menus
-    icon.html                       ← Icon system and catalog
-    image-uploader.html             ← Image upload component
-    input.html                      ← Text inputs, textareas, search
-    modal.html                      ← Modal dialogs
-    popover.html                    ← Popovers and dropdown panels
-    radio-button.html               ← Radio button groups
-    selection-list.html             ← Selection list component
-    sidebar.html                    ← File tree sidebar
-    slider.html                     ← Range sliders
-    table.html                      ← Data tables (notes + music variants)
-    tag-input.html                  ← Tag entry and display
-    theme-picker.html               ← Theme selection UI
-    toast.html                      ← Toast notifications and progress
-    toggle.html                     ← Toggle switches
-  patterns/
-    forms.html                      ← Form layout and validation
-    navigation.html                 ← App navigation patterns
-    publish-flow.html               ← Publication workflow
-    sync-flow.html                  ← Local folder sync workflow
-    theme-system.html               ← Theme switching architecture
-  examples/
-    music-table.html                ← Full music library table
-    note-view.html                  ← Note editing view
-    publication-panel.html          ← Publication management panel
-    sync-modal.html                 ← Folder sync modal
-    themes-modal.html               ← Theme configuration modal
-</code></pre>
-<h2>Usage with Claude Code</h2>
-<p>Each page is a standalone HTML file with inline styles and live interactive demos. No build step required — open any <code>.html</code> file directly in a browser.</p>
-<p>To use this as a design reference in your project, add to your <code>CLAUDE.md</code>:</p>
-<pre><code class="language-markdown">## Design System
-Follow the design system in ./dirigible-ui/
-Before creating or modifying any UI component, read the relevant
-component and token files in ./dirigible-ui/tokens/ and ./dirigible-ui/components/.
-Use CSS custom properties — never raw hex values.
-</code></pre>
+
+<p>After the edit, open the file in a browser and verify visually. If it's not right, describe what's wrong and iterate.</p>
+
+<h2>Changing Design Tokens</h2>
+
+<p>Design tokens (colors, spacing, typography) are defined as CSS custom properties in the <code>:root</code> block at the top of every HTML file. To change a token globally:</p>
+
+<pre><code># Tell your AI:
+"Change --accent from #3d8ad3 to #2563eb across all HTML files in dirigible-ui"</code></pre>
+
+<p>The AI will find-and-replace across all 30+ files. It should also update any documentation text that references the old value (like the overview page mentioning the accent color).</p>
+
+<p>Token changes that affect the token documentation pages (<code>tokens/colors.html</code>, etc.) should update both the CSS variables and the spec content on those pages.</p>
+
+<h2>Adding a New Component</h2>
+
+<pre><code># Tell your AI:
+"Add a new component page for a dropdown/select input.
+Follow the same HTML template as components/button.html —
+same head, sidebar nav, style block, theme toggle.
+Include a live render demo showing the dropdown in various states,
+then spec tables, code examples, and do's/don'ts."</code></pre>
+
+<p>The AI should also add the new page to the sidebar nav in every existing HTML file.</p>
+
+<h2>Updating a Project Built on This System</h2>
+
+<p>When the design system changes, projects consuming it need to be updated. The process:</p>
+
+<ol>
+<li><strong>Pull the latest design system</strong> — <code>git submodule update --remote dirigible-ui</code> (or <code>git pull</code> if it's a sibling clone)</li>
+<li><strong>Tell your AI to audit</strong> — give it a prompt like:</li>
+</ol>
+
+<pre><code>"The design system in ./dirigible-ui/ has been updated.
+Read the changed component files and audit our codebase
+for any UI that no longer matches. Fix what's drifted."</code></pre>
+
+<p>The AI will diff the new specs against your implementation and make targeted fixes. This is much faster than manually auditing because the AI can read every component spec and cross-reference it against your actual code.</p>
+
+<h2>Sidebar Nav Maintenance</h2>
+
+<p>Every HTML file contains its own copy of the sidebar navigation. When you add or rename a page, the nav needs updating in all files. Tell the AI:</p>
+
+<pre><code>"Add a nav link for 'Dropdown' in the Components section of the sidebar,
+in every HTML file in dirigible-ui. It should go after 'Context Menu'
+alphabetically."</code></pre>
+
+<h2>What Not to Do</h2>
+
+<ul>
+<li><strong>Don't add a build step.</strong> The power of this system is its simplicity. The moment you introduce a preprocessor, a template engine, or a component framework, you lose the directness that makes AI-assisted editing work so well.</li>
+<li><strong>Don't extract shared styles.</strong> Yes, the CSS is duplicated across files. That's the point. Each file is self-contained and independently readable. Shared stylesheets create coupling and make AI edits harder to reason about.</li>
+<li><strong>Don't edit only the demo or only the spec.</strong> When changing a component, both the live render and the spec text must be updated together. They're in the same file for exactly this reason.</li>
+</ul>
 
   </main>
   <script>

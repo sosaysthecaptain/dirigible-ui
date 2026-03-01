@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>toggle — Dirigible UI</title>
+  <title>toggle — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #fefefe;
@@ -14,8 +15,8 @@
       --border: #e8e6e3;
       --sidebar-bg: #faf9f8;
       --hover: #f5f4f2;
-      --accent: #0066cc;
-      --accent-muted: #004d99;
+      --accent: #3d8ad3;
+      --accent-muted: #2b6a9e;
       --success: #22c55e;
       --warning: #f59e0b;
       --danger: #dc2626;
@@ -46,7 +47,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
       color: var(--fg);
@@ -146,7 +147,7 @@
     .main strong { font-weight: 600; }
     .main em { font-style: italic; }
     .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
-    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
     .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
     .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
     .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
@@ -191,7 +192,7 @@
 
     .render-panel-body {
       padding: 24px;
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
     }
@@ -205,10 +206,12 @@
 <body>
   <nav class="sidebar">
     <div class="sidebar-header">
-      <h1>dirigible-ui</h1>
+      <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
     </div>
     <a href="../index.html">Overview</a>
+    <a href="../how-to-use.html">How to Use</a>
+    <a href="../how-to-update.html">How to Update</a>
 
         <div class="nav-section">
           <div class="nav-section-title">Tokens</div>

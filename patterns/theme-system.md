@@ -2,13 +2,13 @@
 
 ## Description
 
-How Dirigible's theming works, from tokens to runtime switching. The theme system provides 23 built-in themes and allows users to customize colors while maintaining a consistent visual language.
+How the app's theming works, from tokens to runtime switching. The theme system provides 23 built-in themes and allows users to customize colors while maintaining a consistent visual language.
 
 ## Architecture
 
 ### Theme Implementation
 
-All colors in Dirigible are defined as CSS custom properties on the `:root` element. Themes are swapped by replacing these property values at runtime.
+All colors in the app are defined as CSS custom properties on the `:root` element. Themes are swapped by replacing these property values at runtime.
 
 **Key Principle:** Components never use raw colors — always reference theme tokens via `var(--token-name)`.
 

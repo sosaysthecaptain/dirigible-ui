@@ -2,7 +2,7 @@
 
 ## Description
 
-A consistent set of outline-style SVG icons used throughout Dirigible for visual communication. Icons are always outline/stroke-based (not filled), sized to fit within 16-20px boxes, and inherit color from their context.
+A consistent set of outline-style SVG icons used throughout the app for visual communication. Icons are always outline/stroke-based (not filled), sized to fit within 16-20px boxes, and inherit color from their context.
 
 ## When to Use
 

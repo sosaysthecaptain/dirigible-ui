@@ -2,7 +2,7 @@
 
 ## Description
 
-Displays structured data in rows and columns. Dirigible uses tables for listing notes, music tracks, and other collections. Tables feature sortable headers, optional row selection, fixed headers, and hover highlights. Two main variants exist: Notes table (with checkboxes) and Music table (grouped by album).
+Displays structured data in rows and columns. The system uses tables for listing notes, music tracks, and other collections. Tables feature sortable headers, optional row selection, fixed headers, and hover highlights. Two main variants exist: Notes table (with checkboxes) and Music table (grouped by album).
 
 ## When to Use
 

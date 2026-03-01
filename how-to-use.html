@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overview — Dirigible UI</title>
+  <title>How to Use — dirigible-ui</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -209,8 +209,8 @@
       <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
     </div>
-    <a href="index.html" class="active">Overview</a>
-    <a href="how-to-use.html">How to Use</a>
+    <a href="index.html">Overview</a>
+    <a href="how-to-use.html" class="active">How to Use</a>
     <a href="how-to-update.html">How to Update</a>
 
         <div class="nav-section">
@@ -262,78 +262,63 @@
         </div>
   </nav>
   <main class="main">
-    <h1>dirigible-ui</h1>
-<blockquote>
-<p>An agent-first UI framework. Standalone HTML specs with live demos, designed to be read by AI coding assistants and browsed by humans. Born from <a href="https://dirigible.app">Dirigible</a>.</p>
-</blockquote>
-<h2>Philosophy</h2>
-<p>The UI is <strong>quiet, monospaced, and warm</strong>. It looks like a tool a thoughtful person built for themselves. Every element earns its place — no decorative flourishes, no gratuitous color, no rounded-everything friendliness. The aesthetic sits somewhere between a terminal and a well-typeset book.</p>
-<h3>Core Principles</h3>
-<ol>
-<li><p><strong>Monospace-first.</strong> JetBrains Mono is the default for everything — sidebar, buttons, table cells, form labels. Serif and sans options exist for content, but the app itself speaks in monospace.</p>
-</li>
-<li><p><strong>Warm neutrals.</strong> The light theme is cream, not white. The dark theme is brown, not gray. Borders are soft (<code>#e0ddd8</code>), not clinical (<code>#e0e0e0</code>). This warmth is the single most distinctive visual quality.</p>
-</li>
-<li><p><strong>Sparse color.</strong> Accent color (<code>#3d8ad3</code>, a muted blue) is used sparingly — active tabs, primary actions, status dots. Most of the UI is foreground-on-background with muted secondary text. Color means something happened.</p>
-</li>
-<li><p><strong>2px borders on interactive elements.</strong> Buttons, inputs, toggles, cards — anything you can click gets a 2px solid border. Dividers and table rules get 1px. This creates a clear visual distinction between &quot;things&quot; and &quot;structure.&quot;</p>
-</li>
-<li><p><strong>Information density.</strong> Tables show everything. Columns for title, artist, album, year, duration, file size — all visible, no hiding behind &quot;more&quot; menus. Density is a feature.</p>
-</li>
-<li><p><strong>Semantic headings only.</strong> Headings use weight (semibold) and size. No text-transform, no letter-spacing tricks, no uppercase labels.</p>
-</li>
-</ol>
-<h2>File Structure</h2>
-<pre><code>dirigible-ui/
-  index.html                        ← You are here
-  how-to-use.html                   ← Including in a project, pointing Claude at it
-  how-to-update.html                ← Tweaking, adding, maintaining the system
-  tokens/
-    colors.html                     ← Color tokens, themes, semantic usage
-    typography.html                 ← Font stacks, type scale, rules
-    spacing.html                    ← Spacing scale, borders, radius, shadows
-  components/
-    badge.html                      ← Status badges and pills
-    breadcrumb.html                 ← Navigation breadcrumbs
-    button.html                     ← Button variants and states
-    color-swatch.html               ← Color swatch pickers
-    context-menu.html               ← Right-click and kebab menus
-    icon.html                       ← Icon system and catalog
-    image-uploader.html             ← Image upload component
-    input.html                      ← Text inputs, textareas, search
-    modal.html                      ← Modal dialogs
-    popover.html                    ← Popovers and dropdown panels
-    radio-button.html               ← Radio button groups
-    selection-list.html             ← Selection list component
-    sidebar.html                    ← File tree sidebar
-    slider.html                     ← Range sliders
-    table.html                      ← Data tables (notes + music variants)
-    tag-input.html                  ← Tag entry and display
-    theme-picker.html               ← Theme selection UI
-    toast.html                      ← Toast notifications and progress
-    toggle.html                     ← Toggle switches
-  patterns/
-    forms.html                      ← Form layout and validation
-    navigation.html                 ← App navigation patterns
-    publish-flow.html               ← Publication workflow
-    sync-flow.html                  ← Local folder sync workflow
-    theme-system.html               ← Theme switching architecture
-  examples/
-    music-table.html                ← Full music library table
-    note-view.html                  ← Note editing view
-    publication-panel.html          ← Publication management panel
-    sync-modal.html                 ← Folder sync modal
-    themes-modal.html               ← Theme configuration modal
-</code></pre>
-<h2>Usage with Claude Code</h2>
-<p>Each page is a standalone HTML file with inline styles and live interactive demos. No build step required — open any <code>.html</code> file directly in a browser.</p>
-<p>To use this as a design reference in your project, add to your <code>CLAUDE.md</code>:</p>
-<pre><code class="language-markdown">## Design System
+<h1>How to Use</h1>
+
+<p>dirigible-ui is an agent-first UI framework that serves two audiences simultaneously: humans who open it in a browser, and AI coding assistants (Claude, Cursor, etc.) that read the raw HTML files as specifications.</p>
+
+<h2>Including in a Project</h2>
+
+<p>Add dirigible-ui as a git submodule in any project that needs to follow the design system:</p>
+
+<pre><code>git submodule add https://github.com/sosaysthecaptain/dirigible-ui.git dirigible-ui</code></pre>
+
+<p>This keeps your copy linked to the upstream repo. When the design system is updated, pull the latest:</p>
+
+<pre><code>git submodule update --remote dirigible-ui</code></pre>
+
+<p>Alternatively, clone it as a sibling directory if you prefer not to nest it inside your project.</p>
+
+<h2>Pointing Claude at It</h2>
+
+<p>Add this to your project's <code>CLAUDE.md</code>:</p>
+
+<pre><code>## Design System
 Follow the design system in ./dirigible-ui/
 Before creating or modifying any UI component, read the relevant
 component and token files in ./dirigible-ui/tokens/ and ./dirigible-ui/components/.
 Use CSS custom properties — never raw hex values.
-</code></pre>
+Match the patterns, spacing, and interactive behaviors documented
+in the component files exactly.</code></pre>
+
+<p>When Claude Code sees this instruction, it will read the relevant <code>.html</code> files before generating UI. Each file contains the full spec — tokens, variants, states, hover behaviors — plus live inline demos, all parseable from raw HTML.</p>
+
+<h2>What Claude Reads</h2>
+
+<p>Each component page is a self-contained HTML file with:</p>
+
+<ul>
+<li><strong>CSS custom properties</strong> in the <code>:root</code> block — Claude extracts the exact color values, spacing tokens, and semantic variable names</li>
+<li><strong>Live render demos</strong> with inline styles — Claude sees the precise styling applied to each element: border widths, padding values, font weights, hover behaviors</li>
+<li><strong>Spec tables</strong> documenting variants, states, and when to use each</li>
+<li><strong>Code examples</strong> in CSS, HTML, and JSX showing the expected implementation patterns</li>
+<li><strong>Do's and don'ts</strong> that constrain Claude's output to match the design system</li>
+</ul>
+
+<p>For example, if you ask Claude to "add a delete confirmation modal," it reads <code>components/modal.html</code> and <code>components/button.html</code>, sees that modals have no separate footer, that primary buttons use 3px borders with bold text, that danger buttons use red text with a subtle hover tint — and generates code matching all of that.</p>
+
+<h2>Browsing as a Human</h2>
+
+<p>Open any <code>.html</code> file directly in a browser. No build step, no server, no dependencies. The sidebar nav links everything together. Use the moon/sun toggle in the sidebar header to switch between light and dark themes.</p>
+
+<h2>What to Read First</h2>
+
+<ol>
+<li><strong><a href="tokens/colors.html">Colors</a></strong> — understand the palette and semantic token names</li>
+<li><strong><a href="tokens/typography.html">Typography</a></strong> — font stacks, scale, and rules</li>
+<li><strong><a href="components/button.html">Button</a></strong> — the most opinionated component, sets the tone for everything</li>
+<li><strong><a href="components/modal.html">Modal</a></strong> — shows how multiple components compose together</li>
+<li><strong><a href="examples/music-table.html">Music Table</a></strong> — a full-page example showing information density in practice</li>
+</ol>
 
   </main>
   <script>

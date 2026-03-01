@@ -2,7 +2,7 @@
 
 ## Description
 
-How Dirigible syncs content to a local folder on the user's computer. The sync feature enables users to back up their entire library, work offline, or integrate with external tools.
+How the app syncs content to a local folder on the user's computer. The sync feature enables users to back up their entire library, work offline, or integrate with external tools.
 
 ## Sync Flow
 
@@ -45,7 +45,7 @@ User clicks "Choose folder" button → native file picker opens.
 
 **File Picker Behavior:**
 - Starts in home directory or last-used directory
-- User selects an empty folder (or Dirigible creates one)
+- User selects an empty folder (or the app creates one)
 - Folder path is confirmed
 
 ### Step 4: Sync Begins
@@ -59,7 +59,7 @@ Once folder is selected, sync starts immediately.
 - Bar uses `--accent` color
 
 **During Sync:**
-- User can continue using Dirigible
+- User can continue using the app
 - Cannot cancel mid-sync
 - Other modals are disabled
 
@@ -81,7 +81,7 @@ The next time user syncs:
 - Much faster than initial sync
 
 **Resuming Sync:**
-- If Dirigible is closed during sync, next sync continues from where it left off
+- If the app is closed during sync, next sync continues from where it left off
 - "Import from backup" link allows recovering from previous syncs
 
 ## Components Involved

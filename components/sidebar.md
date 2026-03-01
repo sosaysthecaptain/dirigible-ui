@@ -2,7 +2,7 @@
 
 ## Description
 
-A collapsible left navigation panel containing the app name, search functionality, view toggles, file tree navigation, and bottom status bar. The sidebar provides quick access to all collections, folders, and documents in the Dirigible library.
+A collapsible left navigation panel containing the app name, search functionality, view toggles, file tree navigation, and bottom status bar. The sidebar provides quick access to all collections, folders, and documents in the library.
 
 ## When to Use
 

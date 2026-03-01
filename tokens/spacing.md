@@ -1,6 +1,6 @@
 # Spacing
 
-Spacing and layout design tokens for the Dirigible design system. Dirigible uses a 4px base unit grid for all spacing, borders, and radius values, creating a cohesive and predictable layout system.
+Spacing and layout design tokens for the design system. The system uses a 4px base unit grid for all spacing, borders, and radius values, creating a cohesive and predictable layout system.
 
 ## Spacing Scale
 
@@ -121,7 +121,7 @@ Used for page-level padding and hero areas:
 ## Borders
 
 ### Border Width
-Dirigible uses two distinct border widths:
+The system uses two distinct border widths:
 
 | Type | Width | Usage |
 |------|-------|-------|
@@ -158,7 +158,7 @@ table td, table th {
 
 ## Border Radius
 
-Dirigible uses four radius sizes for different UI elements:
+The system uses four radius sizes for different UI elements:
 
 | Token | Value | Usage |
 |-------|-------|-------|
@@ -244,7 +244,7 @@ Sidebar items and sidebar-related UI **do not use border-radius**. They use squa
 
 ## Shadows
 
-Dirigible uses subtle shadows for depth on truly elevated elements. Shadows are used sparingly to create clear visual hierarchy.
+The system uses subtle shadows for depth on truly elevated elements. Shadows are used sparingly to create clear visual hierarchy.
 
 | Token | Value | Usage |
 |-------|-------|-------|

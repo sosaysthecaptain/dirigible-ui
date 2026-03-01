@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>icon — Dirigible UI</title>
+  <title>icon — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #fefefe;
@@ -14,8 +15,8 @@
       --border: #e8e6e3;
       --sidebar-bg: #faf9f8;
       --hover: #f5f4f2;
-      --accent: #0066cc;
-      --accent-muted: #004d99;
+      --accent: #3d8ad3;
+      --accent-muted: #2b6a9e;
       --success: #22c55e;
       --warning: #f59e0b;
       --danger: #dc2626;
@@ -46,7 +47,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
       color: var(--fg);
@@ -146,7 +147,7 @@
     .main strong { font-weight: 600; }
     .main em { font-style: italic; }
     .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
-    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
     .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
     .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
     .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
@@ -191,7 +192,7 @@
 
     .render-panel-body {
       padding: 24px;
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
     }
@@ -205,10 +206,12 @@
 <body>
   <nav class="sidebar">
     <div class="sidebar-header">
-      <h1>dirigible-ui</h1>
+      <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
     </div>
     <a href="../index.html">Overview</a>
+    <a href="../how-to-use.html">How to Use</a>
+    <a href="../how-to-update.html">How to Update</a>
 
         <div class="nav-section">
           <div class="nav-section-title">Tokens</div>
@@ -304,7 +307,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
         <span style="font-size:10px; color:var(--muted); text-align:center;">upload</span>
       </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M3 5.25A2.25 2.25 0 015.25 3h10.19a2.25 2.25 0 011.59.659l2.56 2.56c.422.422.66.994.66 1.59v10.94A2.25 2.25 0 0118 21H5.25A2.25 2.25 0 013 18.75V5.25z"/><path d="M7.5 3v4.5h6V3"/><circle cx="12" cy="15.75" r="2.25" fill="none"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="2" width="18" height="20" rx="1"/><path d="M7 2v7h10V2"/><line x1="14" y1="4" x2="14" y2="7"/><rect x="6" y="13" width="12" height="6" rx="0.5" fill="none"/></svg>
         <span style="font-size:10px; color:var(--muted); text-align:center;">save</span>
       </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/></svg>
@@ -364,7 +367,7 @@
 </div>
 <h1>Icon</h1>
 <h2>Description</h2>
-<p>A consistent set of outline-style SVG icons used throughout Dirigible for visual communication. Icons are always outline/stroke-based (not filled), sized to fit within 16-20px boxes, and inherit color from their context.</p>
+<p>A consistent set of outline-style SVG icons used throughout the app for visual communication. Icons are always outline/stroke-based (not filled), sized to fit within 16-20px boxes, and inherit color from their context.</p>
 <h2>When to Use</h2>
 <ul>
 <li><strong>Content type indicators</strong>: Document, music note, photo, folder icons</li>

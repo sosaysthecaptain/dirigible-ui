@@ -2,7 +2,7 @@
 
 ## Description
 
-Small visual indicators used to highlight status, categories, or state information throughout the app. Dirigible uses badges for published status (green pill), status dots (colored circles), and type labels (small text tags).
+Small visual indicators used to highlight status, categories, or state information throughout the app. The system uses badges for published status (green pill), status dots (colored circles), and type labels (small text tags).
 
 ## When to Use
 

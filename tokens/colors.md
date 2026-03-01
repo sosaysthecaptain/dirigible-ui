@@ -1,10 +1,10 @@
 # Colors
 
-Design tokens for the Dirigible design system color palette. Dirigible supports 20+ built-in themes with a comprehensive semantic color system and extensive syntax highlighting support.
+Design tokens for the design system color palette. The system supports 20+ built-in themes with a comprehensive semantic color system and extensive syntax highlighting support.
 
 ## Semantic Colors
 
-The core semantic color tokens define the Dirigible house style. These provide the foundation for all UI elements and should be used as the primary color reference.
+The core semantic color tokens define the default style. These provide the foundation for all UI elements and should be used as the primary color reference.
 
 ### Light Theme
 | Token | Value | Usage |
@@ -36,7 +36,7 @@ The core semantic color tokens define the Dirigible house style. These provide t
 
 ## Theme CSS Variables
 
-Dirigible includes a built-in themes system that provides complete CSS variable sets for each theme. The actual runtime implementation uses the following variables (shown for Light and Dark themes):
+The system includes a built-in themes system that provides complete CSS variable sets for each theme. The actual runtime implementation uses the following variables (shown for Light and Dark themes):
 
 ### Light Theme Variables
 ```css
@@ -133,7 +133,7 @@ Markdown and code syntax highlighting tokens for the light theme:
 
 ## Available Themes
 
-Dirigible includes 22 built-in themes:
+The system includes 22 built-in themes:
 
 1. Dirigible Light
 2. Alabaster
@@ -199,7 +199,7 @@ Themes are applied via `data-theme` attribute on the root element:
 ## Design Notes
 
 - **Semantic vs. Theme System**: The design system provides semantic color tokens (foreground, background, accent, etc.) as the primary language. The runtime theme system extends these with specialized variables for UI components (buttons, context menus, code blocks, etc.).
-- **Accent Colors**: Dirigible house style uses warm orange (`#E8915A`) as the primary accent. However, individual themes can override this with their own accent colors. Check your theme's CSS variables for the authoritative color values at runtime.
+- **Accent Colors**: The default accent color is a muted blue (`#3d8ad3`). Individual themes can override this with their own accent colors.
 - **Light & Dark**: Always use CSS variables rather than hardcoded colors. This ensures proper theme support across all 22+ built-in themes.
 - **Contrast**: All color combinations meet WCAG AA accessibility standards for text and interactive elements.
 - **Syntax Highlighting**: The syntax colors are designed for markdown and code readability. They adapt per theme automatically.

@@ -73,4 +73,4 @@ Do not use for non-image files (documents, music). Use a standard file input for
 4. **Preview replaces drop zone**: Once uploaded, drop zone is replaced by preview
 5. **Replace and Remove**: Two actions below the preview thumbnail
 6. **WebP conversion**: All uploads are converted to WebP automatically
-7. **Spinner during upload**: Use the standard Dirigible spinner (3px border, transparent top)
+7. **Spinner during upload**: Use the standard spinner (3px border, transparent top)

@@ -2,7 +2,7 @@
 
 ## Description
 
-How form elements are laid out and validated in Dirigible. Forms follow a clean, monospace-first approach with clear hierarchy and error handling.
+How form elements are laid out and validated in the app. Forms follow a clean, monospace-first approach with clear hierarchy and error handling.
 
 ## Patterns
 

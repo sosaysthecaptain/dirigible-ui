@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>button — Dirigible UI</title>
+  <title>button — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #fefefe;
@@ -14,8 +15,8 @@
       --border: #e8e6e3;
       --sidebar-bg: #faf9f8;
       --hover: #f5f4f2;
-      --accent: #0066cc;
-      --accent-muted: #004d99;
+      --accent: #3d8ad3;
+      --accent-muted: #2b6a9e;
       --success: #22c55e;
       --warning: #f59e0b;
       --danger: #dc2626;
@@ -46,7 +47,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
       color: var(--fg);
@@ -146,7 +147,7 @@
     .main strong { font-weight: 600; }
     .main em { font-style: italic; }
     .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
-    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
     .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
     .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
     .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
@@ -191,7 +192,7 @@
 
     .render-panel-body {
       padding: 24px;
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       line-height: 20px;
     }
@@ -205,10 +206,12 @@
 <body>
   <nav class="sidebar">
     <div class="sidebar-header">
-      <h1>dirigible-ui</h1>
+      <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
       <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
     </div>
     <a href="../index.html">Overview</a>
+    <a href="../how-to-use.html">How to Use</a>
+    <a href="../how-to-update.html">How to Update</a>
 
         <div class="nav-section">
           <div class="nav-section-title">Tokens</div>
@@ -255,24 +258,30 @@
     <span class="render-label"><span class="render-dot"></span> Live render</span>
   </div>
   <div class="render-panel-body">
-    
+
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg);" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Choose folder</button>
-      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
-      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'">Delete</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:2px 12px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); font-weight:bold;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.opacity='1'">Choose folder</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:600;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'">Delete</button>
       <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:none; text-decoration:underline; text-decoration-color:var(--border);">Import from backup</button>
     </div>
     <div style="margin-top:16px; display:flex; gap:8px; align-items:center;">
-      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); opacity:0.5; pointer-events:none;">Disabled primary</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:2px 12px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); font-weight:bold; opacity:0.5; pointer-events:none;">Disabled primary</button>
       <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600; opacity:0.5; pointer-events:none;">Disabled secondary</button>
     </div>
-    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Primary (inverts on click) · Secondary semibold (inverts on click) · Danger = secondary + red text, semibold (inverts red on click) · Text-only · Disabled states · All borders 1px</p>
-  
+    <div style="margin-top:16px; display:flex; gap:8px; align-items:center;">
+      <span style="font-size:11px; color:var(--muted); margin-right:4px;">Small variants</span>
+      <button style="font-family:inherit; font-size:11px; border-radius:3px; cursor:pointer; padding:2px 8px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); font-weight:normal;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.opacity='1'">Small primary</button>
+      <button style="font-family:inherit; font-size:11px; border-radius:3px; cursor:pointer; padding:2px 8px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:normal;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Small secondary</button>
+      <button style="font-family:inherit; font-size:11px; border-radius:3px; cursor:pointer; padding:2px 8px; background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:normal;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'">Small danger</button>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Primary: bold, 3px border (padding:2px 12px to match size), opacity hover, inverts on click · Secondary: semibold, 1px border, background hover, inverts on click · Danger: semibold, 1px border, red tint hover, inverts on click · Text-only · Disabled states · Small variants: 11px, normal weight, 1px border on all, 3px radius</p>
+
   </div>
 </div>
 <h1>Button</h1>
 <h2>Description</h2>
-<p>A versatile interactive element used to trigger actions throughout the Dirigible app. Buttons come in three distinct variants (Primary, Secondary, Danger) to clearly communicate the importance and nature of the action they represent.</p>
+<p>A versatile interactive element used to trigger actions throughout the app. Buttons come in three distinct variants (Primary, Secondary, Danger) to clearly communicate the importance and nature of the action they represent.</p>
 <h2>When to Use</h2>
 <ul>
 <li><strong>Primary</strong>: Main calls-to-action like &quot;Choose folder&quot;, &quot;Set as default light theme&quot;, or form submissions</li>
@@ -289,44 +298,80 @@
 <th>Background</th>
 <th>Text Color</th>
 <th>Border</th>
+<th>Font Weight</th>
 <th>Use Case</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><strong>Primary</strong></td>
-<td>#1a1a1a (dark gray/black)</td>
-<td>#ffffff (white)</td>
-<td>2px solid #1a1a1a</td>
+<td>var(--fg) (#1a1a1a)</td>
+<td>var(--bg) (#ffffff)</td>
+<td>3px solid var(--fg)</td>
+<td>bold</td>
 <td>Main action, affirmative choice</td>
 </tr>
 <tr>
 <td><strong>Secondary</strong></td>
-<td>transparent/white</td>
-<td>#181716 (dark text)</td>
-<td>2px solid --border (#e8e6e3)</td>
+<td>transparent</td>
+<td>var(--fg) (#1a1a1a)</td>
+<td>1px solid var(--border)</td>
+<td>600</td>
 <td>Alternative actions, cancel</td>
 </tr>
 <tr>
 <td><strong>Danger</strong></td>
-<td>#dc2626 (red)</td>
-<td>#ffffff (white)</td>
-<td>2px solid #dc2626</td>
+<td>transparent</td>
+<td>var(--danger) (#dc2626)</td>
+<td>1px solid var(--border)</td>
+<td>600</td>
 <td>Destructive actions only</td>
 </tr>
 <tr>
 <td><strong>Text-only</strong></td>
 <td>none</td>
-<td>#181716</td>
+<td>var(--fg)</td>
 <td>none</td>
+<td>normal</td>
 <td>Supplementary actions, links</td>
+</tr>
+</tbody></table>
+<h3>Size Variants</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Font Size</th>
+<th>Padding (1px border)</th>
+<th>Padding (3px border / primary)</th>
+<th>Border Radius</th>
+<th>Font Weight</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Default</strong></td>
+<td>13px</td>
+<td>4px 14px</td>
+<td>3px 13px</td>
+<td>4px</td>
+<td>Per variant (bold for primary, 600 for secondary/danger)</td>
+</tr>
+<tr>
+<td><strong>Small</strong></td>
+<td>11px</td>
+<td>2px 8px</td>
+<td>1px 7px</td>
+<td>3px</td>
+<td>normal (all variants)</td>
 </tr>
 </tbody></table>
 <h3>States</h3>
 <p>All button variants support these interactive states:</p>
 <ul>
 <li><strong>Default</strong>: Base styling as defined above</li>
-<li><strong>Hover</strong>: Background slightly lighter (Primary) or darker (Secondary); Danger hover at #b91c1c</li>
-<li><strong>Active/Pressed</strong>: Background darkens further, slight inset shadow</li>
+<li><strong>Hover (Primary)</strong>: Opacity reduces to 0.85 for a subtle fade effect</li>
+<li><strong>Hover (Secondary)</strong>: Background fills with <code>var(--hover)</code></li>
+<li><strong>Hover (Danger)</strong>: Background fills with <code>rgba(220,38,38,0.08)</code> (light red tint)</li>
+<li><strong>Active/Pressed</strong>: Colors invert -- primary swaps fg/bg, secondary inverts to filled, danger fills with <code>var(--danger)</code> and white text</li>
 <li><strong>Disabled</strong>: Opacity 0.5, <code>cursor: not-allowed</code>, no pointer events</li>
 </ul>
 <h2>Anatomy</h2>
@@ -343,17 +388,17 @@
 </ul>
 <h2>Token Usage</h2>
 <ul>
-<li><strong>Font</strong>: <code>--font-family-mono</code> (JetBrains Mono), <code>--font-size-base</code> (13px)</li>
+<li><strong>Font</strong>: <code>--font-family-mono</code> (JetBrains Mono), <code>--font-size-base</code> (13px), <code>--font-size-sm</code> (11px for small)</li>
 <li><strong>Colors</strong>:<ul>
-<li>Primary: <code>--color-bg-primary</code> (#1a1a1a), <code>--color-text-light</code> (#ffffff)</li>
-<li>Secondary: <code>--color-bg-secondary</code> (transparent), <code>--color-border</code> (#e8e6e3), <code>--color-text-dark</code> (#181716)</li>
-<li>Danger: <code>--color-danger</code> (#dc2626), <code>--color-text-light</code> (#ffffff)</li>
-<li>Text-only: <code>--color-text-dark</code>, <code>--color-border</code> (on hover)</li>
+<li>Primary: <code>var(--fg)</code> background, <code>var(--bg)</code> text</li>
+<li>Secondary: transparent background, <code>var(--fg)</code> text, <code>var(--border)</code> border, <code>var(--hover)</code> hover fill</li>
+<li>Danger: transparent background, <code>var(--danger)</code> text, <code>var(--border)</code> border, <code>rgba(220,38,38,0.08)</code> hover fill</li>
+<li>Text-only: transparent, <code>var(--fg)</code> text</li>
 </ul>
 </li>
-<li><strong>Spacing</strong>: Padding <code>4px 12px</code></li>
-<li><strong>Border</strong>: <code>2px solid</code></li>
-<li><strong>Radius</strong>: <code>4px</code></li>
+<li><strong>Spacing</strong>: Default padding <code>4px 14px</code> (1px border) or <code>3px 13px</code> (3px primary border); Small padding <code>2px 8px</code> (1px border) or <code>1px 7px</code> (3px primary border)</li>
+<li><strong>Border</strong>: Primary uses <code>3px solid var(--fg)</code>; Secondary and Danger use <code>1px solid var(--border)</code></li>
+<li><strong>Radius</strong>: Default <code>4px</code>, Small <code>3px</code></li>
 <li><strong>Line height</strong>: Inherit from 13px base (typically 1.4 = ~18px)</li>
 </ul>
 <h2>HTML Example</h2>
@@ -377,64 +422,97 @@
 <pre><code class="language-css">.btn {
   font-family: var(--font-family-mono);
   font-size: 13px;
-  padding: 4px 12px;
   border-radius: 4px;
-  border: 2px solid;
   cursor: pointer;
   transition: all 0.15s ease;
   line-height: 1.4;
 }
 
+/* Primary: bold, 3px border, padding compensated */
 .btn-primary {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  border-color: #1a1a1a;
+  background-color: var(--fg);
+  color: var(--bg);
+  border: 3px solid var(--fg);
+  padding: 3px 13px;
+  font-weight: bold;
 }
 
 .btn-primary:hover {
-  background-color: #2d2d2d;
-  border-color: #2d2d2d;
+  opacity: 0.85;
 }
 
 .btn-primary:active {
-  background-color: #0f0f0f;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  background-color: var(--bg);
+  color: var(--fg);
 }
 
+/* Secondary: semibold, 1px border */
 .btn-secondary {
   background-color: transparent;
-  color: #181716;
-  border-color: #e8e6e3;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 4px 14px;
+  font-weight: 600;
 }
 
 .btn-secondary:hover {
-  background-color: #f7f5f2;
-  border-color: #d4d1ce;
+  background-color: var(--hover);
 }
 
+.btn-secondary:active {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+/* Danger: semibold, 1px border, red text */
 .btn-danger {
-  background-color: #dc2626;
-  color: #ffffff;
-  border-color: #dc2626;
+  background-color: transparent;
+  color: var(--danger);
+  border: 1px solid var(--border);
+  padding: 4px 14px;
+  font-weight: 600;
 }
 
 .btn-danger:hover {
-  background-color: #b91c1c;
-  border-color: #b91c1c;
+  background-color: rgba(220, 38, 38, 0.08);
 }
 
+.btn-danger:active {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+/* Text-only */
 .btn-text {
   background: none;
   border: none;
-  color: #181716;
+  color: var(--fg);
   padding: 4px 0;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
 }
 
 .btn-text:hover {
-  text-decoration: underline;
+  text-decoration-color: var(--fg);
 }
 
+/* Small variant */
+.btn-sm {
+  font-size: 11px;
+  border-radius: 3px;
+  font-weight: normal;
+}
+
+.btn-sm.btn-primary {
+  padding: 1px 7px;
+}
+
+.btn-sm.btn-secondary,
+.btn-sm.btn-danger {
+  padding: 2px 8px;
+}
+
+/* Disabled state */
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -485,7 +563,7 @@ const [confirmDelete, setConfirmDelete] = useState(false);
 <li>Implement a two-click confirmation pattern for destructive actions (first click reveals &quot;Are you sure?&quot;, second click confirms)</li>
 <li>Use sentence case: &quot;Set as default light theme&quot; not &quot;SET AS DEFAULT LIGHT THEME&quot;</li>
 <li>Keep button labels short and action-oriented: &quot;Choose&quot;, &quot;Save&quot;, &quot;Delete&quot;, not &quot;Click here to choose&quot;</li>
-<li>Use consistent padding (4px 12px) across all buttons for visual uniformity</li>
+<li>Use compensated padding so all buttons align: 3px 13px for primary (3px border), 4px 14px for secondary/danger (1px border)</li>
 </ul>
 <h3>Don&#39;t</h3>
 <ul>
@@ -503,8 +581,8 @@ const [confirmDelete, setConfirmDelete] = useState(false);
 <li><strong>Monospace-only</strong>: All button text uses JetBrains Mono at 13px; no other fonts</li>
 <li><strong>Two-click destructive pattern</strong>: Danger buttons must hide their action on first click and show a confirmation state before the second click executes</li>
 <li><strong>No nested elements</strong>: Buttons contain only text nodes; no <code>&lt;span&gt;</code>, <code>&lt;i&gt;</code>, or child elements</li>
-<li><strong>Consistent sizing</strong>: All buttons use the same padding and font size regardless of content</li>
-<li><strong>Border always 2px</strong>: No thinner borders, no outlines; only solid 2px borders</li>
+<li><strong>Consistent sizing</strong>: Padding is adjusted to compensate for border width so all buttons occupy the same outer dimensions (3px border = 3px 13px padding; 1px border = 4px 14px padding)</li>
+<li><strong>Primary border 3px, others 1px</strong>: Primary buttons use a 3px solid border for visual weight; secondary and danger use 1px solid</li>
 <li><strong>Text-only buttons are not primary</strong>: Text buttons should never be the main CTA; they&#39;re supplementary</li>
 <li><strong>Disabled state</strong>: Use <code>disabled</code> attribute on the button element; never use a separate &quot;disabled&quot; class on a parent</li>
 </ol>

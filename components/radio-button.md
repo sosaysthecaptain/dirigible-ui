@@ -2,7 +2,7 @@
 
 ## Description
 
-A single-select control for choosing one option from a set. Dirigible uses radio buttons in two forms: standard circle radios for simple lists, and card-style radios for rich options with icons and descriptions (like the Blog/Wiki selector in the publish modal).
+A single-select control for choosing one option from a set. The system uses radio buttons in two forms: standard circle radios for simple lists, and card-style radios for rich options with icons and descriptions (like the Blog/Wiki selector in the publish modal).
 
 ## When to Use
 

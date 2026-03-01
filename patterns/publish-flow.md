@@ -2,7 +2,7 @@
 
 ## Description
 
-How content gets published from Dirigible to the web. The publication flow is a streamlined process that takes notes from private to public in a few clicks, with a dedicated panel for managing publication settings.
+How content gets published from the app to the web. The publication flow is a streamlined process that takes notes from private to public in a few clicks, with a dedicated panel for managing publication settings.
 
 ## Publication Flow
 

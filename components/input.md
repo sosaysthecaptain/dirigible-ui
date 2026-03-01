@@ -2,7 +2,7 @@
 
 ## Description
 
-Text input fields and related form controls used for user data entry across Dirigible. All inputs follow a consistent 2px border, monospace font, and focus state that highlights the active field with the accent color.
+Text input fields and related form controls used for user data entry across the app. All inputs follow a consistent 2px border, monospace font, and focus state that highlights the active field with the accent color.
 
 ## When to Use
 
