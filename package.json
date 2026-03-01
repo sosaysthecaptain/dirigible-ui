@@ -1,0 +1,16 @@
+{
+  "name": "dirigible-ui",
+  "version": "1.0.0",
+  "description": "Dirigible Design System — markdown-based, human and AI readable",
+  "type": "module",
+  "scripts": {
+    "build": "node render.mjs",
+    "dev": "node render.mjs --watch"
+  },
+  "dependencies": {
+    "marked": "^14.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "chokidar": "^4.0.0"
+  }
+}
