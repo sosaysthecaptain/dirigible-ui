@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>icon — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html" class="active">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">All icons are Heroicons-style inline SVGs · viewBox 0 0 24 24 · stroke-width 1.5 (note icon: 2) · Default size: 14px (w-3.5 h-3.5)</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">folder</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">note</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V4.5l-10.5 3v8.553m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">music</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2.5" y="2.5" width="8" height="5" rx="1"/><rect x="13.5" y="2.5" width="8" height="8" rx="1"/><rect x="2.5" y="10.5" width="8" height="11" rx="1"/><rect x="13.5" y="13.5" width="8" height="8" rx="1"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">moodboard</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">document</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M7 2h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M14 2v5h5"/><rect x="7" y="14" width="10" height="6" rx="1" fill="currentColor" opacity="0.2" stroke="none"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">pdf</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">search</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">plus</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">x-close</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">check</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">chevron-right</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">chevron-down</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">bookmark</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">download</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">upload</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M3 5.25A2.25 2.25 0 015.25 3h10.19a2.25 2.25 0 011.59.659l2.56 2.56c.422.422.66.994.66 1.59v10.94A2.25 2.25 0 0118 21H5.25A2.25 2.25 0 013 18.75V5.25z"/><path d="M7.5 3v4.5h6V3"/><circle cx="12" cy="15.75" r="2.25" fill="none"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">save</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">print</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">clock</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 10v6m0 0l3-3m-3 3l-3-3M6.75 19.25a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.5 3.5 0 0118 19.25H6.75z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">cloud-sync</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">sync</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">external-link</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">link</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">trash</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">edit</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">copy</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-width="2"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">more-vert</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">sun</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">moon</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">user</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">themes</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">settings</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">sign-out</span>
+      </div><div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+        <span style="font-size:10px; color:var(--muted); text-align:center;">image</span>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Icon</h1>
+<h2>Description</h2>
+<p>A consistent set of outline-style SVG icons used throughout Dirigible for visual communication. Icons are always outline/stroke-based (not filled), sized to fit within 16-20px boxes, and inherit color from their context.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Content type indicators</strong>: Document, music note, photo, folder icons</li>
+<li><strong>Action buttons</strong>: Download, delete, print, bookmark</li>
+<li><strong>Status indicators</strong>: Cloud sync, publish, visibility</li>
+<li><strong>Navigation</strong>: Disclosure triangles, chevrons, back arrows</li>
+<li><strong>UI chrome</strong>: Search magnifying glass, settings gear, user account</li>
+<li><strong>Breadcrumb and menu</strong>: Tree navigation and more actions (kebab)</li>
+</ul>
+<p>Icons are NOT used inside text buttons. Icon-only buttons use icons with appropriate accessible labels.</p>
+<h2>Icon Set</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Use Case</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cloud with down arrow</td>
+<td>Sync/backup operations</td>
+<td>Indicates download/import</td>
+</tr>
+<tr>
+<td>Document/page</td>
+<td>Note/text file</td>
+<td>Outline rectangle with horizontal lines</td>
+</tr>
+<tr>
+<td>Music note</td>
+<td>Audio file/collection</td>
+<td>Musical note symbol</td>
+</tr>
+<tr>
+<td>Photo/image</td>
+<td>Photo album or image file</td>
+<td>Frame or landscape outline</td>
+</tr>
+<tr>
+<td>Folder</td>
+<td>Collection or directory</td>
+<td>Folder outline</td>
+</tr>
+<tr>
+<td>Magnifying glass</td>
+<td>Search</td>
+<td>Circle with handle</td>
+</tr>
+<tr>
+<td>Plus (+)</td>
+<td>Create new item</td>
+<td>Simple plus symbol</td>
+</tr>
+<tr>
+<td>X / Close</td>
+<td>Dismiss/close modal</td>
+<td>Simple X or ✕</td>
+</tr>
+<tr>
+<td>Kebab (⋮)</td>
+<td>More options menu</td>
+<td>Three dots</td>
+</tr>
+<tr>
+<td>Chevron/triangle</td>
+<td>Disclosure/expand</td>
+<td>Right-pointing arrow, rotates when expanded</td>
+</tr>
+<tr>
+<td>Eye</td>
+<td>Preview/visibility</td>
+<td>Eye outline</td>
+</tr>
+<tr>
+<td>Moon/Sun</td>
+<td>Theme toggle (dark/light)</td>
+<td>Crescent moon or sun rays</td>
+</tr>
+<tr>
+<td>User/person</td>
+<td>Account/profile</td>
+<td>Simple head outline</td>
+</tr>
+<tr>
+<td>Bookmark</td>
+<td>Saved/pinned item</td>
+<td>Ribbon or flag outline</td>
+</tr>
+<tr>
+<td>Download arrow</td>
+<td>Download/export</td>
+<td>Down arrow with line</td>
+</tr>
+<tr>
+<td>Printer</td>
+<td>Print document</td>
+<td>Printer outline</td>
+</tr>
+<tr>
+<td>Globe/link</td>
+<td>Visit site / URL</td>
+<td>Globe or link chain</td>
+</tr>
+<tr>
+<td>Clock/history</td>
+<td>Version history</td>
+<td>Clock face</td>
+</tr>
+<tr>
+<td>Checkmark</td>
+<td>Confirmed/published</td>
+<td>Simple check mark</td>
+</tr>
+<tr>
+<td>Trash/delete</td>
+<td>Delete item</td>
+<td>Trash can outline (red color)</td>
+</tr>
+<tr>
+<td>Gear/settings</td>
+<td>Settings/configuration</td>
+<td>Gear/cog outline</td>
+</tr>
+<tr>
+<td>Refresh</td>
+<td>Restore defaults</td>
+<td>Circular arrow</td>
+</tr>
+<tr>
+<td>List</td>
+<td>List view toggle</td>
+<td>Three horizontal lines</td>
+</tr>
+<tr>
+<td>Card</td>
+<td>Card view toggle</td>
+<td>Rounded rectangle or grid card</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>Table view toggle</td>
+<td>Grid of squares</td>
+</tr>
+<tr>
+<td>Grid</td>
+<td>Grid view toggle</td>
+<td>2×2 or larger grid</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<p>All icons follow this structure:</p>
+<pre><code>&lt;svg class=&quot;icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path
+    d=&quot;M...&quot;
+    fill=&quot;none&quot;
+    stroke=&quot;currentColor&quot;
+    stroke-width=&quot;1.5&quot;
+    stroke-linecap=&quot;round&quot;
+    stroke-linejoin=&quot;round&quot;
+  /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>SVG element with explicit width and height (16px or 20px)</li>
+<li>viewBox=&quot;0 0 16 16&quot; or &quot;0 0 20 20&quot;</li>
+<li>Path or shape elements using stroke (not fill)</li>
+<li><code>stroke=&quot;currentColor&quot;</code> to inherit color from parent</li>
+<li><code>stroke-width=&quot;1.5&quot;</code> for consistent stroke weight</li>
+<li><code>fill=&quot;none&quot;</code> (outline, not filled)</li>
+<li><code>stroke-linecap=&quot;round&quot;</code> and <code>stroke-linejoin=&quot;round&quot;</code> for softer appearance</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Size</strong>: 16px or 20px square box (consistent aspect ratio)</li>
+<li><strong>Stroke weight</strong>: 1.5px (consistent across all icons)</li>
+<li><strong>Color</strong>: Inherits from <code>currentColor</code> (CSS property)</li>
+<li><strong>Default color</strong>: <code>--foreground</code> (#181716)</li>
+<li><strong>Muted color</strong>: <code>--color-muted</code> (#777777) for inactive icons</li>
+<li><strong>Danger color</strong>: <code>--danger</code> (#dc2626) for delete icon only</li>
+<li><strong>Accent color</strong>: <code>--accent</code> (#E8915A) for highlighted/active icons</li>
+<li><strong>Viewbox</strong>: 16×16 or 20×20 logical units</li>
+<li><strong>Padding</strong>: No internal padding; strokes should reach near viewBox edges</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Icon in a Button</h3>
+<pre><code class="language-html">&lt;!-- Icon-only button (search) --&gt;
+&lt;button class=&quot;breadcrumb-icon-button&quot; title=&quot;Search&quot;&gt;
+  &lt;svg class=&quot;icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+    &lt;circle cx=&quot;6&quot; cy=&quot;6&quot; r=&quot;4.5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; /&gt;
+    &lt;line x1=&quot;10&quot; y1=&quot;10&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; /&gt;
+  &lt;/svg&gt;
+&lt;/button&gt;
+
+&lt;!-- Icon with text (breadcrumb published badge) --&gt;
+&lt;button class=&quot;published-badge&quot;&gt;
+  &lt;svg class=&quot;icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+    &lt;polyline points=&quot;2,8 6,12 14,4&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /&gt;
+  &lt;/svg&gt;
+  &lt;span&gt;Published&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Icon in tree (file type) --&gt;
+&lt;svg class=&quot;tree-icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path d=&quot;M2,2 H14 V14 H2 Z&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; /&gt;
+  &lt;line x1=&quot;2&quot; y1=&quot;4&quot; x2=&quot;14&quot; y2=&quot;4&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; /&gt;
+  &lt;line x1=&quot;2&quot; y1=&quot;6&quot; x2=&quot;14&quot; y2=&quot;6&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; /&gt;
+  &lt;line x1=&quot;2&quot; y1=&quot;8&quot; x2=&quot;14&quot; y2=&quot;8&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Common Icon Patterns</h3>
+<pre><code class="language-html">&lt;!-- Disclosure triangle (expand/collapse) --&gt;
+&lt;svg class=&quot;tree-chevron&quot; width=&quot;12&quot; height=&quot;12&quot; viewBox=&quot;0 0 12 12&quot;&gt;
+  &lt;polyline points=&quot;3,1 9,6 3,11&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /&gt;
+&lt;/svg&gt;
+
+&lt;!-- Kebab menu (three dots) --&gt;
+&lt;button class=&quot;breadcrumb-menu&quot; aria-label=&quot;More options&quot;&gt;⋮&lt;/button&gt;
+&lt;!-- Or as SVG --&gt;
+&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;circle cx=&quot;8&quot; cy=&quot;2&quot; r=&quot;1&quot; fill=&quot;currentColor&quot; /&gt;
+  &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;1&quot; fill=&quot;currentColor&quot; /&gt;
+  &lt;circle cx=&quot;8&quot; cy=&quot;14&quot; r=&quot;1&quot; fill=&quot;currentColor&quot; /&gt;
+&lt;/svg&gt;
+
+&lt;!-- Spinner (animated) --&gt;
+&lt;div class=&quot;toast-spinner&quot;&gt;&lt;/div&gt;
+&lt;!-- CSS creates the spinning animation --&gt;
+
+&lt;!-- Delete/trash (red) --&gt;
+&lt;svg class=&quot;icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path d=&quot;M2,4 H14 M4,4 V13 H12 V4 M6,4 V2 H10 V4 M6,6 V11 M10,6 V11 M8,6 V11&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  color: var(--foreground);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Icon sizes */
+.icon-sm {
+  width: 12px;
+  height: 12px;
+}
+
+.icon-md {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-lg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Icon colors */
+.icon-muted {
+  color: var(--color-muted);
+}
+
+.icon-accent {
+  color: var(--accent);
+}
+
+.icon-danger {
+  color: var(--danger);
+}
+
+.icon-success {
+  color: var(--success);
+}
+
+/* Icon in buttons */
+.btn svg.icon {
+  /* Inherits color from button */
+}
+
+.breadcrumb-icon-button .icon {
+  color: var(--color-muted);
+  transition: color 0.15s ease;
+}
+
+.breadcrumb-icon-button:hover .icon {
+  color: var(--foreground);
+}
+
+/* Animated spinner */
+.toast-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tree chevron rotation */
+.tree-chevron {
+  transition: transform 0.2s ease;
+}
+
+.tree-chevron-down {
+  transform: rotate(90deg);
+}
+</code></pre>
+<h2>SVG Template Examples</h2>
+<h3>Magnifying Glass (Search)</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;circle cx=&quot;6&quot; cy=&quot;6&quot; r=&quot;4.5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;/&gt;
+  &lt;line x1=&quot;10&quot; y1=&quot;10&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Plus (Create)</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;line x1=&quot;8&quot; y1=&quot;2&quot; x2=&quot;8&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;
+  &lt;line x1=&quot;2&quot; y1=&quot;8&quot; x2=&quot;14&quot; y2=&quot;8&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Folder</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path d=&quot;M2,3 H6 L8,2 H14 V13 H2 Z&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linejoin=&quot;round&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Checkmark (Published)</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;polyline points=&quot;2,8 6,12 14,4&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Eye (Preview)</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path d=&quot;M8,2 C3,2 0,8 0,8 C0,8 3,14 8,14 C13,14 16,8 16,8 C16,8 13,2 8,2&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linejoin=&quot;round&quot;/&gt;
+  &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3>Moon (Dark Theme)</h3>
+<pre><code class="language-svg">&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+  &lt;path d=&quot;M2,8 A6,6 0 0 0 12,14 A5.5,5.5 0 0 1 2,8&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.5&quot; stroke-linejoin=&quot;round&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Icon Component Wrapper
+const Icon = ({ name, size = 16, color = &#39;currentColor&#39;, className = &#39;&#39; }) =&gt; {
+  const icons = {
+    magnifyingGlass: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon ${className}`}&gt;
+        &lt;circle cx=&quot;6&quot; cy=&quot;6&quot; r=&quot;4.5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.5&quot; /&gt;
+        &lt;line x1=&quot;10&quot; y1=&quot;10&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.5&quot; strokeLinecap=&quot;round&quot; /&gt;
+      &lt;/svg&gt;
+    ),
+    plus: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon ${className}`}&gt;
+        &lt;line x1=&quot;8&quot; y1=&quot;2&quot; x2=&quot;8&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.5&quot; strokeLinecap=&quot;round&quot; /&gt;
+        &lt;line x1=&quot;2&quot; y1=&quot;8&quot; x2=&quot;14&quot; y2=&quot;8&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.5&quot; strokeLinecap=&quot;round&quot; /&gt;
+      &lt;/svg&gt;
+    ),
+    close: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon ${className}`}&gt;
+        &lt;line x1=&quot;2&quot; y1=&quot;2&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;2&quot; strokeLinecap=&quot;round&quot; /&gt;
+        &lt;line x1=&quot;14&quot; y1=&quot;2&quot; x2=&quot;2&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;2&quot; strokeLinecap=&quot;round&quot; /&gt;
+      &lt;/svg&gt;
+    ),
+    checkmark: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon ${className}`}&gt;
+        &lt;polyline
+          points=&quot;2,8 6,12 14,4&quot;
+          fill=&quot;none&quot;
+          stroke=&quot;currentColor&quot;
+          strokeWidth=&quot;2&quot;
+          strokeLinecap=&quot;round&quot;
+          strokeLinejoin=&quot;round&quot;
+        /&gt;
+      &lt;/svg&gt;
+    ),
+    trash: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon icon-danger ${className}`}&gt;
+        &lt;path
+          d=&quot;M2,4 H14 M4,4 V13 H12 V4 M6,4 V2 H10 V4&quot;
+          fill=&quot;none&quot;
+          stroke=&quot;currentColor&quot;
+          strokeWidth=&quot;1.5&quot;
+          strokeLinecap=&quot;round&quot;
+          strokeLinejoin=&quot;round&quot;
+        /&gt;
+      &lt;/svg&gt;
+    ),
+    folder: (
+      &lt;svg width={size} height={size} viewBox=&quot;0 0 16 16&quot; className={`icon ${className}`}&gt;
+        &lt;path
+          d=&quot;M2,3 H6 L8,2 H14 V13 H2 Z&quot;
+          fill=&quot;none&quot;
+          stroke=&quot;currentColor&quot;
+          strokeWidth=&quot;1.5&quot;
+          strokeLinejoin=&quot;round&quot;
+        /&gt;
+      &lt;/svg&gt;
+    ),
+  };
+
+  return icons[name] || null;
+};
+
+// Usage in Components
+&lt;button className=&quot;breadcrumb-icon-button&quot; title=&quot;Search&quot;&gt;
+  &lt;Icon name=&quot;magnifyingGlass&quot; size={16} /&gt;
+&lt;/button&gt;
+
+&lt;button className=&quot;sidebar-new-button&quot;&gt;
+  &lt;Icon name=&quot;plus&quot; size={16} /&gt;
+&lt;/button&gt;
+
+&lt;button className=&quot;toast-close&quot;&gt;
+  &lt;Icon name=&quot;close&quot; size={18} /&gt;
+&lt;/button&gt;
+
+&lt;button className=&quot;context-menu-item context-menu-item-danger&quot;&gt;
+  &lt;Icon name=&quot;trash&quot; size={16} /&gt;
+  &lt;span&gt;Delete&lt;/span&gt;
+&lt;/button&gt;
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Use outline/stroke style (never filled)</li>
+<li>Keep stroke weight consistent (1.5px)</li>
+<li>Use <code>stroke=&quot;currentColor&quot;</code> to inherit color from context</li>
+<li>Size icons to 16px or 20px in a square viewBox</li>
+<li>Include appropriate titles/aria-labels on icon-only buttons</li>
+<li>Use round linecaps and linejoins for softer appearance</li>
+<li>Color icons to match their context (default foreground, danger for delete, etc.)</li>
+<li>Keep icon set consistent in style and weight</li>
+<li>Use proper viewBox for scalability</li>
+<li>Include icons in tooltips or aria-labels</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use filled/solid icons (always outline)</li>
+<li>Mix stroke weights across icons</li>
+<li>Create icons with thick strokes (stick to 1.5px)</li>
+<li>Use icons inside text buttons (only in icon-only buttons)</li>
+<li>Change icon colors arbitrarily (use the color system)</li>
+<li>Create oversized or undersized icons</li>
+<li>Use colored fills instead of strokes</li>
+<li>Include text inside SVG icons</li>
+<li>Create decorative-only icons</li>
+<li>Forget accessibility labels on icon-only buttons</li>
+</ul>
+<h2>Rules Specific to Icons</h2>
+<ol>
+<li><strong>Outline only</strong>: All icons use stroke (fill=&quot;none&quot;), never filled shapes</li>
+<li><strong>Consistent stroke weight</strong>: 1.5px across all icons</li>
+<li><strong>Inherits color</strong>: Uses <code>stroke=&quot;currentColor&quot;</code> to inherit from parent</li>
+<li><strong>Square viewBox</strong>: All icons use 16×16 or 20×20 logical units</li>
+<li><strong>Rounded appearance</strong>: Uses <code>stroke-linecap=&quot;round&quot;</code> and <code>stroke-linejoin=&quot;round&quot;</code></li>
+<li><strong>16px default</strong>: Standard icon size is 16×16 pixels</li>
+<li><strong>20px for large</strong>: Larger contexts (headers) use 20×20 pixels</li>
+<li><strong>No internal padding</strong>: Strokes should reach near viewBox edges</li>
+<li><strong>Color by context</strong>: Delete icons are --danger, inactive are --muted, active are --accent</li>
+<li><strong>Accessible labels</strong>: Icon-only buttons always have title or aria-label attributes</li>
+<li><strong>Consistent style</strong>: All icons in the set follow same design language</li>
+<li><strong>No embedded text</strong>: Icons never contain text or numbers</li>
+<li><strong>Flexible sizing</strong>: Proper viewBox allows scaling without quality loss</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

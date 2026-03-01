@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirigible: Music Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fefefe;
+            --fg: #1a1a1a;
+            --border: #e8e6e3;
+            --sidebar: #faf9f8;
+            --muted: #777777;
+            --accent: #E8915A;
+            --hover: #f5f4f2;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --card-radius: 6px;
+            --modal-radius: 8px;
+            --button-radius: 4px;
+            --sidebar-width: 280px;
+        }
+
+        body.dark-theme {
+            --bg: #181716;
+            --fg: #f2f0ed;
+            --border: #302e2b;
+            --sidebar: #1e1d1b;
+            --muted: #999795;
+            --accent: #6ba3d6;
+            --hover: #27251f;
+            --success: #4ec9b0;
+            --warning: #ce9178;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .app-wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: var(--button-radius);
+            color: var(--fg);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--hover);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .sidebar-item.active::before {
+            content: "🔖";
+            font-size: 12px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .breadcrumb {
+            color: var(--fg);
+            font-size: 13px;
+        }
+
+        .breadcrumb-separator {
+            color: var(--muted);
+            margin: 0 4px;
+        }
+
+        .table-container {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--fg);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 1px solid var(--border);
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        th.number {
+            width: 40px;
+            text-align: center;
+        }
+
+        th.year,
+        th.time,
+        th.size {
+            text-align: right;
+            width: 80px;
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--fg);
+        }
+
+        td.number {
+            text-align: center;
+            color: var(--muted);
+            width: 40px;
+        }
+
+        td.year,
+        td.time,
+        td.size {
+            text-align: right;
+            color: var(--muted);
+            width: 80px;
+        }
+
+        tbody tr:hover {
+            background-color: var(--hover);
+        }
+
+        .group-header {
+            background-color: var(--sidebar);
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .group-header td {
+            padding: 8px 16px;
+        }
+
+        .bottom-stats {
+            background-color: var(--sidebar);
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            font-size: 13px;
+            color: var(--muted);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background-color: var(--sidebar);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--fg);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover);
+        }
+
+        .separator {
+            margin: 0 8px;
+            color: var(--border);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+
+    <div class="app-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Notes</div>
+                <div class="sidebar-item">Journal</div>
+                <div class="sidebar-item">Ideas</div>
+                <div class="sidebar-item">Research</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Projects</div>
+                <div class="sidebar-item">Roadmap</div>
+                <div class="sidebar-item">Design</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Music</div>
+                <div class="sidebar-item">irish pub songs</div>
+                <div class="sidebar-item">renaissance polyphony</div>
+                <div class="sidebar-item">misc</div>
+                <div class="sidebar-item">classical</div>
+                <div class="sidebar-item">local</div>
+                <div class="sidebar-item active">MAIN</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Library</div>
+                <div class="sidebar-item">Photos</div>
+                <div class="sidebar-item">Documents</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="breadcrumb">
+                    all<span class="breadcrumb-separator">›</span>music<span class="breadcrumb-separator">›</span>MAIN <span style="color: var(--muted);">⋮</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="number">#</th>
+                            <th>Title</th>
+                            <th>Artist</th>
+                            <th>Album</th>
+                            <th class="year">Year</th>
+                            <th class="time">Time</th>
+                            <th class="size">Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="group-header">
+                            <td colspan="7">Amanda Palmer</td>
+                        </tr>
+                        <tr>
+                            <td class="number">1</td>
+                            <td>Minute Boy</td>
+                            <td>Amanda Palmer</td>
+                            <td>Who Killed Amanda Palmer</td>
+                            <td class="year">2011</td>
+                            <td class="time">2:45</td>
+                            <td class="size">6.3 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">2</td>
+                            <td>Leeds United</td>
+                            <td>Amanda Palmer</td>
+                            <td>Theatre Is Evil</td>
+                            <td class="year">2012</td>
+                            <td class="time">3:22</td>
+                            <td class="size">7.8 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">3</td>
+                            <td>Do You Swear to Tell the Truth...</td>
+                            <td>Amanda Palmer</td>
+                            <td>Theatre Is Evil</td>
+                            <td class="year">2012</td>
+                            <td class="time">4:18</td>
+                            <td class="size">9.2 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">4</td>
+                            <td>Smell of Flowers</td>
+                            <td>Amanda Palmer</td>
+                            <td>Theatre Is Evil</td>
+                            <td class="year">2012</td>
+                            <td class="time">3:56</td>
+                            <td class="size">8.9 MB</td>
+                        </tr>
+
+                        <tr class="group-header">
+                            <td colspan="7">Barenaked Ladies</td>
+                        </tr>
+                        <tr>
+                            <td class="number">5</td>
+                            <td>One Week</td>
+                            <td>Barenaked Ladies</td>
+                            <td>Stunt</td>
+                            <td class="year">1998</td>
+                            <td class="time">3:36</td>
+                            <td class="size">8.1 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">6</td>
+                            <td>It's All Been Done</td>
+                            <td>Barenaked Ladies</td>
+                            <td>Stunt</td>
+                            <td class="year">1998</td>
+                            <td class="time">3:46</td>
+                            <td class="size">8.4 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">7</td>
+                            <td>Flat Packageable</td>
+                            <td>Barenaked Ladies</td>
+                            <td>Stunt</td>
+                            <td class="year">1998</td>
+                            <td class="time">3:24</td>
+                            <td class="size">7.8 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">8</td>
+                            <td>Call and Answer</td>
+                            <td>Barenaked Ladies</td>
+                            <td>Stunt</td>
+                            <td class="year">1998</td>
+                            <td class="time">3:33</td>
+                            <td class="size">8.0 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">9</td>
+                            <td>The Story of Workers</td>
+                            <td>Barenaked Ladies</td>
+                            <td>Stunt</td>
+                            <td class="year">1998</td>
+                            <td class="time">3:14</td>
+                            <td class="size">7.2 MB</td>
+                        </tr>
+
+                        <tr class="group-header">
+                            <td colspan="7">The Beatles</td>
+                        </tr>
+                        <tr>
+                            <td class="number">10</td>
+                            <td>Love Me Do</td>
+                            <td>The Beatles</td>
+                            <td>Please Please Me</td>
+                            <td class="year">1963</td>
+                            <td class="time">2:21</td>
+                            <td class="size">5.3 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">11</td>
+                            <td>Please Please Me</td>
+                            <td>The Beatles</td>
+                            <td>Please Please Me</td>
+                            <td class="year">1963</td>
+                            <td class="time">2:01</td>
+                            <td class="size">4.6 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">12</td>
+                            <td>I Saw Her Standing There</td>
+                            <td>The Beatles</td>
+                            <td>Please Please Me</td>
+                            <td class="year">1963</td>
+                            <td class="time">2:53</td>
+                            <td class="size">6.5 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">13</td>
+                            <td>Misery</td>
+                            <td>The Beatles</td>
+                            <td>Please Please Me</td>
+                            <td class="year">1963</td>
+                            <td class="time">1:48</td>
+                            <td class="size">4.2 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">14</td>
+                            <td>Hard Day's Night</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:33</td>
+                            <td class="size">5.8 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">15</td>
+                            <td>I Should Have Known Better</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:43</td>
+                            <td class="size">6.1 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">16</td>
+                            <td>If I Fell</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:20</td>
+                            <td class="size">5.3 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">17</td>
+                            <td>I'm Happy Just to Dance with You</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">1:57</td>
+                            <td class="size">4.5 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">18</td>
+                            <td>And I Love Her</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:30</td>
+                            <td class="size">5.7 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">19</td>
+                            <td>Tell Me Why</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:37</td>
+                            <td class="size">5.9 MB</td>
+                        </tr>
+                        <tr>
+                            <td class="number">20</td>
+                            <td>Boy</td>
+                            <td>The Beatles</td>
+                            <td>A Hard Day's Night</td>
+                            <td class="year">1964</td>
+                            <td class="time">2:14</td>
+                            <td class="size">5.1 MB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bottom-stats">
+                2,189 songs
+                <span class="separator">·</span>
+                5d 15h 5m
+                <span class="separator">·</span>
+                13.8 GB
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙 Dark';
+        }
+    </script>
+</body>
+</html>

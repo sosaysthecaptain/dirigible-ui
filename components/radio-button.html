@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>radio button — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html" class="active">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Radio group (single selection)</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <span style="width:16px; height:16px; border-radius:50%; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <span style="width:8px; height:8px; border-radius:50%; background:var(--accent);"></span>
+            </span>
+            Monospace
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <span style="width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0;"></span>
+            Serif
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px;">
+            <span style="width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0;"></span>
+            Sans
+          </label>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Radio group (horizontal, card-style)</p>
+        <div style="display:flex; gap:8px;">
+          <div style="flex:1; padding:12px; border:2px solid var(--accent); border-radius:4px; cursor:pointer; background:color-mix(in srgb, var(--accent) 8%, var(--bg));">
+            <div style="font-size:13px; font-weight:600; margin-bottom:2px; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Blog</div>
+            <div style="font-size:11px; color:var(--muted);">Posts by date</div>
+          </div>
+          <div style="flex:1; padding:12px; border:1px solid var(--border); border-radius:4px; cursor:pointer;">
+            <div style="font-size:13px; font-weight:600; margin-bottom:2px; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg> Wiki</div>
+            <div style="font-size:11px; color:var(--muted);">Folder hierarchy</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Disabled state</p>
+        <label style="display:flex; align-items:center; gap:8px; cursor:not-allowed; font-size:13px; opacity:0.5;">
+          <span style="width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0;"></span>
+          Unavailable option
+        </label>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Circle: 16px, 2px border · Selected: accent border + 8px filled dot · Card variant: 2px accent border + tinted bg · Used in publish modal (Blog/Wiki), font theme selector</p>
+  
+  </div>
+</div>
+<h1>Radio Button</h1>
+<h2>Description</h2>
+<p>A single-select control for choosing one option from a set. Dirigible uses radio buttons in two forms: standard circle radios for simple lists, and card-style radios for rich options with icons and descriptions (like the Blog/Wiki selector in the publish modal).</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Publish modal</strong>: Blog vs. Wiki selection</li>
+<li><strong>Font theme selector</strong>: Monospace / Serif / Sans / Raw</li>
+<li><strong>Any mutually exclusive choice</strong>: Where only one option can be active</li>
+</ul>
+<p>Do not use radio buttons for binary on/off (use toggles) or multi-select (use checkboxes).</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Circle</strong></td>
+<td>Standard radio dot, 16px diameter</td>
+<td>Simple lists of text options</td>
+</tr>
+<tr>
+<td><strong>Card</strong></td>
+<td>Bordered card with icon + description</td>
+<td>Rich options like Blog/Wiki in publish modal</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<h3>Circle Radio</h3>
+<pre><code class="language-html">&lt;label class=&quot;radio-wrapper&quot;&gt;
+  &lt;span class=&quot;radio-circle radio-checked&quot;&gt;
+    &lt;span class=&quot;radio-dot&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;radio-label&quot;&gt;Option text&lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h3>Card Radio</h3>
+<pre><code class="language-html">&lt;div class=&quot;radio-card radio-card-selected&quot;&gt;
+  &lt;svg class=&quot;radio-card-icon&quot;&gt;&lt;!-- icon --&gt;&lt;/svg&gt;
+  &lt;span class=&quot;radio-card-title&quot;&gt;Blog&lt;/span&gt;
+  &lt;span class=&quot;radio-card-description&quot;&gt;Posts by date&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Circle size</strong>: 16px diameter, 2px border</li>
+<li><strong>Dot size</strong>: 8px when selected</li>
+<li><strong>Selected border</strong>: var(--accent) (#0066cc)</li>
+<li><strong>Unselected border</strong>: var(--border)</li>
+<li><strong>Dot fill</strong>: var(--accent)</li>
+<li><strong>Card border (selected)</strong>: 2px solid var(--accent)</li>
+<li><strong>Card border (unselected)</strong>: 1px solid var(--border)</li>
+<li><strong>Card background (selected)</strong>: color-mix(in srgb, var(--accent) 8%, var(--bg))</li>
+<li><strong>Label font</strong>: 13px monospace</li>
+<li><strong>Gap between radio and label</strong>: 8px</li>
+<li><strong>Card padding</strong>: 12px</li>
+<li><strong>Card gap</strong>: 8px between cards</li>
+</ul>
+<h2>Rules Specific to Radio Buttons</h2>
+<ol>
+<li><strong>Accent color for selection</strong>: Selected state uses var(--accent) for border and dot</li>
+<li><strong>Circle radios are 16px</strong>: Consistent with checkbox sizing</li>
+<li><strong>Card radios for rich content</strong>: Use when options need icons or descriptions</li>
+<li><strong>Always group radios</strong>: Never use a single radio button alone</li>
+<li><strong>Immediate effect</strong>: Selection applies instantly, no submit needed</li>
+<li><strong>Disabled state</strong>: 50% opacity, cursor:not-allowed</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

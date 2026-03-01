@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>spacing — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html" class="active">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <h1>Spacing</h1>
+<p>Spacing and layout design tokens for the Dirigible design system. Dirigible uses a 4px base unit grid for all spacing, borders, and radius values, creating a cohesive and predictable layout system.</p>
+<h2>Spacing Scale</h2>
+<p>All spacing values are multiples of 4px, ensuring perfect alignment to the base grid:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>space-0</code></td>
+<td>0px</td>
+<td>No gap (adjacent elements)</td>
+</tr>
+<tr>
+<td><code>space-1</code></td>
+<td>4px</td>
+<td>Tight gaps: icon-to-label padding, inline spacing</td>
+</tr>
+<tr>
+<td><code>space-2</code></td>
+<td>8px</td>
+<td><strong>Default gap</strong>: between list items, form field padding, section padding</td>
+</tr>
+<tr>
+<td><code>space-3</code></td>
+<td>12px</td>
+<td>Medium padding: card inner padding, section spacing</td>
+</tr>
+<tr>
+<td><code>space-4</code></td>
+<td>16px</td>
+<td><strong>Major section gaps</strong>: modal padding, large spacing between regions</td>
+</tr>
+<tr>
+<td><code>space-5</code></td>
+<td>24px</td>
+<td>Page-level padding, hero areas, large section gaps</td>
+</tr>
+<tr>
+<td><code>space-6</code></td>
+<td>32px</td>
+<td>Maximum spacing, largest hero areas</td>
+</tr>
+</tbody></table>
+<h3>CSS Custom Properties</h3>
+<pre><code class="language-css">:root {
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+</code></pre>
+<h2>Spacing Examples</h2>
+<h3>Tight Spacing (4px)</h3>
+<p>Used for inline elements and icon-to-label gaps:</p>
+<pre><code class="language-css">/* Icon beside label */
+.icon-label {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+/* Inline button group */
+.button-group {
+  display: flex;
+  gap: var(--space-1);
+}
+</code></pre>
+<h3>Default Spacing (8px)</h3>
+<p>The workhorse spacing value used throughout the interface:</p>
+<pre><code class="language-css">/* List items */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Form fields */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Sidebar padding */
+.sidebar {
+  padding: var(--space-2);
+}
+
+/* Item padding */
+.sidebar-item {
+  padding: var(--space-2) var(--space-2);
+}
+</code></pre>
+<h3>Medium Spacing (12px)</h3>
+<p>Used for card inner padding and section spacing:</p>
+<pre><code class="language-css">/* Card padding */
+.card {
+  padding: var(--space-3);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+}
+</code></pre>
+<h3>Major Section Spacing (16px)</h3>
+<p>Used for modal padding and large spacing between regions:</p>
+<pre><code class="language-css">/* Modal padding */
+.modal {
+  padding: var(--space-4);
+  border-radius: 8px;
+}
+
+/* Major gap between sections */
+.section-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+</code></pre>
+<h3>Large Spacing (24px)</h3>
+<p>Used for page-level padding and hero areas:</p>
+<pre><code class="language-css">/* Page padding */
+.page {
+  padding: var(--space-5);
+}
+</code></pre>
+<h2>Borders</h2>
+<h3>Border Width</h3>
+<p>Dirigible uses two distinct border widths:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Width</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Interactive</td>
+<td>2px</td>
+<td>Buttons, inputs, cards, toggles, focus states</td>
+</tr>
+<tr>
+<td>Divider</td>
+<td>1px</td>
+<td>Horizontal rules, table borders, separators, sidebar dividers</td>
+</tr>
+</tbody></table>
+<h3>Border Properties</h3>
+<ul>
+<li><strong>Style</strong>: Always <code>solid</code>. Never use dashed or dotted.</li>
+<li><strong>Color</strong>: Always <code>var(--border)</code> for consistency.</li>
+<li><strong>Radius</strong>: Applies to interactive elements (see section below).</li>
+</ul>
+<h3>CSS Examples</h3>
+<pre><code class="language-css">/* Interactive element border */
+.button, .input, .card {
+  border: 2px solid var(--border);
+}
+
+/* Divider line */
+.divider {
+  border-top: 1px solid var(--border);
+}
+
+/* Table borders */
+table {
+  border-collapse: collapse;
+}
+
+table td, table th {
+  border: 1px solid var(--border);
+}
+</code></pre>
+<h2>Border Radius</h2>
+<p>Dirigible uses four radius sizes for different UI elements:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Small</td>
+<td>4px</td>
+<td>Buttons, inputs, badges, small UI elements</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>6px</td>
+<td>Cards, dropdowns, popovers, panels</td>
+</tr>
+<tr>
+<td>Large</td>
+<td>8px</td>
+<td>Modals, dialogs, large overlays</td>
+</tr>
+<tr>
+<td>Full</td>
+<td>9999px</td>
+<td>Pills, tags, avatars, fully rounded shapes</td>
+</tr>
+</tbody></table>
+<h3>CSS Examples</h3>
+<pre><code class="language-css">/* Button radius - small */
+.button {
+  border-radius: 4px;
+  border: 2px solid var(--border);
+}
+
+/* Input radius - small */
+input, textarea, select {
+  border-radius: 4px;
+  border: 2px solid var(--border);
+}
+
+/* Badge radius - small */
+.badge {
+  border-radius: 4px;
+}
+
+/* Card radius - medium */
+.card {
+  border-radius: 6px;
+  border: 2px solid var(--border);
+}
+
+/* Dropdown radius - medium */
+.dropdown {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal radius - large */
+.modal {
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Pill button - full */
+.pill-button {
+  border-radius: 9999px;
+}
+
+/* Avatar - full */
+.avatar {
+  border-radius: 9999px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Tag - full */
+.tag {
+  border-radius: 9999px;
+  padding: var(--space-1) var(--space-2);
+}
+</code></pre>
+<h3>Sidebar Exception</h3>
+<p>Sidebar items and sidebar-related UI <strong>do not use border-radius</strong>. They use square (0px) corners to maintain a tight, list-like feel:</p>
+<pre><code class="language-css">/* Sidebar item - NO radius */
+.sidebar-item {
+  border-radius: 0;
+  padding: var(--space-2);
+  border: none;
+}
+
+/* Sidebar divider - sharp corners */
+.sidebar-divider {
+  border-top: 1px solid var(--border);
+  margin: var(--space-2) 0;
+}
+</code></pre>
+<h2>Shadows</h2>
+<p>Dirigible uses subtle shadows for depth on truly elevated elements. Shadows are used sparingly to create clear visual hierarchy.</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>shadow-sm</code></td>
+<td><code>0 1px 2px rgba(0,0,0,0.05)</code></td>
+<td>Subtle depth for cards, popovers</td>
+</tr>
+<tr>
+<td><code>shadow-md</code></td>
+<td><code>0 4px 12px rgba(0,0,0,0.1)</code></td>
+<td>Modals, dropdowns, elevated panels</td>
+</tr>
+<tr>
+<td><code>shadow-lg</code></td>
+<td><code>0 8px 24px rgba(0,0,0,0.15)</code></td>
+<td>Elevated dialogs, largest overlays</td>
+</tr>
+</tbody></table>
+<h3>CSS Examples</h3>
+<pre><code class="language-css">/* Subtle card shadow */
+.card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dropdown/popover shadow */
+.dropdown, .popover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal shadow */
+.modal {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* No shadow for list items */
+.list-item {
+  /* no box-shadow */
+}
+</code></pre>
+<h3>No Shadows for Depth</h3>
+<p><strong>Important:</strong> Do not use box-shadows for general depth on list items, sidebar items, or inline elements. Shadows are reserved for true elevation (modals, dropdowns, popovers). Use background color and borders instead for other visual distinction.</p>
+<pre><code class="language-css">/* Wrong: shadow on list item */
+.list-item {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Don&#39;t do this */
+}
+
+/* Right: background and border for list item */
+.list-item {
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+</code></pre>
+<h2>Design Rules</h2>
+<h3>4px Grid Foundation</h3>
+<ul>
+<li><strong>Everything aligns to 4px.</strong> All spacing, borders, and radius values are multiples of 4px.</li>
+<li>This creates visual harmony and simplifies layout calculations.</li>
+<li>When in doubt, use 8px or 16px as the default.</li>
+</ul>
+<h3>8px Default Gap</h3>
+<ul>
+<li><strong>8px (<code>space-2</code>) is the default gap</strong> between most UI elements.</li>
+<li>Use this for: list items, form field groups, button groups, section spacing.</li>
+<li>Most flex/grid gaps should be 8px unless there&#39;s a specific reason otherwise.</li>
+</ul>
+<h3>16px Modal/Card Padding</h3>
+<ul>
+<li><strong>16px (<code>space-4</code>) is the standard padding</strong> for modals, dialogs, and large cards.</li>
+<li>Inner elements within modals should use 8px or 12px spacing.</li>
+</ul>
+<h3>2px Borders on Interactive Elements</h3>
+<ul>
+<li><strong>2px is the signature border width</strong> for buttons, inputs, and other interactive elements.</li>
+<li>Dividers and subtle separators use 1px.</li>
+<li>Always pair with appropriate border-radius (usually 4px for small elements).</li>
+</ul>
+<h3>Dividers are 1px</h3>
+<ul>
+<li>Horizontal rules, table borders, and separators are <strong>always 1px solid</strong>.</li>
+<li>Use <code>var(--border)</code> for the color to respect themes.</li>
+</ul>
+<h3>Sidebar Styling</h3>
+<ul>
+<li>Sidebar items have <strong>no border-radius</strong> (square corners, 0px radius).</li>
+<li>Sidebar maintains a compact, list-like appearance without rounded corners.</li>
+<li>Use 1px dividers between items if needed.</li>
+<li>Padding is typically 8px for sidebar items.</li>
+</ul>
+<h3>No Shadows for Inline Elements</h3>
+<ul>
+<li><strong>Shadows are only for true elevation</strong>: modals, dropdowns, popovers.</li>
+<li>Do not add shadows to list items, buttons, or inline UI elements.</li>
+<li>Use borders and background colors for visual distinction instead.</li>
+</ul>
+<h2>Layout Example</h2>
+<pre><code class="language-css">/* Full page layout */
+.page {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Section within page */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Form layout */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* List layout */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.list-item {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+/* Card */
+.card {
+  padding: var(--space-3);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Modal */
+.modal {
+  padding: var(--space-4);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+</code></pre>
+<h2>Responsive Notes</h2>
+<p>The 4px grid scales consistently across all screen sizes. Adjust padding/margin at breakpoints if needed, but always in 4px increments:</p>
+<pre><code class="language-css">/* Mobile: tighter spacing */
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-3);
+  }
+}
+
+/* Desktop: generous spacing */
+@media (min-width: 1024px) {
+  .page {
+    padding: var(--space-5);
+  }
+}
+</code></pre>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

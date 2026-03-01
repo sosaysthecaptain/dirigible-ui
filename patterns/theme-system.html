@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>theme system — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html" class="active">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:24px;">
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div>
+          <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Dirigible Light</p>
+          <div style="width:160px; border-radius:6px; overflow:hidden; border:1px solid #e8e6e3;">
+            <div style="background:#faf9f8; padding:8px; font-size:11px; border-bottom:1px solid #e8e6e3; color:#1a1a1a;">Sidebar</div>
+            <div style="background:#fefefe; padding:8px; font-size:11px; color:#1a1a1a;">Content<br><span style="color:#777777;">Muted</span> · <span style="color:#0066cc;">Accent</span></div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Dirigible Dark</p>
+          <div style="width:160px; border-radius:6px; overflow:hidden; border:1px solid #302e2b;">
+            <div style="background:#1e1d1b; padding:8px; font-size:11px; border-bottom:1px solid #302e2b; color:#f2f0ed;">Sidebar</div>
+            <div style="background:#181716; padding:8px; font-size:11px; color:#f2f0ed;">Content<br><span style="color:#999795;">Muted</span> · <span style="color:#6ba3d6;">Accent</span></div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Catppuccin Mocha</p>
+          <div style="width:160px; border-radius:6px; overflow:hidden; border:1px solid #313244;">
+            <div style="background:#1e1e2e; padding:8px; font-size:11px; border-bottom:1px solid #313244; color:#cdd6f4;">Sidebar</div>
+            <div style="background:#1e1e2e; padding:8px; font-size:11px; color:#cdd6f4;">Content<br><span style="color:#6c7086;">Muted</span> · <span style="color:#89b4fa;">Accent</span></div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Amber Terminal</p>
+          <div style="width:160px; border-radius:6px; overflow:hidden; border:1px solid #28200c;">
+            <div style="background:#120e06; padding:8px; font-size:11px; border-bottom:1px solid #28200c; color:#c8aa78;">Sidebar</div>
+            <div style="background:#0d0a04; padding:8px; font-size:11px; color:#c8aa78;">Content<br><span style="color:#7a6040;">Muted</span> · <span style="color:#e07020;">Accent</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Color swatches for current theme</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(70px, 1fr)); gap:6px;">
+          <div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--bg);"></div><span style="font-size:9px;color:var(--muted);">bg</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--fg);"></div><span style="font-size:9px;color:var(--muted);">fg</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--accent);"></div><span style="font-size:9px;color:var(--muted);">accent</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--muted);"></div><span style="font-size:9px;color:var(--muted);">muted</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--border);"></div><span style="font-size:9px;color:var(--muted);">border</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--sidebar-bg);"></div><span style="font-size:9px;color:var(--muted);">sidebar</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--hover);"></div><span style="font-size:9px;color:var(--muted);">hover</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--success);"></div><span style="font-size:9px;color:var(--muted);">success</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--warning);"></div><span style="font-size:9px;color:var(--muted);">warning</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--danger);"></div><span style="font-size:9px;color:var(--muted);">danger</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--link);"></div><span style="font-size:9px;color:var(--muted);">link</span></div><div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border:1px solid var(--border);background:var(--code-bg);"></div><span style="font-size:9px;color:var(--muted);">code-bg</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Color token map across key themes</p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; font-size:11px; white-space:nowrap;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border);">
+                <th style="text-align:left; padding:4px 8px;">Token</th>
+                <th style="text-align:left; padding:4px 8px;">Light</th>
+                <th style="text-align:left; padding:4px 8px;">Dark</th>
+                <th style="text-align:left; padding:4px 8px;">Catppuccin</th>
+                <th style="text-align:left; padding:4px 8px;">Gruvbox</th>
+                <th style="text-align:left; padding:4px 8px;">Amber</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">background</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fefefe;border:1px solid #ccc;vertical-align:middle;"></span> #fefefe</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#181716;border:1px solid #555;vertical-align:middle;"></span> #181716</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1e1e2e;border:1px solid #555;vertical-align:middle;"></span> #1e1e2e</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#282828;border:1px solid #555;vertical-align:middle;"></span> #282828</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0d0a04;border:1px solid #555;vertical-align:middle;"></span> #0d0a04</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">foreground</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1a1a1a;border:1px solid #555;vertical-align:middle;"></span> #1a1a1a</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f2f0ed;border:1px solid #555;vertical-align:middle;"></span> #f2f0ed</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#cdd6f4;border:1px solid #555;vertical-align:middle;"></span> #cdd6f4</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ebdbb2;border:1px solid #555;vertical-align:middle;"></span> #ebdbb2</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#c8aa78;border:1px solid #555;vertical-align:middle;"></span> #c8aa78</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">accent</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0066cc;border:1px solid #555;vertical-align:middle;"></span> #0066cc</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#6ba3d6;border:1px solid #555;vertical-align:middle;"></span> #6ba3d6</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#89b4fa;border:1px solid #555;vertical-align:middle;"></span> #89b4fa</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fe8019;border:1px solid #555;vertical-align:middle;"></span> #fe8019</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e07020;border:1px solid #555;vertical-align:middle;"></span> #e07020</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">muted</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#777777;border:1px solid #555;vertical-align:middle;"></span> #777777</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#999795;border:1px solid #555;vertical-align:middle;"></span> #999795</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#6c7086;border:1px solid #555;vertical-align:middle;"></span> #6c7086</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#928374;border:1px solid #555;vertical-align:middle;"></span> #928374</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7a6040;border:1px solid #555;vertical-align:middle;"></span> #7a6040</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">border</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e8e6e3;border:1px solid #555;vertical-align:middle;"></span> #e8e6e3</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#302e2b;border:1px solid #555;vertical-align:middle;"></span> #302e2b</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#313244;border:1px solid #555;vertical-align:middle;"></span> #313244</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3c3836;border:1px solid #555;vertical-align:middle;"></span> #3c3836</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#28200c;border:1px solid #555;vertical-align:middle;"></span> #28200c</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">success</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#22c55e;border:1px solid #555;vertical-align:middle;"></span> #22c55e</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#4ec9b0;border:1px solid #555;vertical-align:middle;"></span> #4ec9b0</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#a6e3a1;border:1px solid #555;vertical-align:middle;"></span> #a6e3a1</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#b8bb26;border:1px solid #555;vertical-align:middle;"></span> #b8bb26</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#a07818;border:1px solid #555;vertical-align:middle;"></span> #a07818</td>
+              </tr><tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:4px 8px; font-weight:600;">danger</td>
+                <td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#dc2626;border:1px solid #555;vertical-align:middle;"></span> #dc2626</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ef4444;border:1px solid #555;vertical-align:middle;"></span> #ef4444</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f38ba8;border:1px solid #555;vertical-align:middle;"></span> #f38ba8</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fb4934;border:1px solid #555;vertical-align:middle;"></span> #fb4934</td><td style="padding:4px 8px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#b34000;border:1px solid #555;vertical-align:middle;"></span> #b34000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">All 23 themes</p>
+        <div style="display:flex; flex-wrap:wrap; gap:4px; font-size:11px;">
+          <span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Dirigible Light</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Alabaster</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Dirigible Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Amber Terminal</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Green Terminal</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Catppuccin Mocha</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Tokyo Night</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Catppuccin Frappé</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Gruvbox Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Rosé Pine</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Nord</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Dracula</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Ayu Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Kanagawa</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Vesper</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Monokai Pro</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Nightfox</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Solarized Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Catppuccin Macchiato</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">GitHub Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Poimandres</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Everforest Dark</span><span style="padding:2px 6px; border:1px solid var(--border); border-radius:3px;">Desert</span>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Font themes (per-note)</p>
+        <div style="display:flex; gap:4px;">
+          <span style="padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; background:var(--hover);">Raw</span>
+          <span style="padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; background:var(--fg); color:var(--bg);">Mono</span>
+          <span style="padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; font-family:'Crimson Pro',serif;">Serif</span>
+          <span style="padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:11px; font-family:'IBM Plex Sans',sans-serif;">Sans</span>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Theme System</h1>
+<h2>Description</h2>
+<p>How Dirigible&#39;s theming works, from tokens to runtime switching. The theme system provides 23 built-in themes and allows users to customize colors while maintaining a consistent visual language.</p>
+<h2>Architecture</h2>
+<h3>Theme Implementation</h3>
+<p>All colors in Dirigible are defined as CSS custom properties on the <code>:root</code> element. Themes are swapped by replacing these property values at runtime.</p>
+<p><strong>Key Principle:</strong> Components never use raw colors — always reference theme tokens via <code>var(--token-name)</code>.</p>
+<h3>Theme Variants</h3>
+<ul>
+<li><strong>2 built-in light themes</strong> (default light + alternatives)</li>
+<li><strong>21 built-in dark themes</strong> (includes default dark)</li>
+<li><strong>Total: 23 themes</strong></li>
+</ul>
+<h3>Theme Switching</h3>
+<p>Users can toggle between their default light and dark theme with a moon/sun icon in the sidebar bottom bar. The full theme browser is accessible via the paint palette icon in the sidebar bottom bar.</p>
+<h2>Semantic Color Tokens</h2>
+<p>Every theme must define the following semantic tokens:</p>
+<pre><code class="language-css">:root {
+  /* Core Colors */
+  --background: #f5f5f5;
+  --foreground: #1a1a1a;
+  --accent: #2563eb;
+  --accent-muted: #93c5fd;
+  --selection: #dbeafe;
+  --muted: #6b7280;
+  --border: #d1d5db;
+
+  /* Layout Colors */
+  --sidebar-bg: #ffffff;
+  --editor-bg: #fafafa;
+  --hover: #f3f4f6;
+
+  /* State Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Component Colors */
+  --pdf-bg: #ffffff;
+  --btn-primary-bg: #2563eb;
+  --btn-primary-fg: #ffffff;
+  --btn-secondary-bg: #e5e7eb;
+  --btn-secondary-fg: #1f2937;
+
+  /* Context Menu */
+  --context-menu-bg: #ffffff;
+  --context-menu-border: #e5e7eb;
+  --context-menu-divider: #f3f4f6;
+  --context-menu-hover: #f9fafb;
+
+  /* Code Block */
+  --code-bg: #f3f4f6;
+  --code-fg: #1f2937;
+  --code-muted: #6b7280;
+
+  /* Links */
+  --link: #2563eb;
+  --link-underline: #dbeafe;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: transparent;
+
+  /* Syntax Highlighting (Code Editor) */
+  --syntax-keyword: #7c3aed;
+  --syntax-string: #059669;
+  --syntax-number: #ea580c;
+  --syntax-function: #0369a1;
+  --syntax-comment: #6b7280;
+  --syntax-operator: #7c3aed;
+}
+</code></pre>
+<h3>Token Organization</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Tokens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Core</strong></td>
+<td><code>--background</code>, <code>--foreground</code>, <code>--accent</code>, <code>--accent-muted</code>, <code>--selection</code>, <code>--muted</code>, <code>--border</code></td>
+</tr>
+<tr>
+<td><strong>Layout</strong></td>
+<td><code>--sidebar-bg</code>, <code>--editor-bg</code>, <code>--hover</code></td>
+</tr>
+<tr>
+<td><strong>Feedback</strong></td>
+<td><code>--success</code>, <code>--warning</code>, <code>--danger</code></td>
+</tr>
+<tr>
+<td><strong>Components</strong></td>
+<td><code>--pdf-bg</code>, <code>--btn-primary-bg</code>, <code>--btn-primary-fg</code>, <code>--btn-secondary-bg</code>, <code>--btn-secondary-fg</code></td>
+</tr>
+<tr>
+<td><strong>Context Menus</strong></td>
+<td><code>--context-menu-bg</code>, <code>--context-menu-border</code>, <code>--context-menu-divider</code>, <code>--context-menu-hover</code></td>
+</tr>
+<tr>
+<td><strong>Code</strong></td>
+<td><code>--code-bg</code>, <code>--code-fg</code>, <code>--code-muted</code></td>
+</tr>
+<tr>
+<td><strong>Links</strong></td>
+<td><code>--link</code>, <code>--link-underline</code></td>
+</tr>
+<tr>
+<td><strong>Scrollbar</strong></td>
+<td><code>--scrollbar-thumb</code>, <code>--scrollbar-track</code></td>
+</tr>
+<tr>
+<td><strong>Syntax</strong></td>
+<td><code>--syntax-keyword</code>, <code>--syntax-string</code>, <code>--syntax-number</code>, <code>--syntax-function</code>, <code>--syntax-comment</code>, <code>--syntax-operator</code></td>
+</tr>
+</tbody></table>
+<h2>Themes Modal</h2>
+<p>Accessible via the paint palette icon in the sidebar bottom bar.</p>
+<h3>Modal Layout</h3>
+<p><strong>Header:</strong></p>
+<ul>
+<li>Title: &quot;THEMES&quot;</li>
+<li>Paint palette icon</li>
+<li>Close button (X)</li>
+</ul>
+<p><strong>Content Tabs:</strong></p>
+<ol>
+<li><p><strong>Swatches Tab</strong> (default)</p>
+<ul>
+<li>Grid of color swatches showing the theme colors</li>
+<li>Each swatch is labeled with its token name</li>
+<li>Live preview of the selected theme</li>
+<li>&quot;Set as default light/dark theme&quot; button in footer</li>
+</ul>
+</li>
+<li><p><strong>CSS Tab</strong></p>
+<ul>
+<li>Raw CSS variable declarations</li>
+<li>Monospace font</li>
+<li>Copy-able code block</li>
+<li>Shows all <code>--token</code> definitions</li>
+</ul>
+</li>
+</ol>
+<p><strong>Live Preview:</strong></p>
+<ul>
+<li>Sidebar mockup showing the theme in use</li>
+<li>Content area showing how text and UI elements appear</li>
+<li>Updates in real-time as user browses themes</li>
+</ul>
+<p><strong>Footer:</strong></p>
+<ul>
+<li>Left: &quot;Set as default light/dark theme&quot; button (context-aware)</li>
+<li>Right: &quot;Cancel&quot; button</li>
+</ul>
+<h3>Example Theme Structure</h3>
+<pre><code class="language-javascript">const themes = {
+  &quot;default-light&quot;: {
+    name: &quot;Default Light&quot;,
+    variant: &quot;light&quot;,
+    colors: {
+      background: &quot;#ffffff&quot;,
+      foreground: &quot;#1a1a1a&quot;,
+      accent: &quot;#2563eb&quot;,
+      // ... all tokens
+    },
+    syntax: {
+      keyword: &quot;#7c3aed&quot;,
+      string: &quot;#059669&quot;,
+      // ... all syntax tokens
+    }
+  },
+  &quot;default-dark&quot;: {
+    name: &quot;Default Dark&quot;,
+    variant: &quot;dark&quot;,
+    colors: {
+      background: &quot;#1a1a1a&quot;,
+      foreground: &quot;#ffffff&quot;,
+      accent: &quot;#3b82f6&quot;,
+      // ... all tokens
+    },
+    syntax: {
+      // ... syntax tokens
+    }
+  },
+  // ... 21 more dark themes
+};
+</code></pre>
+<h3>Themes Modal HTML</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal modal-themes&quot; role=&quot;dialog&quot; aria-labelledby=&quot;themes-title&quot;&gt;
+  &lt;div class=&quot;modal-header&quot;&gt;
+    &lt;svg class=&quot;modal-icon&quot; width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot;&gt;
+      &lt;!-- Paint palette icon --&gt;
+      &lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+      &lt;circle cx=&quot;16&quot; cy=&quot;8&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+      &lt;circle cx=&quot;16&quot; cy=&quot;16&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+      &lt;circle cx=&quot;8&quot; cy=&quot;16&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+    &lt;/svg&gt;
+    &lt;h1 id=&quot;themes-title&quot; class=&quot;modal-title&quot;&gt;THEMES&lt;/h1&gt;
+    &lt;button class=&quot;modal-close&quot; aria-label=&quot;Close&quot;&gt;✕&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;tabs&quot;&gt;
+    &lt;div class=&quot;tabs-header&quot;&gt;
+      &lt;button class=&quot;tab-button is-active&quot; data-tab=&quot;swatches&quot;&gt;SWATCHES&lt;/button&gt;
+      &lt;button class=&quot;tab-button&quot; data-tab=&quot;css&quot;&gt;CSS&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;tabs-content&quot;&gt;
+      &lt;!-- Swatches Tab --&gt;
+      &lt;div id=&quot;swatches&quot; class=&quot;tab-pane is-active&quot;&gt;
+        &lt;div class=&quot;themes-grid&quot;&gt;
+          &lt;div class=&quot;theme-card&quot; data-theme=&quot;default-light&quot;&gt;
+            &lt;div class=&quot;theme-preview&quot;&gt;
+              &lt;div class=&quot;preview-sidebar&quot;&gt;&lt;/div&gt;
+              &lt;div class=&quot;preview-content&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;span class=&quot;theme-name&quot;&gt;Default Light&lt;/span&gt;
+            &lt;span class=&quot;theme-variant&quot;&gt;light&lt;/span&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;theme-card is-selected&quot; data-theme=&quot;default-dark&quot;&gt;
+            &lt;div class=&quot;theme-preview&quot;&gt;
+              &lt;div class=&quot;preview-sidebar&quot;&gt;&lt;/div&gt;
+              &lt;div class=&quot;preview-content&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;span class=&quot;theme-name&quot;&gt;Default Dark&lt;/span&gt;
+            &lt;span class=&quot;theme-variant&quot;&gt;dark&lt;/span&gt;
+          &lt;/div&gt;
+
+          &lt;!-- More theme cards --&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;color-swatches&quot;&gt;
+          &lt;div class=&quot;swatch-group&quot;&gt;
+            &lt;h3 class=&quot;swatch-group-title&quot;&gt;CORE COLORS&lt;/h3&gt;
+            &lt;div class=&quot;swatches-list&quot;&gt;
+              &lt;div class=&quot;swatch&quot;&gt;
+                &lt;div class=&quot;swatch-preview&quot; style=&quot;background: var(--background);&quot;&gt;&lt;/div&gt;
+                &lt;span class=&quot;swatch-token&quot;&gt;--background&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;div class=&quot;swatch&quot;&gt;
+                &lt;div class=&quot;swatch-preview&quot; style=&quot;background: var(--foreground);&quot;&gt;&lt;/div&gt;
+                &lt;span class=&quot;swatch-token&quot;&gt;--foreground&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;!-- More swatches --&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;!-- CSS Tab --&gt;
+      &lt;div id=&quot;css&quot; class=&quot;tab-pane&quot;&gt;
+        &lt;pre class=&quot;css-code&quot;&gt;&lt;code&gt;
+:root {
+  --background: #1a1a1a;
+  --foreground: #ffffff;
+  --accent: #3b82f6;
+  /* ... all tokens ... */
+}
+        &lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;modal-footer&quot;&gt;
+    &lt;button class=&quot;btn btn-primary&quot;&gt;Set as default dark theme&lt;/button&gt;
+    &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Themes Modal CSS</h3>
+<pre><code class="language-css">.modal-themes {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--background);
+  border: 2px solid var(--border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+  z-index: 200;
+  max-width: 700px;
+  width: 90vw;
+  max-height: 80vh;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+}
+
+.theme-card:hover {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.theme-card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--background);
+}
+
+.theme-preview {
+  width: 100%;
+  height: 80px;
+  background: var(--editor-bg);
+  border: 2px solid var(--border);
+  border-radius: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.preview-sidebar {
+  width: 30%;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+}
+
+.preview-content {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.theme-name {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.theme-variant {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.color-swatches {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.swatch-group {
+  margin-bottom: 24px;
+}
+
+.swatch-group:last-child {
+  margin-bottom: 0;
+}
+
+.swatch-group-title {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px 0;
+}
+
+.swatches-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.swatch-preview {
+  width: 100%;
+  height: 48px;
+  border: 2px solid var(--border);
+  border-radius: 0;
+}
+
+.swatch-token {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  word-break: break-word;
+}
+
+.css-code {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 12px;
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  padding: 16px;
+  border-radius: 0;
+  overflow: auto;
+  margin: 0;
+  color: var(--code-fg);
+}
+</code></pre>
+<h2>Per-Note Font Themes</h2>
+<p>Separate from color themes. Controls the font family used in the note reading view.</p>
+<p><strong>Access:</strong> Kebab menu (⋮) → THEME section</p>
+<p><strong>Options:</strong></p>
+<ul>
+<li>Raw (monospace, like JetBrains Mono)</li>
+<li>Monospace (system monospace)</li>
+<li>Serif (Georgia, similar serif)</li>
+<li>Sans (system sans-serif)</li>
+</ul>
+<p><strong>Scope:</strong> Only affects note content reading view, not the app chrome.</p>
+<h3>Font Theme HTML</h3>
+<pre><code class="language-html">&lt;div class=&quot;font-theme-selector&quot;&gt;
+  &lt;span class=&quot;selector-label&quot;&gt;FONT THEME&lt;/span&gt;
+  &lt;div class=&quot;font-options&quot;&gt;
+    &lt;button class=&quot;font-option is-active&quot; data-font=&quot;raw&quot;&gt;Raw&lt;/button&gt;
+    &lt;button class=&quot;font-option&quot; data-font=&quot;monospace&quot;&gt;Monospace&lt;/button&gt;
+    &lt;button class=&quot;font-option&quot; data-font=&quot;serif&quot;&gt;Serif&lt;/button&gt;
+    &lt;button class=&quot;font-option&quot; data-font=&quot;sans&quot;&gt;Sans&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Font Theme CSS</h3>
+<pre><code class="language-css">.font-theme-selector {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.selector-label {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.font-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.font-option {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+  transition: all 150ms ease-out;
+  border-left: 2px solid transparent;
+}
+
+.font-option:hover {
+  background: var(--hover);
+}
+
+.font-option.is-active {
+  background: var(--hover);
+  border-left-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Apply font theme to note content */
+.note-content.font-raw {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note-content.font-monospace {
+  font-family: &#39;Courier New&#39;, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note-content.font-serif {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.note-content.font-sans {
+  font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+}
+</code></pre>
+<h2>Example Theme Implementation</h2>
+<pre><code class="language-javascript">// Applying a theme at runtime
+function applyTheme(themeId) {
+  const theme = themes[themeId];
+  const root = document.documentElement;
+
+  // Set color tokens
+  Object.entries(theme.colors).forEach(([token, value]) =&gt; {
+    root.style.setProperty(`--${token}`, value);
+  });
+
+  // Set syntax tokens
+  Object.entries(theme.syntax).forEach(([token, value]) =&gt; {
+    root.style.setProperty(`--syntax-${token}`, value);
+  });
+
+  // Save user preference
+  localStorage.setItem(&#39;preferred-theme&#39;, themeId);
+}
+
+// On app load
+const savedTheme = localStorage.getItem(&#39;preferred-theme&#39;) || &#39;default-dark&#39;;
+applyTheme(savedTheme);
+</code></pre>
+<h2>Design Rules</h2>
+<ol>
+<li><strong>All colors are CSS custom properties</strong> on <code>:root</code> — never use raw color values in components.</li>
+<li><strong>Theme tokens are semantic</strong> — <code>--accent</code> means &quot;primary interactive color&quot;, not just &quot;blue&quot;.</li>
+<li><strong>Syntax highlighting has dedicated tokens</strong> — <code>--syntax-keyword</code>, <code>--syntax-string</code>, etc.</li>
+<li><strong>Light and dark themes both supported</strong> — users can set defaults for each.</li>
+<li><strong>Themes can be toggled with moon/sun icon</strong> — quick light/dark switch without modal.</li>
+<li><strong>Full theme browser is modal-based</strong> — paint palette icon in sidebar bottom bar.</li>
+<li><strong>Theme preview shows sidebar + content</strong> — users see how theme looks in context.</li>
+<li><strong>Font themes are per-note</strong> — separate from color themes.</li>
+<li><strong>Font theme selection is in kebab menu</strong> — doesn&#39;t clutter main UI.</li>
+<li><strong>Theme switching is instant</strong> — CSS property updates trigger immediate re-render.</li>
+<li><strong>User preferences are persisted</strong> — localStorage saves theme and font choices.</li>
+<li><strong>23 total themes provided</strong> — 2 light, 21 dark for variety.</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

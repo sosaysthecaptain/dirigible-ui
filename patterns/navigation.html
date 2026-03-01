@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>navigation — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html" class="active">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Breadcrumb trail</p>
+        <div style="display:flex; align-items:center; gap:4px; font-size:13px;">
+          <a href="#" style="color:var(--muted); text-decoration:none;">all</a>
+          <span style="color:var(--muted);">&rsaquo;</span>
+          <a href="#" style="color:var(--muted); text-decoration:none;">demo-botany</a>
+          <span style="color:var(--muted);">&rsaquo;</span>
+          <span style="font-weight:600;">Aconitum napellus — Monkshood</span>
+          <span style="color:var(--muted); cursor:pointer; margin-left:4px; display:flex;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-width="2"/></svg></span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">View toggles</p>
+        <div style="display:inline-flex; gap:2px; border:1px solid var(--border); border-radius:4px; padding:2px;">
+          <span style="padding:4px 8px; border-radius:3px; cursor:pointer; font-size:12px; background:var(--fg); color:var(--bg);">&#9776;</span>
+          <span style="padding:4px 8px; border-radius:3px; cursor:pointer; font-size:12px;">&#9871;</span>
+          <span style="padding:4px 8px; border-radius:3px; cursor:pointer; font-size:12px;">&#9638;</span>
+          <span style="padding:4px 8px; border-radius:3px; cursor:pointer; font-size:12px; display:flex;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Tabs</p>
+        <div style="display:flex; gap:0; border-bottom:2px solid var(--border);">
+          <span style="padding:6px 12px; font-size:13px; border-bottom:2px solid var(--accent); margin-bottom:-2px; color:var(--accent);">Swatches</span>
+          <span style="padding:6px 12px; font-size:13px; color:var(--muted); cursor:pointer;">CSS</span>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Navigation</h1>
+<h2>Description</h2>
+<p>How users move through the Dirigible app. Navigation is hierarchical and always visible, supporting fast movement through deep collections and libraries.</p>
+<h2>Patterns</h2>
+<h3>Sidebar File Tree</h3>
+<p>The primary navigation structure. Users expand folders and click items to navigate.</p>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Always visible (collapsible but present)</li>
+<li>Click folder icon or folder name to expand/collapse</li>
+<li>Disclosure triangles point right (collapsed) or down (expanded)</li>
+<li>Click item to open and highlight it</li>
+<li>Active item gets <code>--accent</code> background highlight</li>
+<li>Folders contain both files and subfolders in the same list</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;nav class=&quot;sidebar-tree&quot;&gt;
+  &lt;ul class=&quot;tree-list&quot;&gt;
+    &lt;li class=&quot;tree-item&quot;&gt;
+      &lt;button class=&quot;tree-toggle&quot; aria-expanded=&quot;false&quot;&gt;
+        &lt;svg class=&quot;tree-disclosure&quot; width=&quot;12&quot; height=&quot;12&quot; viewBox=&quot;0 0 12 12&quot;&gt;
+          &lt;path d=&quot;M3 4.5L8.5 9&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+        &lt;/svg&gt;
+      &lt;/button&gt;
+      &lt;span class=&quot;tree-label&quot;&gt;Collections&lt;/span&gt;
+      &lt;ul class=&quot;tree-list&quot; hidden&gt;
+        &lt;li class=&quot;tree-item&quot;&gt;
+          &lt;span class=&quot;tree-label tree-active&quot;&gt;My Notes&lt;/span&gt;
+        &lt;/li&gt;
+        &lt;li class=&quot;tree-item&quot;&gt;
+          &lt;span class=&quot;tree-label&quot;&gt;Archived&lt;/span&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li class=&quot;tree-item&quot;&gt;
+      &lt;button class=&quot;tree-toggle&quot; aria-expanded=&quot;false&quot;&gt;
+        &lt;svg class=&quot;tree-disclosure&quot; width=&quot;12&quot; height=&quot;12&quot; viewBox=&quot;0 0 12 12&quot;&gt;
+          &lt;path d=&quot;M3 4.5L8.5 9&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+        &lt;/svg&gt;
+      &lt;/button&gt;
+      &lt;span class=&quot;tree-label&quot;&gt;Music&lt;/span&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.sidebar-tree {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  user-select: none;
+}
+
+.tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.tree-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.tree-disclosure {
+  width: 12px;
+  height: 12px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 150ms ease-out;
+}
+
+.tree-toggle[aria-expanded=&quot;true&quot;] .tree-disclosure {
+  transform: rotate(90deg);
+}
+
+.tree-label {
+  flex: 1;
+  padding: 4px 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  border-radius: 0;
+  text-transform: capitalize;
+  transition: background-color 150ms ease-out;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-label:hover {
+  background: var(--hover);
+}
+
+.tree-label.tree-active {
+  background: var(--accent);
+  color: var(--background);
+  font-weight: 500;
+}
+
+.tree-item .tree-list {
+  padding-left: 8px;
+  margin-top: 2px;
+}
+</code></pre>
+<h3>Breadcrumb Trail</h3>
+<p>Shows the current location path and enables quick navigation to parent levels.</p>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Format: &quot;all › collection › item&quot;</li>
+<li>Each segment is clickable and navigates to that level</li>
+<li>Kebab menu (⋮) at the end provides item-level actions</li>
+<li>Breadcrumbs always start with &quot;all&quot;</li>
+<li>Active/current item is not clickable</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;breadcrumb&quot;&gt;
+  &lt;nav class=&quot;breadcrumb-nav&quot; aria-label=&quot;breadcrumb&quot;&gt;
+    &lt;ol class=&quot;breadcrumb-list&quot;&gt;
+      &lt;li class=&quot;breadcrumb-item&quot;&gt;
+        &lt;a href=&quot;/&quot; class=&quot;breadcrumb-link&quot;&gt;all&lt;/a&gt;
+        &lt;span class=&quot;breadcrumb-sep&quot;&gt;›&lt;/span&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;breadcrumb-item&quot;&gt;
+        &lt;a href=&quot;/notes&quot; class=&quot;breadcrumb-link&quot;&gt;notes&lt;/a&gt;
+        &lt;span class=&quot;breadcrumb-sep&quot;&gt;›&lt;/span&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;breadcrumb-item breadcrumb-current&quot;&gt;
+        &lt;span&gt;my-first-note&lt;/span&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/nav&gt;
+
+  &lt;button class=&quot;breadcrumb-menu&quot; aria-label=&quot;More actions&quot;&gt;
+    &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;circle cx=&quot;8&quot; cy=&quot;3&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+      &lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+      &lt;circle cx=&quot;8&quot; cy=&quot;13&quot; r=&quot;1.5&quot; fill=&quot;currentColor&quot; /&gt;
+    &lt;/svg&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+  height: 40px;
+  border-bottom: 2px solid var(--border);
+  background: var(--background);
+}
+
+.breadcrumb-nav {
+  flex: 1;
+  overflow: hidden;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.breadcrumb-link {
+  color: var(--foreground);
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 0;
+  transition: background-color 150ms ease-out;
+  cursor: pointer;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.breadcrumb-link:hover {
+  background: var(--hover);
+}
+
+.breadcrumb-sep {
+  color: var(--muted);
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.breadcrumb-current {
+  color: var(--muted);
+  padding: 4px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumb-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  color: var(--foreground);
+  flex-shrink: 0;
+  border-radius: 0;
+  transition: all 150ms ease-out;
+}
+
+.breadcrumb-menu:hover {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+</code></pre>
+<h3>View Switching</h3>
+<p>Toolbar icons that let users switch between different content views.</p>
+<p><strong>Views:</strong></p>
+<ul>
+<li>List: Single-column list of items</li>
+<li>Card: Grid of card-based items with images</li>
+<li>Table: Multi-column table with details</li>
+<li>Grid: Image-heavy grid (for libraries)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;view-switcher&quot;&gt;
+  &lt;button class=&quot;view-button view-list is-active&quot; aria-label=&quot;List view&quot; aria-pressed=&quot;true&quot;&gt;
+    &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;line x1=&quot;2&quot; y1=&quot;2&quot; x2=&quot;14&quot; y2=&quot;2&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;line x1=&quot;2&quot; y1=&quot;7&quot; x2=&quot;14&quot; y2=&quot;7&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;14&quot; y2=&quot;12&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+    &lt;/svg&gt;
+  &lt;/button&gt;
+  &lt;button class=&quot;view-button view-card&quot; aria-label=&quot;Card view&quot;&gt;
+    &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;rect x=&quot;2&quot; y=&quot;2&quot; width=&quot;5&quot; height=&quot;5&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;5&quot; height=&quot;5&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+    &lt;/svg&gt;
+  &lt;/button&gt;
+  &lt;button class=&quot;view-button view-table&quot; aria-label=&quot;Table view&quot;&gt;
+    &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;rect x=&quot;2&quot; y=&quot;2&quot; width=&quot;12&quot; height=&quot;4&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;rect x=&quot;2&quot; y=&quot;6&quot; width=&quot;12&quot; height=&quot;4&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;rect x=&quot;2&quot; y=&quot;10&quot; width=&quot;12&quot; height=&quot;4&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+    &lt;/svg&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.view-switcher {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 2px solid var(--border);
+  color: var(--foreground);
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 0;
+  transition: all 150ms ease-out;
+}
+
+.view-button:hover {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.view-button.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--background);
+}
+</code></pre>
+<h3>Back Navigation</h3>
+<p>Simple navigation to go up one level in the hierarchy.</p>
+<p><strong>Patterns:</strong></p>
+<ul>
+<li>Clicking &quot;all&quot; in breadcrumb goes to library root</li>
+<li>Clicking parent collection goes up one level</li>
+<li>Sidebar active item automatically updates when navigating</li>
+</ul>
+<p><strong>Rule:</strong> No separate &quot;back&quot; button needed — breadcrumbs and sidebar structure provide context and navigation.</p>
+<h3>&quot;Browse All&quot; Landing</h3>
+<p>The home screen when no item is selected.</p>
+<p><strong>Layout:</strong></p>
+<ul>
+<li>Centered vertical layout</li>
+<li>Dirigible logo at top</li>
+<li>&quot;Browse all&quot; button below</li>
+<li>Empty state message</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;empty-state&quot;&gt;
+  &lt;div class=&quot;empty-state-icon&quot;&gt;
+    &lt;svg width=&quot;48&quot; height=&quot;48&quot; viewBox=&quot;0 0 48 48&quot;&gt;
+      &lt;!-- Dirigible logo SVG --&gt;
+    &lt;/svg&gt;
+  &lt;/div&gt;
+  &lt;h1 class=&quot;empty-state-title&quot;&gt;Dirigible&lt;/h1&gt;
+  &lt;p class=&quot;empty-state-message&quot;&gt;Your notes and library in one place&lt;/p&gt;
+  &lt;button class=&quot;btn btn-primary&quot;&gt;Browse all&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 24px;
+  background: var(--background);
+}
+
+.empty-state-icon {
+  color: var(--accent);
+}
+
+.empty-state-title {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.empty-state-message {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+</code></pre>
+<h3>Search</h3>
+<p>Global and scoped search functionality.</p>
+<p><strong>Patterns:</strong></p>
+<ul>
+<li>Global search in sidebar header (magnifying glass + monospace input)</li>
+<li>Scoped filter in table/list header (filters current collection)</li>
+<li>Both use same visual style and icon</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;!-- Global search in sidebar --&gt;
+&lt;div class=&quot;search-input-wrapper&quot;&gt;
+  &lt;svg class=&quot;search-icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+    &lt;circle cx=&quot;6.5&quot; cy=&quot;6.5&quot; r=&quot;5&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot; /&gt;
+    &lt;line x1=&quot;10.5&quot; y1=&quot;10.5&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+  &lt;/svg&gt;
+  &lt;input type=&quot;text&quot; class=&quot;search-input&quot; placeholder=&quot;search...&quot; /&gt;
+&lt;/div&gt;
+
+&lt;!-- Scoped filter in header --&gt;
+&lt;div class=&quot;filter-input-wrapper&quot;&gt;
+  &lt;svg class=&quot;search-icon&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+    &lt;circle cx=&quot;6.5&quot; cy=&quot;6.5&quot; r=&quot;5&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot; /&gt;
+    &lt;line x1=&quot;10.5&quot; y1=&quot;10.5&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+  &lt;/svg&gt;
+  &lt;input type=&quot;text&quot; class=&quot;search-input&quot; placeholder=&quot;filter...&quot; /&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.search-input-wrapper,
+.filter-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 2px solid var(--border);
+  background: var(--editor-bg);
+  border-radius: 0;
+}
+
+.search-icon {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  background: none;
+  border: none;
+  color: var(--foreground);
+  min-width: 0;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--muted);
+}
+
+.search-input-wrapper:focus-within,
+.filter-input-wrapper:focus-within {
+  border-color: var(--accent);
+}
+</code></pre>
+<h3>Tab-like Navigation</h3>
+<p>Content switching within a modal or panel.</p>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Themes modal: &quot;Swatches&quot; and &quot;CSS&quot; tabs</li>
+<li>Note theme selector in kebab menu: &quot;Raw&quot;, &quot;Monospace&quot;, &quot;Serif&quot;, &quot;Sans&quot;</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;tabs&quot;&gt;
+  &lt;div class=&quot;tabs-header&quot;&gt;
+    &lt;button class=&quot;tab-button is-active&quot; data-tab=&quot;swatches&quot;&gt;SWATCHES&lt;/button&gt;
+    &lt;button class=&quot;tab-button&quot; data-tab=&quot;css&quot;&gt;CSS&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;tabs-content&quot;&gt;
+    &lt;div id=&quot;swatches&quot; class=&quot;tab-pane is-active&quot;&gt;
+      &lt;!-- Swatch grid content --&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;css&quot; class=&quot;tab-pane&quot;&gt;
+      &lt;!-- CSS code block --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.tabs-header {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  background: var(--background);
+}
+
+.tab-button {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 150ms ease-out;
+}
+
+.tab-button:hover {
+  color: var(--foreground);
+}
+
+.tab-button.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tab-pane {
+  display: none;
+  padding: 16px;
+}
+
+.tab-pane.is-active {
+  display: block;
+}
+</code></pre>
+<h2>Design Rules</h2>
+<ol>
+<li><strong>Sidebar is always visible</strong> except when explicitly collapsed. Never hide navigation entirely.</li>
+<li><strong>Breadcrumbs always show the full path</strong> starting from &quot;all&quot;.</li>
+<li><strong>Active/selected items use <code>--accent</code> highlight</strong> consistently across all navigation contexts.</li>
+<li><strong>No nested navigation deeper than 3 levels.</strong> Flatten deep structures with search or filtering.</li>
+<li><strong>Tree disclosure triangles rotate 90° when expanded</strong> for smooth visual feedback.</li>
+<li><strong>All navigation text is uppercase monospace</strong> for consistency with the design system.</li>
+<li><strong>Hover states use <code>--hover</code> background</strong> to indicate clickability.</li>
+<li><strong>Search inputs must appear in both global and local contexts</strong> for discoverability.</li>
+<li><strong>View switcher buttons are always available</strong> in collection headers.</li>
+<li><strong>Tab navigation uses underline for active state</strong>, never background fills.</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

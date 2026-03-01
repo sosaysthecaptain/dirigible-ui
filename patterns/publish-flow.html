@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>publish flow — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html" class="active">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">1.</span>
+        <span>Open note, click</span>
+        <span style="display:inline-flex; align-items:center; gap:4px; background:#22c55e; color:#fff; font-size:11px; padding:2px 8px; border-radius:9999px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4.5 12.75l6 6 9-13.5"/></svg> Published &#9662;</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">2.</span>
+        <span>Toggle "Include in site"</span>
+        <div style="width:40px; height:22px; border-radius:9999px; background:#3b82f6; position:relative;">
+          <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; right:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">3.</span>
+        <span>Set slug, cover, excerpt</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:13px; color:var(--muted);">4.</span>
+        <span>Live at</span>
+        <code style="font-size:12px; background:var(--code-bg); padding:2px 6px; border-radius:3px;">sosaysthecaptain.dirigible.app/collection/note</code>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Publication Flow</h1>
+<h2>Description</h2>
+<p>How content gets published from Dirigible to the web. The publication flow is a streamlined process that takes notes from private to public in a few clicks, with a dedicated panel for managing publication settings.</p>
+<h2>Publication Flow</h2>
+<h3>Step 1: Access Publication Settings</h3>
+<p>User opens a note and initiates the publication flow by:</p>
+<ul>
+<li>Clicking the green &quot;Published&quot; badge (if already published), or</li>
+<li>Clicking the kebab menu (⋮) and selecting &quot;Publication&quot;</li>
+</ul>
+<h3>Step 2: Publication Panel Appears</h3>
+<p>A dropdown panel appears below the breadcrumb with the following fields:</p>
+<p><strong>Panel Header:</strong></p>
+<ul>
+<li>Title: &quot;PUBLICATION&quot; in uppercase monospace</li>
+<li>Close button (X) to dismiss</li>
+</ul>
+<p><strong>Panel Content:</strong></p>
+<ol>
+<li><p><strong>Toggle: Include in site</strong></p>
+<ul>
+<li>Label: &quot;INCLUDE IN SITE&quot;</li>
+<li>Toggle switch with label on the right</li>
+<li>On = note is publicly accessible</li>
+<li>Off = note is private again</li>
+</ul>
+</li>
+<li><p><strong>URL Slug</strong></p>
+<ul>
+<li>Label: &quot;URL SLUG&quot;</li>
+<li>Read-only display of: <code>subdomain.dirigible.app/collection/slug</code></li>
+<li>Shows the public URL structure</li>
+<li>User can edit the slug portion if needed</li>
+</ul>
+</li>
+<li><p><strong>Cover Image</strong></p>
+<ul>
+<li>Label: &quot;COVER IMAGE&quot;</li>
+<li>Upload area with dashed border</li>
+<li>Text: &quot;Upload cover image&quot;</li>
+<li>Used for post listings and social media previews</li>
+</ul>
+</li>
+<li><p><strong>Excerpt</strong></p>
+<ul>
+<li>Label: &quot;EXCERPT&quot;</li>
+<li>Textarea input</li>
+<li>Description text for post listing pages</li>
+<li>Secondary importance</li>
+</ul>
+</li>
+<li><p><strong>Copy URL Button</strong></p>
+<ul>
+<li>Text button: &quot;Copy URL&quot;</li>
+<li>Copies the public URL to clipboard</li>
+<li>Shows success toast when clicked</li>
+</ul>
+</li>
+</ol>
+<p><strong>Panel Footer:</strong></p>
+<ul>
+<li>Primary button: &quot;Save&quot; (only shown if changes exist)</li>
+<li>Secondary button: &quot;Cancel&quot;</li>
+</ul>
+<h3>Step 3: Toggle to Publish</h3>
+<p>When &quot;Include in site&quot; is toggled ON:</p>
+<ul>
+<li>Note becomes publicly accessible</li>
+<li>Green dot appears next to the note in the sidebar</li>
+<li>Green &quot;Published&quot; badge appears in the breadcrumb area</li>
+<li>URL becomes active and shareable</li>
+</ul>
+<h3>Step 4: View Published</h3>
+<p>After publishing, user can:</p>
+<ul>
+<li>Click &quot;Visit site&quot; in the kebab menu to open the published page</li>
+<li>Click &quot;Copy URL&quot; to share the link</li>
+<li>The published URL follows the pattern: <code>username.dirigible.app/collection-slug/note-slug</code></li>
+</ul>
+<h3>Step 5: Unpublish</h3>
+<p>Toggle &quot;Include in site&quot; OFF to:</p>
+<ul>
+<li>Make the note private again</li>
+<li>Green dot disappears from sidebar</li>
+<li>Green badge disappears from breadcrumb</li>
+<li>URL is no longer accessible to the public</li>
+</ul>
+<h2>Components Involved</h2>
+<ul>
+<li><strong>Toggle</strong> (Include in site switch)</li>
+<li><strong>Input</strong> (URL slug, excerpt)</li>
+<li><strong>Upload Area</strong> (cover image)</li>
+<li><strong>Badge</strong> (Published status indicator)</li>
+<li><strong>Popover/Panel</strong> (publication settings container)</li>
+<li><strong>Button</strong> (primary: Save, secondary: Copy URL)</li>
+<li><strong>Toast</strong> (copy success notification)</li>
+</ul>
+<h2>Design Details</h2>
+<h3>Publication Panel Structure</h3>
+<pre><code class="language-html">&lt;div class=&quot;publication-panel&quot;&gt;
+  &lt;div class=&quot;panel-header&quot;&gt;
+    &lt;h2 class=&quot;panel-title&quot;&gt;PUBLICATION&lt;/h2&gt;
+    &lt;button class=&quot;panel-close&quot; aria-label=&quot;Close&quot;&gt;
+      &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+        &lt;line x1=&quot;2&quot; y1=&quot;2&quot; x2=&quot;14&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+        &lt;line x1=&quot;14&quot; y1=&quot;2&quot; x2=&quot;2&quot; y2=&quot;14&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+      &lt;/svg&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;form class=&quot;panel-form&quot;&gt;
+    &lt;!-- Toggle: Include in Site --&gt;
+    &lt;div class=&quot;form-group form-toggle&quot;&gt;
+      &lt;label class=&quot;toggle-label&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;toggle-switch&quot; id=&quot;include-in-site&quot; /&gt;
+        &lt;span class=&quot;toggle-track&quot;&gt;
+          &lt;span class=&quot;toggle-thumb&quot;&gt;&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;toggle-text&quot;&gt;INCLUDE IN SITE&lt;/span&gt;
+      &lt;/label&gt;
+    &lt;/div&gt;
+
+    &lt;!-- URL Slug --&gt;
+    &lt;div class=&quot;form-group&quot; id=&quot;url-slug-group&quot; hidden&gt;
+      &lt;label for=&quot;url-slug&quot; class=&quot;form-label&quot;&gt;URL SLUG&lt;/label&gt;
+      &lt;div class=&quot;url-slug-display&quot;&gt;
+        &lt;code class=&quot;url-slug-prefix&quot;&gt;username.dirigible.app/collection/&lt;/code&gt;
+        &lt;input id=&quot;url-slug&quot; type=&quot;text&quot; class=&quot;form-input url-slug-input&quot; value=&quot;note-slug&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Cover Image --&gt;
+    &lt;div class=&quot;form-group&quot; id=&quot;cover-image-group&quot; hidden&gt;
+      &lt;label for=&quot;cover-image&quot; class=&quot;form-label&quot;&gt;COVER IMAGE&lt;/label&gt;
+      &lt;div class=&quot;upload-area&quot;&gt;
+        &lt;input id=&quot;cover-image&quot; type=&quot;file&quot; class=&quot;upload-input&quot; accept=&quot;image/*&quot; /&gt;
+        &lt;div class=&quot;upload-placeholder&quot;&gt;
+          &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;&gt;
+            &lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;18&quot; height=&quot;18&quot; /&gt;
+            &lt;circle cx=&quot;8.5&quot; cy=&quot;8.5&quot; r=&quot;1.5&quot; /&gt;
+            &lt;path d=&quot;M21 15l-5-5L5 21&quot; /&gt;
+          &lt;/svg&gt;
+          &lt;span&gt;Upload cover image&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Excerpt --&gt;
+    &lt;div class=&quot;form-group&quot; id=&quot;excerpt-group&quot; hidden&gt;
+      &lt;label for=&quot;excerpt&quot; class=&quot;form-label&quot;&gt;EXCERPT&lt;/label&gt;
+      &lt;textarea id=&quot;excerpt&quot; class=&quot;form-input&quot; rows=&quot;3&quot; placeholder=&quot;Brief description for post listings&quot;&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Copy URL Button --&gt;
+    &lt;div class=&quot;form-group form-actions&quot; id=&quot;copy-url-group&quot; hidden&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-text&quot; data-action=&quot;copy-url&quot;&gt;
+        Copy URL
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+
+  &lt;div class=&quot;panel-footer&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+    &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Save&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Publication Panel CSS</h3>
+<pre><code class="language-css">.publication-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-top: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  max-width: 400px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.panel-title {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.panel-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 2px solid var(--border);
+  color: var(--foreground);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 150ms ease-out;
+}
+
+.panel-close:hover {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.panel-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.url-slug-display {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 2px solid var(--border);
+  background: var(--editor-bg);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.url-slug-prefix {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px 12px;
+  background: var(--hover);
+  border-right: 2px solid var(--border);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.url-slug-input {
+  flex: 1;
+  border: none;
+  padding: 8px 12px;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  background: var(--editor-bg);
+  color: var(--foreground);
+}
+
+.url-slug-input:focus {
+  outline: none;
+  background: var(--hover);
+}
+
+.panel-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 2px solid var(--border);
+  justify-content: flex-end;
+}
+
+.panel-footer .btn {
+  min-width: 80px;
+}
+</code></pre>
+<h3>Published Badge Styles</h3>
+<pre><code class="language-css">.badge-published {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--success);
+  color: var(--background);
+  padding: 4px 12px;
+  border-radius: 0;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 12px;
+}
+
+.badge-published::before {
+  content: &#39;&#39;;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.sidebar-item.is-published::before {
+  content: &#39;&#39;;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+</code></pre>
+<h2>User Flow Diagram</h2>
+<pre><code>Open Note
+    ↓
+Click &quot;Published&quot; badge OR kebab → Publication
+    ↓
+Publication Panel Appears
+    ├─ Toggle: &quot;Include in site&quot; (OFF)
+    ├─ URL Slug (hidden until ON)
+    ├─ Cover Image (hidden until ON)
+    └─ Excerpt (hidden until ON)
+    ↓
+Toggle &quot;Include in site&quot; ON
+    ↓
+Fields Become Visible &amp; Editable
+    ├─ Enter custom URL slug
+    ├─ Upload cover image
+    └─ Write excerpt
+    ↓
+Click &quot;Save&quot;
+    ↓
+Note is Published
+    ├─ Green dot appears in sidebar
+    ├─ Green &quot;Published&quot; badge in breadcrumb
+    ├─ Public URL is now active
+    └─ User can &quot;Visit site&quot; or &quot;Copy URL&quot;
+</code></pre>
+<h2>Published URL Patterns</h2>
+<pre><code>User can access the published note at:
+https://username.dirigible.app/collection-slug/note-slug
+
+Examples:
+https://sarah.dirigible.app/design-notes/button-states
+https://alex.dirigible.app/music-library/jazz-albums
+https://jane.dirigible.app/receipts/coffee-shops
+</code></pre>
+<h2>Design Rules</h2>
+<ol>
+<li><strong>Publication panel is a dropdown below the breadcrumb</strong>, not a modal.</li>
+<li><strong>Fields only appear when &quot;Include in site&quot; is ON</strong> to minimize cognitive load.</li>
+<li><strong>URL slug is always shown as a read-only prefix + editable portion</strong> for clarity.</li>
+<li><strong>Green success color is used for the &quot;Published&quot; badge and published indicators</strong>.</li>
+<li><strong>Cover image upload area uses a dashed border</strong> to distinguish it as special.</li>
+<li><strong>&quot;Copy URL&quot; button provides immediate feedback</strong> with a success toast.</li>
+<li><strong>Save button only appears if changes exist</strong> to prevent accidental double-saves.</li>
+<li><strong>Published notes show a green dot in the sidebar</strong> for quick visual identification.</li>
+<li><strong>The public URL structure is always visible</strong> so users understand what they&#39;re sharing.</li>
+<li><strong>Publication settings can be accessed and modified anytime</strong> without leaving the note.</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

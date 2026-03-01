@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirigible: Publication Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fefefe;
+            --fg: #1a1a1a;
+            --border: #e8e6e3;
+            --sidebar: #faf9f8;
+            --muted: #777777;
+            --accent: #E8915A;
+            --hover: #f5f4f2;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --card-radius: 6px;
+            --modal-radius: 8px;
+            --button-radius: 4px;
+            --sidebar-width: 280px;
+        }
+
+        body.dark-theme {
+            --bg: #181716;
+            --fg: #f2f0ed;
+            --border: #302e2b;
+            --sidebar: #1e1d1b;
+            --muted: #999795;
+            --accent: #6ba3d6;
+            --hover: #27251f;
+            --success: #4ec9b0;
+            --warning: #ce9178;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .app-wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: var(--button-radius);
+            color: var(--fg);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--hover);
+            color: var(--accent);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .breadcrumb {
+            color: var(--fg);
+            font-size: 13px;
+        }
+
+        .breadcrumb-separator {
+            color: var(--muted);
+            margin: 0 4px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: var(--button-radius);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .badge:hover {
+            opacity: 0.9;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .note-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--fg);
+        }
+
+        .note-subtitle {
+            font-size: 16px;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .publication-panel {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            width: 380px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .publication-panel {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+        }
+
+        .panel-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .panel-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle {
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background-color: var(--hover);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .toggle.on {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .toggle-dot {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+
+        .toggle.on .toggle-dot {
+            left: 22px;
+        }
+
+        .toggle-label {
+            color: var(--fg);
+            font-size: 13px;
+        }
+
+        .url-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background-color: var(--hover);
+            border: 1px solid var(--border);
+            border-radius: var(--button-radius);
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--muted);
+            word-break: break-all;
+        }
+
+        .url-input-editable {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 0;
+        }
+
+        .url-input-editable:focus {
+            outline: none;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--button-radius);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--muted);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background-color: var(--hover);
+        }
+
+        .textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--button-radius);
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.2s;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .copy-button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            transition: opacity 0.2s;
+        }
+
+        .copy-button:hover {
+            opacity: 0.7;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background-color: var(--sidebar);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--fg);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+
+    <div class="app-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Notes</div>
+                <div class="sidebar-item">Journal</div>
+                <div class="sidebar-item">Ideas</div>
+                <div class="sidebar-item active">demo-botany</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Projects</div>
+                <div class="sidebar-item">Roadmap</div>
+                <div class="sidebar-item">Design</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="breadcrumb">
+                    all<span class="breadcrumb-separator">›</span>demo-botany<span class="breadcrumb-separator">›</span>Aconitum napellus — Monkshood <span style="color: var(--muted);">⋮</span>
+                </div>
+                <div class="badge">✓ Published ▾</div>
+            </div>
+
+            <div class="content-area">
+                <h1 class="note-title">Aconitum napellus — Monkshood</h1>
+                <p class="note-subtitle">Family Ranunculaceae — The Buttercup Order</p>
+
+                <div class="publication-panel">
+                    <div class="panel-section">
+                        <div class="toggle-switch">
+                            <div class="toggle on" onclick="togglePublish(this)">
+                                <div class="toggle-dot"></div>
+                            </div>
+                            <span class="toggle-label">Include in site</span>
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-label">URL SLUG</div>
+                        <div class="url-input-group">
+                            <span>sosaysthecaptain.dirigible.app/demo-botany/</span>
+                            <input type="text" class="url-input-editable" value="aconitum-napellus-monkshood">
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-label">COVER IMAGE</div>
+                        <div class="upload-area">↑ Upload cover image</div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-label">EXCERPT</div>
+                        <textarea class="textarea" placeholder="Custom excerpt for post listings..."></textarea>
+                    </div>
+
+                    <div class="panel-section">
+                        <button class="copy-button">🔗 Copy URL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function togglePublish(element) {
+            element.classList.toggle('on');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙 Dark';
+        }
+    </script>
+</body>
+</html>

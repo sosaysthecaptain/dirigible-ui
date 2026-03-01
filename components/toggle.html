@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>toggle — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html" class="active">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:22px; border-radius:9999px; background:#3b82f6; position:relative; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; right:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+        </div>
+        <span>Include in site</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:22px; border-radius:9999px; background:#d1d5db; position:relative; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; left:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+        </div>
+        <span style="color:var(--muted);">Disabled feature</span>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Track on: #3b82f6 (blue — not accent) · Track off: #d1d5db · Size: 40x22, circle 16px · Pill shape: border-radius 9999px</p>
+  
+  </div>
+</div>
+<h1>Toggle</h1>
+<h2>Description</h2>
+<p>A pill-shaped switch component that represents an on/off or enabled/disabled state. The toggle is used for binary choices where the user needs to see the current state and toggle it with a single click.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Publication settings</strong>: &quot;Include in site&quot; toggle in the publication panel</li>
+<li><strong>Feature flags</strong>: Enable/disable sync, notifications, or other features</li>
+<li><strong>Binary choices</strong>: Any yes/no, on/off setting that needs visual feedback</li>
+</ul>
+<p>Do not use toggles for multi-state options; use radio buttons or select dropdowns instead.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Background</th>
+<th>Circle Position</th>
+<th>Text</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Enabled</strong></td>
+<td>#3b82f6 (blue) or --success</td>
+<td>Right (70% from left)</td>
+<td>Optional &quot;on&quot; label</td>
+<td>Feature is active</td>
+</tr>
+<tr>
+<td><strong>Disabled</strong></td>
+<td>--muted (#777777) or --border (#e8e6e3)</td>
+<td>Left (30% from left)</td>
+<td>Optional &quot;off&quot; label</td>
+<td>Feature is inactive</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<pre><code>&lt;label class=&quot;toggle-wrapper&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; class=&quot;toggle-input&quot; /&gt;
+  &lt;span class=&quot;toggle-track&quot;&gt;
+    &lt;span class=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;toggle-label&quot;&gt;Include in site&lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Outer <code>&lt;label&gt;</code> wrapping the entire component for keyboard accessibility</li>
+<li>Hidden <code>&lt;input type=&quot;checkbox&quot;&gt;</code> to track state and handle keyboard interaction</li>
+<li><code>.toggle-track</code>: The pill-shaped background container</li>
+<li><code>.toggle-circle</code>: The animated white circle that slides left/right</li>
+<li>Optional <code>.toggle-label</code>: Text label to the right of the toggle</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Width</strong>: 40px</li>
+<li><strong>Height</strong>: 22px</li>
+<li><strong>Circle diameter</strong>: 18px</li>
+<li><strong>Border radius</strong>: <code>9999px</code> (fully rounded pill shape)</li>
+<li><strong>Colors</strong>:<ul>
+<li>Enabled background: <code>--accent</code> (#E8915A)</li>
+<li>Disabled background: <code>--color-muted</code> (#777777) or <code>--border</code> (#e8e6e3)</li>
+<li>Circle: <code>#ffffff</code> (white, always)</li>
+<li>Label text: <code>--foreground</code> (#181716), 13px monospace</li>
+</ul>
+</li>
+<li><strong>Animation</strong>: Smooth 0.2s transition when toggling</li>
+<li><strong>Cursor</strong>: <code>pointer</code> on hover</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Basic Toggle</h3>
+<pre><code class="language-html">&lt;label class=&quot;toggle-wrapper&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; class=&quot;toggle-input&quot; /&gt;
+  &lt;span class=&quot;toggle-track&quot;&gt;
+    &lt;span class=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h3>Toggle with Label</h3>
+<pre><code class="language-html">&lt;label class=&quot;toggle-wrapper&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; class=&quot;toggle-input&quot; /&gt;
+  &lt;span class=&quot;toggle-track&quot;&gt;
+    &lt;span class=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;toggle-label&quot;&gt;Include in site&lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h3>Toggle Disabled</h3>
+<pre><code class="language-html">&lt;label class=&quot;toggle-wrapper toggle-disabled&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; class=&quot;toggle-input&quot; disabled /&gt;
+  &lt;span class=&quot;toggle-track&quot;&gt;
+    &lt;span class=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;toggle-label&quot;&gt;Include in site&lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h3>Toggle Checked/Enabled</h3>
+<pre><code class="language-html">&lt;label class=&quot;toggle-wrapper&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; class=&quot;toggle-input&quot; checked /&gt;
+  &lt;span class=&quot;toggle-track toggle-checked&quot;&gt;
+    &lt;span class=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class=&quot;toggle-label&quot;&gt;Include in site&lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-input {
+  appearance: none;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.toggle-track {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  border-radius: 9999px;
+  background-color: var(--color-muted);
+  padding: 2px 2px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  transition: transform 0.2s ease;
+  transform: translateX(0);
+}
+
+/* Checked/Enabled State */
+.toggle-input:checked + .toggle-track {
+  background-color: #3b82f6;
+}
+
+.toggle-input:checked + .toggle-track .toggle-circle {
+  transform: translateX(16px);
+}
+
+/* Disabled State */
+.toggle-input:disabled + .toggle-track {
+  background-color: var(--color-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-wrapper:has(.toggle-input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Focus State (for keyboard navigation) */
+.toggle-input:focus + .toggle-track {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Label */
+.toggle-label {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  color: var(--foreground);
+  line-height: 1.4;
+}
+
+/* Hover State */
+.toggle-wrapper:not(:has(.toggle-input:disabled)):hover .toggle-track {
+  opacity: 0.85;
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Basic controlled toggle
+const [includeInSite, setIncludeInSite] = useState(false);
+
+&lt;label className=&quot;toggle-wrapper&quot;&gt;
+  &lt;input
+    type=&quot;checkbox&quot;
+    className=&quot;toggle-input&quot;
+    checked={includeInSite}
+    onChange={(e) =&gt; setIncludeInSite(e.target.checked)}
+  /&gt;
+  &lt;span className=&quot;toggle-track&quot;&gt;
+    &lt;span className=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span className=&quot;toggle-label&quot;&gt;Include in site&lt;/span&gt;
+&lt;/label&gt;
+
+// Toggle with async update
+const [isSync, setIsSync] = useState(true);
+const [isSyncing, setIsSyncing] = useState(false);
+
+const handleSyncToggle = async (checked) =&gt; {
+  setIsSyncing(true);
+  try {
+    await updateSyncSetting(checked);
+    setIsSync(checked);
+  } catch (error) {
+    console.error(&#39;Failed to update sync setting&#39;, error);
+  } finally {
+    setIsSyncing(false);
+  }
+};
+
+&lt;label className={`toggle-wrapper ${isSyncing ? &#39;toggle-disabled&#39; : &#39;&#39;}`}&gt;
+  &lt;input
+    type=&quot;checkbox&quot;
+    className=&quot;toggle-input&quot;
+    checked={isSync}
+    onChange={(e) =&gt; handleSyncToggle(e.target.checked)}
+    disabled={isSyncing}
+  /&gt;
+  &lt;span className=&quot;toggle-track&quot;&gt;
+    &lt;span className=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span className=&quot;toggle-label&quot;&gt;Auto-sync enabled&lt;/span&gt;
+&lt;/label&gt;
+
+// Uncontrolled toggle
+&lt;label className=&quot;toggle-wrapper&quot;&gt;
+  &lt;input
+    type=&quot;checkbox&quot;
+    className=&quot;toggle-input&quot;
+    defaultChecked={false}
+    onChange={(e) =&gt; console.log(&#39;Toggle state:&#39;, e.target.checked)}
+  /&gt;
+  &lt;span className=&quot;toggle-track&quot;&gt;
+    &lt;span className=&quot;toggle-circle&quot;&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Use toggles for binary on/off or enabled/disabled states</li>
+<li>Place the label to the right of the toggle for better readability</li>
+<li>Keep labels short and clear: &quot;Include in site&quot;, &quot;Auto-sync enabled&quot;</li>
+<li>Use the toggle within a labeled section or field group in forms</li>
+<li>Provide immediate visual feedback when toggling</li>
+<li>Support keyboard interaction (Space/Enter to toggle)</li>
+<li>Show the current state clearly (left circle = off, right circle = on)</li>
+<li>Use the accent color (#E8915A) for the enabled state</li>
+<li>Disable toggles with the <code>disabled</code> attribute when the option is unavailable</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use toggles for multi-state options (use dropdowns or radio buttons instead)</li>
+<li>Hide the current state or use ambiguous styling</li>
+<li>Use only text labels without the visual toggle component</li>
+<li>Mix toggle styles or colors outside of the defined variants</li>
+<li>Use toggles for navigation or page changes</li>
+<li>Create a toggle with border or outline styling; keep it minimal</li>
+<li>Use toggles inside buttons or complex nested components</li>
+<li>Place labels inline with the toggle circle; labels go to the right</li>
+<li>Forget to wrap the toggle in a <code>&lt;label&gt;</code> for accessibility</li>
+</ul>
+<h2>Rules Specific to Toggles</h2>
+<ol>
+<li><strong>Fully rounded pill shape</strong>: Always use <code>border-radius: 9999px</code></li>
+<li><strong>White circle</strong>: The toggle circle is always #ffffff, regardless of state</li>
+<li><strong>Circle position</strong>: Left edge when disabled (<del>30%), right edge when enabled (</del>70%)</li>
+<li><strong>Smooth animation</strong>: Toggle uses 0.2s ease transition for circle movement</li>
+<li><strong>Blue when enabled</strong>: Use <code>#3b82f6</code> (blue) for the enabled state background — not the accent color</li>
+<li><strong>Muted color when disabled</strong>: Use <code>--color-muted</code> or <code>--border</code> for the disabled state background</li>
+<li><strong>Size consistency</strong>: 40px wide, 22px tall, 18px circle diameter—no variations</li>
+<li><strong>Keyboard accessibility</strong>: Always wrap in <code>&lt;label&gt;</code> and use <code>&lt;input type=&quot;checkbox&quot;&gt;</code> for native keyboard support</li>
+<li><strong>No text overlay</strong>: Do not place &quot;ON/OFF&quot; or &quot;YES/NO&quot; text inside the toggle track; use optional label text beside</li>
+<li><strong>Accessible disabled state</strong>: Use the <code>disabled</code> attribute on the checkbox input; never use class-only disabled states</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

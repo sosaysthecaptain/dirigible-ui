@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirigible: Note View</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fefefe;
+            --fg: #1a1a1a;
+            --border: #e8e6e3;
+            --sidebar: #faf9f8;
+            --muted: #777777;
+            --accent: #E8915A;
+            --hover: #f5f4f2;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --card-radius: 6px;
+            --modal-radius: 8px;
+            --button-radius: 4px;
+            --sidebar-width: 280px;
+        }
+
+        body.dark-theme {
+            --bg: #181716;
+            --fg: #f2f0ed;
+            --border: #302e2b;
+            --sidebar: #1e1d1b;
+            --muted: #999795;
+            --accent: #6ba3d6;
+            --hover: #27251f;
+            --success: #4ec9b0;
+            --warning: #ce9178;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .app-wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: var(--button-radius);
+            color: var(--fg);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--hover);
+            color: var(--accent);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .breadcrumb {
+            color: var(--fg);
+            font-size: 13px;
+        }
+
+        .breadcrumb-separator {
+            color: var(--muted);
+            margin: 0 4px;
+        }
+
+        .topbar-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: var(--button-radius);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .badge:hover {
+            opacity: 0.9;
+        }
+
+        .date-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 60px 80px;
+        }
+
+        .content-max-width {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .note-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--fg);
+            line-height: 1.2;
+        }
+
+        .note-subtitle {
+            font-size: 16px;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .note-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--hover) 0%, var(--sidebar) 100%);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .image-caption {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .content-paragraph {
+            margin-bottom: 16px;
+            color: var(--fg);
+            line-height: 1.8;
+        }
+
+        .content-paragraph strong {
+            font-weight: 600;
+        }
+
+        .content-paragraph em {
+            font-style: italic;
+        }
+
+        .content-heading {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--fg);
+        }
+
+        .content-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        .content-blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 0 12px 16px;
+            margin: 20px 0;
+            color: var(--muted);
+            font-style: italic;
+            background-color: var(--hover);
+            padding: 12px 16px;
+        }
+
+        .content-link {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .content-link:hover {
+            opacity: 0.8;
+        }
+
+        .add-caption {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .add-caption:hover {
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background-color: var(--sidebar);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--fg);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+
+    <div class="app-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Notes</div>
+                <div class="sidebar-item">Journal</div>
+                <div class="sidebar-item">Ideas</div>
+                <div class="sidebar-item active">demo-botany</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Projects</div>
+                <div class="sidebar-item">Roadmap</div>
+                <div class="sidebar-item">Design</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Library</div>
+                <div class="sidebar-item">Music</div>
+                <div class="sidebar-item">Photos</div>
+                <div class="sidebar-item">Documents</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="breadcrumb">
+                    all<span class="breadcrumb-separator">›</span>demo-botany<span class="breadcrumb-separator">›</span>Aconitum napellus — Monkshood <span style="color: var(--muted);">⋮</span>
+                </div>
+                <div class="topbar-right">
+                    <div class="badge">✓ Published ▾</div>
+                    <div class="date-label">Mar 15, 1872</div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="content-max-width">
+                    <h1 class="note-title">Aconitum napellus — Monkshood</h1>
+                    <p class="note-subtitle">Family Ranunculaceae — The Buttercup Order</p>
+
+                    <div class="note-image">MONKSHOOD (Aconitum Napellus) / By E. Fortescue Brickdale</div>
+                    <div class="add-caption">+ Add caption...</div>
+
+                    <h2 class="content-heading">Description and Characteristics</h2>
+                    <p class="content-paragraph">
+                        <strong>Aconitum napellus</strong>, commonly known as monkshood or wolfsbane, is a highly toxic herbaceous plant from the Ranunculaceae family. It is recognizable by its <strong>distinctive hooded flowers</strong> in shades of deep blue, purple, or occasionally white. The plant grows to a height of 60–150 cm, with deeply lobed leaves arranged alternately along the stem.
+                    </p>
+
+                    <p class="content-paragraph">
+                        The name "monkshood" derives from the peculiar shape of the flower's upper sepal, which resembles the hood of a monk's habit. <em>All parts of the plant are poisonous</em>, containing the toxic alkaloid aconitine, which affects the heart and nervous system.
+                    </p>
+
+                    <h2 class="content-heading">Habitat and Distribution</h2>
+                    <p class="content-paragraph">
+                        Native to the mountainous regions of <span class="content-link">central and western Europe</span>, monkshood thrives in cool, damp habitats such as woodland edges, mountain meadows, and stream banks. The plant prefers partial shade and well-draining soil rich in organic matter. It has naturalized in parts of North America and is cultivated in ornamental gardens throughout temperate regions.
+                    </p>
+
+                    <h2 class="content-heading">Toxicity and Historical Use</h2>
+                    <div class="content-blockquote">
+                        The plant has been used throughout history in various preparations, though such applications are extremely dangerous and are now illegal in most jurisdictions.
+                    </div>
+
+                    <p class="content-paragraph">
+                        Due to its extreme toxicity, monkshood was historically used as a poison for hunting arrows and in various medicinal remedies in traditional medicine. The plant contains aconitine alkaloids that can be absorbed through skin contact, making it hazardous even to handle. Symptoms of poisoning include burning sensations, tremors, irregular heartbeat, and potentially fatal respiratory failure.
+                    </p>
+
+                    <p class="content-paragraph">
+                        In modern times, the plant is primarily valued as an ornamental specimen in botanical gardens and private collections, where it is handled with extreme care. Any cultivation should be undertaken with full awareness of its <strong>severe toxicity</strong>.
+                    </p>
+
+                    <h2 class="content-heading">Ecological Importance</h2>
+                    <p class="content-paragraph">
+                        Despite its toxicity, monkshood plays an important ecological role in its native habitats. The flowers are visited by bumblebees and other pollinators, which have evolved resistance to its toxins. The plant provides nectar and pollen resources during the late summer and early autumn months when other flowering plants become scarce.
+                    </p>
+
+                    <p class="content-paragraph">
+                        The seeds are dispersed by wind and water, and the plant establishes self-sustaining populations in suitable mountain and woodland habitats. Conservation efforts in various European regions aim to protect natural populations from overcollection and habitat degradation.
+                    </p>
+
+                    <h2 class="content-heading">Cultivation Notes</h2>
+                    <p class="content-paragraph">
+                        For those with access to appropriate growing conditions, monkshood can be cultivated from seed. The plants require a period of cold stratification before germination and prefer cool growing conditions. Flowering typically occurs in the second year after sowing, with peak blooms in late summer.
+                    </p>
+
+                    <p class="content-paragraph">
+                        <em>Caution:</em> All parts of this plant are extremely poisonous. Protective gloves should always be worn when handling, and the plant should not be grown in locations accessible to children or pets.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙 Dark';
+        }
+    </script>
+</body>
+</html>

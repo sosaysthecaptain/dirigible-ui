@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>image uploader — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html" class="active">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:20px; max-width:400px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Empty state (drop zone)</p>
+        <div style="border:2px dashed var(--border); border-radius:4px; padding:32px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='color-mix(in srgb, var(--accent) 4%, var(--bg))'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+          <span style="color:var(--muted); display:flex;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg></span>
+          <span style="font-size:13px; color:var(--muted);">Drop image here or click to browse</span>
+          <span style="font-size:11px; color:var(--muted);">PNG, JPG, WebP · Max 5 MB</span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">With preview (cover image)</p>
+        <div style="border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+          <div style="height:120px; background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 20%, var(--bg)), color-mix(in srgb, var(--success) 20%, var(--bg))); display:flex; align-items:center; justify-content:center;">
+            <span style="color:var(--muted); display:flex;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg></span>
+          </div>
+          <div style="padding:8px; display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+            <span style="color:var(--muted);">cover-image.webp · 245 KB</span>
+            <div style="display:flex; gap:4px;">
+              <button style="font-family:inherit; font-size:11px; padding:2px 8px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Replace</button>
+              <button style="font-family:inherit; font-size:11px; padding:2px 8px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Uploading state</p>
+        <div style="border:1px solid var(--border); border-radius:4px; padding:12px; display:flex; align-items:center; gap:8px;">
+          <span style="display:inline-block; width:14px; height:14px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:dg-spin 1s linear infinite;"></span>
+          <span style="font-size:12px; flex:1;">Uploading photo-001.jpg...</span>
+          <span style="font-size:11px; color:var(--muted);">72%</span>
+        </div>
+      </div>
+    </div>
+    <style>@keyframes dg-spin { to { transform: rotate(360deg); } }</style>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Dashed 2px border on drop zone · Accent border on hover/dragover · Used for: cover images, moodboard photos, album art · Converts to WebP · Generates thumbnails via canvas</p>
+  
+  </div>
+</div>
+<h1>Image Uploader</h1>
+<h2>Description</h2>
+<p>A file upload component for images, used for cover photos, moodboard entries, and album art. Features a dashed-border drop zone that accepts drag-and-drop or click-to-browse, with preview, progress, and replace/remove actions.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Cover images</strong>: Blog post and wiki page cover photos</li>
+<li><strong>Moodboard entries</strong>: Adding photos to a moodboard</li>
+<li><strong>Album art</strong>: Editing metadata for music albums</li>
+<li><strong>Profile photos</strong>: User avatar upload</li>
+</ul>
+<p>Do not use for non-image files (documents, music). Use a standard file input for those.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Empty</strong></td>
+<td>Dashed border drop zone with icon and helper text</td>
+</tr>
+<tr>
+<td><strong>Hover / Dragover</strong></td>
+<td>Border changes to accent color, subtle tinted background</td>
+</tr>
+<tr>
+<td><strong>Uploading</strong></td>
+<td>Spinner with filename and percentage</td>
+</tr>
+<tr>
+<td><strong>Preview</strong></td>
+<td>Thumbnail with filename, size, Replace and Remove buttons</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<pre><code class="language-html">&lt;!-- Empty state --&gt;
+&lt;div class=&quot;image-uploader&quot;&gt;
+  &lt;svg class=&quot;image-uploader-icon&quot;&gt;&lt;!-- image icon --&gt;&lt;/svg&gt;
+  &lt;span class=&quot;image-uploader-text&quot;&gt;Drop image here or click to browse&lt;/span&gt;
+  &lt;span class=&quot;image-uploader-hint&quot;&gt;PNG, JPG, WebP · Max 5 MB&lt;/span&gt;
+  &lt;input type=&quot;file&quot; class=&quot;image-uploader-input&quot; accept=&quot;image/*&quot; /&gt;
+&lt;/div&gt;
+
+&lt;!-- Preview state --&gt;
+&lt;div class=&quot;image-uploader-preview&quot;&gt;
+  &lt;img class=&quot;image-uploader-thumb&quot; src=&quot;...&quot; /&gt;
+  &lt;div class=&quot;image-uploader-meta&quot;&gt;
+    &lt;span class=&quot;image-uploader-filename&quot;&gt;cover.webp · 245 KB&lt;/span&gt;
+    &lt;button class=&quot;image-uploader-replace&quot;&gt;Replace&lt;/button&gt;
+    &lt;button class=&quot;image-uploader-remove&quot;&gt;Remove&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Drop zone border</strong>: 2px dashed var(--border)</li>
+<li><strong>Drop zone border (hover)</strong>: 2px dashed var(--accent)</li>
+<li><strong>Drop zone background (hover)</strong>: color-mix(in srgb, var(--accent) 4%, var(--bg))</li>
+<li><strong>Drop zone padding</strong>: 32px vertical</li>
+<li><strong>Drop zone border-radius</strong>: 4px</li>
+<li><strong>Icon size</strong>: 24px, color var(--muted)</li>
+<li><strong>Helper text</strong>: 13px, color var(--muted)</li>
+<li><strong>Hint text</strong>: 11px, color var(--muted)</li>
+<li><strong>Preview border</strong>: 1px solid var(--border), border-radius 4px</li>
+<li><strong>Action buttons</strong>: 11px, 1px border, 3px border-radius</li>
+<li><strong>Remove button</strong>: color var(--danger)</li>
+</ul>
+<h2>Processing</h2>
+<ul>
+<li>Images are converted to WebP format on upload</li>
+<li>Thumbnails are generated client-side via canvas</li>
+<li>Uploaded to B2 (Backblaze) cloud storage</li>
+<li>Maximum file size: 5 MB</li>
+</ul>
+<h2>Rules Specific to Image Uploader</h2>
+<ol>
+<li><strong>Dashed border</strong>: Always 2px dashed, not solid</li>
+<li><strong>Accent on hover</strong>: Border and subtle bg tint change on hover/dragover</li>
+<li><strong>Hidden file input</strong>: Actual <code>&lt;input type=&quot;file&quot;&gt;</code> is visually hidden, triggered by click</li>
+<li><strong>Preview replaces drop zone</strong>: Once uploaded, drop zone is replaced by preview</li>
+<li><strong>Replace and Remove</strong>: Two actions below the preview thumbnail</li>
+<li><strong>WebP conversion</strong>: All uploads are converted to WebP automatically</li>
+<li><strong>Spinner during upload</strong>: Use the standard Dirigible spinner (3px border, transparent top)</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

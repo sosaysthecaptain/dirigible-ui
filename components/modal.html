@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>modal — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html" class="active">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-bottom:12px;">Publication modal (matches actual app)</p>
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:420px;">
+      <div style="background:var(--sidebar-bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1); width:100%; max-width:520px; overflow:hidden; display:flex; flex-direction:column;">
+        <!-- Header: text-sm font-semibold on sidebar-bg -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border); flex-shrink:0;">
+          <span style="font-size:14px; font-weight:600; color:var(--fg);">demo-botany</span>
+          <button style="font-family:inherit; background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; display:flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <!-- Tabs: text-xs, border-b-2 on foreground (not accent!) -->
+        <div style="display:flex; align-items:center; gap:4px; padding:0 16px; border-bottom:1px solid var(--border); flex-shrink:0; background:var(--sidebar-bg);">
+          <span style="padding:8px 12px; font-size:12px; border-bottom:2px solid var(--fg); margin-bottom:-1px; color:var(--fg); font-weight:500; cursor:pointer;">General</span>
+          <span style="padding:8px 12px; font-size:12px; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--muted); cursor:pointer;">Appearance</span>
+          <span style="padding:8px 12px; font-size:12px; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--muted); cursor:pointer;">Favicon</span>
+          <span style="padding:8px 12px; font-size:12px; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--muted); cursor:pointer;">Domain</span>
+        </div>
+        <!-- Content area: bg is --background -->
+        <div style="padding:16px; flex:1; background:var(--bg);">
+          <label style="display:block; font-size:14px; font-weight:500; color:var(--fg); margin-bottom:6px;">Site Title</label>
+          <input type="text" value="Botanical Journal" style="font-family:inherit; font-size:14px; padding:8px 12px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--fg); width:100%; outline:none; margin-bottom:16px;" />
+          <label style="display:block; font-size:14px; font-weight:500; color:var(--fg); margin-bottom:6px;">URL</label>
+          <div style="display:flex; align-items:center; border:1px solid var(--border); border-radius:6px; overflow:hidden;">
+            <span style="padding:8px 12px; font-size:14px; color:var(--muted); background:var(--bg); border-right:1px solid var(--border); white-space:nowrap;">sosaysthecaptain.dirigible.app/</span>
+            <input type="text" value="demo-botany" style="font-family:inherit; font-size:14px; padding:8px 12px; border:none; background:var(--bg); color:var(--fg); flex:1; outline:none;" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-top:24px; margin-bottom:12px;">Themes modal (left panel + preview + swatches)</p>
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:400px;">
+      <div style="background:var(--sidebar-bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1); width:100%; max-width:620px; overflow:hidden; display:flex;">
+        <!-- Left: theme list, 210px, sidebar-bg -->
+        <div style="width:210px; flex-shrink:0; border-right:1px solid var(--border); display:flex; flex-direction:column;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 12px 8px;">
+            <span style="font-size:14px; font-weight:600; color:var(--fg);">Themes</span>
+            <button style="background:none; border:none; cursor:pointer; color:var(--fg); opacity:0.5; padding:6px; display:flex;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg></button>
+          </div>
+          <div style="flex:1; overflow-y:auto; padding:0 6px 8px;">
+            <div style="font-size:10px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; padding:12px 8px 4px;">Light</div>
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; background:var(--accent-muted, var(--accent)); color:#fff; font-weight:500;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#f0eeeb; border:1.5px solid rgba(255,255,255,0.3); flex-shrink:0;"></div>
+              Dirigible Light
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; color:var(--fg); cursor:pointer;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#f0f0f0; border:1.5px solid #d0d0d0; flex-shrink:0;"></div>
+              Alabaster
+            </div>
+            <div style="font-size:10px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; padding:12px 8px 4px;">Dark</div>
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; color:var(--fg); cursor:pointer;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#302e2b; border:1.5px solid #1a1918; flex-shrink:0;"></div>
+              Dirigible Dark
+            </div><div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; color:var(--fg); cursor:pointer;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#1e1008; border:1.5px solid #0d0a04; flex-shrink:0;"></div>
+              Amber Terminal
+            </div><div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; color:var(--fg); cursor:pointer;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#0d1a0d; border:1.5px solid #091209; flex-shrink:0;"></div>
+              Green Terminal
+            </div><div style="display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:4px; font-size:12px; color:var(--fg); cursor:pointer;">
+              <div style="width:16px; height:16px; border-radius:4px; background:#1e1e2e; border:1.5px solid #11111b; flex-shrink:0;"></div>
+              Catppuccin Mocha
+            </div>
+            <div style="padding:4px 8px; font-size:10px; color:var(--muted);">... 17 more</div>
+          </div>
+          <div style="padding:10px 12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:between; font-size:10px; color:var(--muted);">Restore defaults</div>
+        </div>
+        <!-- Right: preview + bottom panel -->
+        <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+          <!-- Preview area -->
+          <div style="flex:1; padding:16px; background:var(--bg); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; min-height:180px;">Theme preview area</div>
+          <!-- Bottom panel: pill-style tabs (not underline!) -->
+          <div style="background:var(--sidebar-bg); border-top:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:4px; padding:10px 16px 4px;">
+              <span style="padding:4px 10px; border-radius:4px; font-size:11px; font-weight:500; color:var(--accent); background:var(--hover); cursor:pointer;">Swatches</span>
+              <span style="padding:4px 10px; border-radius:4px; font-size:11px; font-weight:500; color:var(--muted); cursor:pointer;">CSS</span>
+            </div>
+            <div style="padding:8px 16px 12px; display:grid; gap:4px 16px; grid-template-columns:repeat(auto-fill, minmax(105px, 1fr));">
+              <div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--bg);"></div><span style="font-size:10px;color:var(--muted);">Background</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--fg);"></div><span style="font-size:10px;color:var(--muted);">Foreground</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--accent);"></div><span style="font-size:10px;color:var(--muted);">Accent</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--muted);"></div><span style="font-size:10px;color:var(--muted);">Muted</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--border);"></div><span style="font-size:10px;color:var(--muted);">Border</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--sidebar-bg);"></div><span style="font-size:10px;color:var(--muted);">Sidebar</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--hover);"></div><span style="font-size:10px;color:var(--muted);">Hover</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--success);"></div><span style="font-size:10px;color:var(--muted);">Success</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--warning);"></div><span style="font-size:10px;color:var(--muted);">Warning</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--danger);"></div><span style="font-size:10px;color:var(--muted);">Danger</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--link);"></div><span style="font-size:10px;color:var(--muted);">Link</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;border:1px solid var(--border);background:var(--code-bg);"></div><span style="font-size:10px;color:var(--muted);">Code BG</span></div>
+            </div>
+          </div>
+          <!-- Footer -->
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-top:1px solid var(--border); background:var(--sidebar-bg);">
+            <span style="font-size:12px; color:var(--muted);">Dirigible Light &middot; light</span>
+            <div style="display:flex; gap:8px;">
+              <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600; font-size:12px; padding:3px 10px;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Close</button>
+              <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); font-size:12px; padding:3px 10px;" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Set as default light theme</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-top:24px; margin-bottom:12px;">Confirm dialog (simple)</p>
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="background:var(--sidebar-bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1); width:100%; max-width:384px; overflow:hidden; display:flex; flex-direction:column;">
+        <div style="padding:10px 16px; border-bottom:1px solid var(--border);">
+          <span style="font-size:14px; font-weight:600; color:var(--fg);">Delete note?</span>
+        </div>
+        <div style="padding:16px; font-size:14px; line-height:22px; color:var(--fg); background:var(--bg);">
+          This will permanently delete "Aconitum napellus". This action cannot be undone.
+        </div>
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:10px 16px; background:var(--sidebar-bg);">
+          <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
+          <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-top:24px; margin-bottom:12px;">Sync modal</p>
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="background:var(--sidebar-bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1); width:100%; max-width:448px; overflow:hidden; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border);">
+          <span style="font-size:14px; font-weight:600; color:var(--fg);">Sync to Local Folder</span>
+          <button style="font-family:inherit; background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; display:flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <div style="padding:16px; font-size:14px; line-height:22px; background:var(--bg);">
+          <p style="margin-bottom:12px;">Export your Dirigible library to a folder on your computer.</p>
+          <ul style="padding-left:20px; font-size:13px; line-height:20px;">
+            <li style="margin-bottom:4px;">Notes saved as .md (Markdown) files</li>
+            <li style="margin-bottom:4px;">Albums saved as folders of images + metadata</li>
+            <li style="margin-bottom:4px;">Music keeps artist/album structure</li>
+            <li>Subsequent syncs only update what changed</li>
+          </ul>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:10px 16px; background:var(--sidebar-bg);">
+          <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--muted); border:none; text-decoration:underline; margin-right:auto;">Import from backup</button>
+          <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
+          <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg);" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Choose folder</button>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">All modals: 4px border-radius · rounded overflow-hidden · Background: sidebar-bg (chrome), var(--background) (content) · Title: 14px font-semibold monospace · Tabs: 12px, border-b-2 on foreground (not accent) · Themes bottom tabs: pill-style (not underline) · Selected theme: accent-muted bg + white text · Backdrop: black/40 backdrop-blur-sm · 150ms fade + scale from 0.95</p>
+  
+  </div>
+</div>
+<h1>Modal</h1>
+<h2>Description</h2>
+<p>A full-screen overlay container used for important user interactions that require focused attention. Modals present content in a centered white card above a semi-transparent dark backdrop. Common uses include file selection, theme customization, sync settings, and confirmation dialogs.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Focused dialogs</strong>: Actions that require full user attention (sync to folder, import backup)</li>
+<li><strong>Theme/configuration panels</strong>: Multi-step or complex settings (themes modal with preview)</li>
+<li><strong>Confirmations</strong>: Destructive actions or important yes/no decisions</li>
+<li><strong>File selection</strong>: Browse and choose folders or files</li>
+<li><strong>Data entry</strong>: Multi-field forms that need isolation from the main UI</li>
+</ul>
+<p>Do not use modals for simple notifications; use toasts instead.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Content Structure</th>
+<th>Max Width</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Simple Dialog</strong></td>
+<td>Title + description + footer buttons</td>
+<td>400-500px</td>
+<td>&quot;Import from backup&quot;, &quot;Choose folder&quot;</td>
+</tr>
+<tr>
+<td><strong>Multi-column Layout</strong></td>
+<td>Divided sections side-by-side</td>
+<td>90% viewport</td>
+<td>Themes modal (list | preview | elements)</td>
+</tr>
+<tr>
+<td><strong>Form Modal</strong></td>
+<td>Input fields + footer buttons</td>
+<td>500px</td>
+<td>Settings, configuration modals</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<pre><code>&lt;div class=&quot;modal-backdrop&quot;&gt;
+  &lt;div class=&quot;modal-card&quot;&gt;
+    &lt;div class=&quot;modal-header&quot;&gt;
+      &lt;div class=&quot;modal-title-wrapper&quot;&gt;
+        [Optional Icon]
+        &lt;h2 class=&quot;modal-title&quot;&gt;Modal Title&lt;/h2&gt;
+      &lt;/div&gt;
+      &lt;button class=&quot;modal-close&quot; aria-label=&quot;Close modal&quot;&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-body&quot;&gt;
+      [Content: text, lists, inputs, etc.]
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-footer&quot;&gt;
+      &lt;button class=&quot;btn btn-text&quot;&gt;Secondary action&lt;/button&gt;
+      &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+      &lt;button class=&quot;btn btn-primary&quot;&gt;Primary action&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Full-screen <code>.modal-backdrop</code> with semi-transparent overlay</li>
+<li>Centered <code>.modal-card</code> containing the modal content</li>
+<li><code>.modal-header</code>: Optional icon + bold title + close button (top-right)</li>
+<li><code>.modal-body</code>: Main content area with consistent padding</li>
+<li><code>.modal-footer</code>: Right-aligned button group with actions</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Backdrop</strong>: <code>rgba(0, 0, 0, 0.5)</code> semi-transparent dark overlay</li>
+<li><strong>Card background</strong>: <code>--background</code> (#fefefe light / #181716 dark)</li>
+<li><strong>Card border radius</strong>: <code>8px</code></li>
+<li><strong>Card shadow</strong>: <code>0 10px 40px rgba(0, 0, 0, 0.2)</code></li>
+<li><strong>Title font</strong>: 13px monospace, bold weight (700), <code>--foreground</code></li>
+<li><strong>Body padding</strong>: <code>16px</code></li>
+<li><strong>Footer padding</strong>: <code>16px</code>, top border <code>1px solid --border</code></li>
+<li><strong>Button layout</strong>: Right-aligned, gap <code>8px</code> between buttons</li>
+<li><strong>Z-index</strong>: <code>1000</code> (ensure modal is above all other content)</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Simple Dialog Modal</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal-backdrop&quot;&gt;
+  &lt;div class=&quot;modal-card&quot;&gt;
+    &lt;div class=&quot;modal-header&quot;&gt;
+      &lt;div class=&quot;modal-title-wrapper&quot;&gt;
+        &lt;svg class=&quot;modal-icon&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 20 20&quot;&gt;
+          &lt;!-- Cloud download icon --&gt;
+        &lt;/svg&gt;
+        &lt;h2 class=&quot;modal-title&quot;&gt;Sync to Local Folder&lt;/h2&gt;
+      &lt;/div&gt;
+      &lt;button class=&quot;modal-close&quot; aria-label=&quot;Close modal&quot;&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-body&quot;&gt;
+      &lt;p&gt;Download your Dirigible library to a local folder for backup and offline access.&lt;/p&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Creates a .dirigible folder with all notes and metadata&lt;/li&gt;
+        &lt;li&gt;Syncs only on demand—no continuous syncing&lt;/li&gt;
+        &lt;li&gt;Choose any folder: Desktop, Documents, external drive&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-footer&quot;&gt;
+      &lt;button class=&quot;btn btn-text&quot;&gt;Import from backup&lt;/button&gt;
+      &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+      &lt;button class=&quot;btn btn-primary&quot;&gt;Choose folder&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Multi-column Themes Modal</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal-backdrop&quot;&gt;
+  &lt;div class=&quot;modal-card modal-card-wide&quot;&gt;
+    &lt;div class=&quot;modal-header&quot;&gt;
+      &lt;div class=&quot;modal-title-wrapper&quot;&gt;
+        &lt;svg class=&quot;modal-icon&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 20 20&quot;&gt;
+          &lt;!-- Settings/themes icon --&gt;
+        &lt;/svg&gt;
+        &lt;h2 class=&quot;modal-title&quot;&gt;Themes&lt;/h2&gt;
+      &lt;/div&gt;
+      &lt;button class=&quot;modal-close&quot; aria-label=&quot;Close modal&quot;&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-body modal-body-grid&quot;&gt;
+      &lt;!-- Left column: theme list --&gt;
+      &lt;div class=&quot;themes-list&quot;&gt;
+        &lt;button class=&quot;theme-item theme-item-active&quot;&gt;
+          &lt;span class=&quot;theme-swatch&quot; style=&quot;background: #fefefe;&quot;&gt;&lt;/span&gt;
+          Light
+        &lt;/button&gt;
+        &lt;button class=&quot;theme-item&quot;&gt;
+          &lt;span class=&quot;theme-swatch&quot; style=&quot;background: #181716;&quot;&gt;&lt;/span&gt;
+          Dark
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Middle column: preview --&gt;
+      &lt;div class=&quot;themes-preview&quot;&gt;
+        &lt;!-- Preview of selected theme --&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Right column: color elements --&gt;
+      &lt;div class=&quot;themes-colors&quot;&gt;
+        &lt;div class=&quot;color-swatch-group&quot;&gt;
+          &lt;!-- Color swatches for current theme --&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-footer&quot;&gt;
+      &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+      &lt;button class=&quot;btn btn-primary&quot;&gt;Apply theme&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Form Modal</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal-backdrop&quot;&gt;
+  &lt;div class=&quot;modal-card&quot;&gt;
+    &lt;div class=&quot;modal-header&quot;&gt;
+      &lt;h2 class=&quot;modal-title&quot;&gt;Settings&lt;/h2&gt;
+      &lt;button class=&quot;modal-close&quot; aria-label=&quot;Close modal&quot;&gt;×&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-body&quot;&gt;
+      &lt;div class=&quot;input-wrapper&quot;&gt;
+        &lt;label class=&quot;input-label&quot;&gt;Library Name&lt;/label&gt;
+        &lt;input type=&quot;text&quot; class=&quot;input&quot; placeholder=&quot;My Library&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;input-wrapper&quot;&gt;
+        &lt;label class=&quot;input-label&quot;&gt;Author&lt;/label&gt;
+        &lt;input type=&quot;text&quot; class=&quot;input&quot; placeholder=&quot;Your name&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;modal-footer&quot;&gt;
+      &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+      &lt;button class=&quot;btn btn-primary&quot;&gt;Save settings&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background-color: var(--background);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-card-wide {
+  max-width: 90vw;
+  aspect-ratio: 16 / 9;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--foreground);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.modal-close:hover {
+  color: var(--foreground);
+}
+
+.modal-body {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modal-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-footer .btn-text {
+  margin-right: auto;
+}
+
+/* Animation */
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-backdrop {
+  animation: modal-fade-in 0.15s ease;
+}
+
+.modal-card {
+  animation: modal-scale-in 0.15s ease;
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Simple Modal with State Management
+const [isOpen, setIsOpen] = useState(false);
+
+const handleOpenModal = () =&gt; setIsOpen(true);
+const handleCloseModal = () =&gt; setIsOpen(false);
+const handleBackdropClick = (e) =&gt; {
+  if (e.target === e.currentTarget) {
+    handleCloseModal();
+  }
+};
+
+// Close on Escape key
+useEffect(() =&gt; {
+  const handleEscape = (e) =&gt; {
+    if (e.key === &#39;Escape&#39; &amp;&amp; isOpen) {
+      handleCloseModal();
+    }
+  };
+  document.addEventListener(&#39;keydown&#39;, handleEscape);
+  return () =&gt; document.removeEventListener(&#39;keydown&#39;, handleEscape);
+}, [isOpen]);
+
+{isOpen &amp;&amp; (
+  &lt;div className=&quot;modal-backdrop&quot; onClick={handleBackdropClick}&gt;
+    &lt;div className=&quot;modal-card&quot;&gt;
+      &lt;div className=&quot;modal-header&quot;&gt;
+        &lt;div className=&quot;modal-title-wrapper&quot;&gt;
+          &lt;SyncIcon className=&quot;modal-icon&quot; /&gt;
+          &lt;h2 className=&quot;modal-title&quot;&gt;Sync to Local Folder&lt;/h2&gt;
+        &lt;/div&gt;
+        &lt;button
+          className=&quot;modal-close&quot;
+          aria-label=&quot;Close modal&quot;
+          onClick={handleCloseModal}
+        &gt;
+          ×
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div className=&quot;modal-body&quot;&gt;
+        &lt;p&gt;Download your Dirigible library to a local folder for backup and offline access.&lt;/p&gt;
+        &lt;ul&gt;
+          &lt;li&gt;Creates a .dirigible folder with all notes and metadata&lt;/li&gt;
+          &lt;li&gt;Syncs only on demand—no continuous syncing&lt;/li&gt;
+          &lt;li&gt;Choose any folder: Desktop, Documents, external drive&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+
+      &lt;div className=&quot;modal-footer&quot;&gt;
+        &lt;button className=&quot;btn btn-text&quot; onClick={handleImportBackup}&gt;
+          Import from backup
+        &lt;/button&gt;
+        &lt;button className=&quot;btn btn-secondary&quot; onClick={handleCloseModal}&gt;
+          Cancel
+        &lt;/button&gt;
+        &lt;button className=&quot;btn btn-primary&quot; onClick={handleChooseFolder}&gt;
+          Choose folder
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+)}
+
+// Themes Modal with Tab-like Sections
+const [selectedTheme, setSelectedTheme] = useState(&#39;light&#39;);
+
+{isOpen &amp;&amp; (
+  &lt;div className=&quot;modal-backdrop&quot; onClick={handleBackdropClick}&gt;
+    &lt;div className=&quot;modal-card modal-card-wide&quot;&gt;
+      &lt;div className=&quot;modal-header&quot;&gt;
+        &lt;div className=&quot;modal-title-wrapper&quot;&gt;
+          &lt;SettingsIcon className=&quot;modal-icon&quot; /&gt;
+          &lt;h2 className=&quot;modal-title&quot;&gt;Themes&lt;/h2&gt;
+        &lt;/div&gt;
+        &lt;button className=&quot;modal-close&quot; onClick={handleCloseModal}&gt;
+          ×
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div className=&quot;modal-body modal-body-grid&quot;&gt;
+        &lt;div className=&quot;themes-list&quot;&gt;
+          {themes.map((theme) =&gt; (
+            &lt;button
+              key={theme.id}
+              className={`theme-item ${selectedTheme === theme.id ? &#39;theme-item-active&#39; : &#39;&#39;}`}
+              onClick={() =&gt; setSelectedTheme(theme.id)}
+            &gt;
+              &lt;span
+                className=&quot;theme-swatch&quot;
+                style={{ backgroundColor: theme.primaryColor }}
+              /&gt;
+              {theme.name}
+            &lt;/button&gt;
+          ))}
+        &lt;/div&gt;
+
+        &lt;ThemePreview theme={themes.find((t) =&gt; t.id === selectedTheme)} /&gt;
+
+        &lt;div className=&quot;themes-colors&quot;&gt;
+          &lt;ColorSwatchGroup theme={themes.find((t) =&gt; t.id === selectedTheme)} /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div className=&quot;modal-footer&quot;&gt;
+        &lt;button className=&quot;btn btn-secondary&quot; onClick={handleCloseModal}&gt;
+          Cancel
+        &lt;/button&gt;
+        &lt;button className=&quot;btn btn-primary&quot; onClick={() =&gt; applyTheme(selectedTheme)}&gt;
+          Apply theme
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+)}
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Center the modal card on the screen using flexbox</li>
+<li>Use a semi-transparent dark backdrop (rgba(0, 0, 0, 0.5))</li>
+<li>Place the close button (×) in the top-right corner</li>
+<li>Include a title in the modal header with optional icon</li>
+<li>Right-align footer buttons with &quot;Cancel&quot; on the left, primary action on the right</li>
+<li>Close the modal on Escape key press</li>
+<li>Close the modal on backdrop click</li>
+<li>Use appropriate icons in the header (cloud icon for sync, settings icon for themes)</li>
+<li>Limit max-width to keep content readable (400-500px for simple dialogs)</li>
+<li>Prevent body scrolling when a modal is open</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use modals for simple notifications or confirmations that could be toasts</li>
+<li>Place modals without a backdrop</li>
+<li>Left-align buttons in the footer (always right-align)</li>
+<li>Use modals for navigation or page transitions</li>
+<li>Create modals without a clear close mechanism</li>
+<li>Forget to handle the Escape key for closing</li>
+<li>Use multiple nested modals (stack them sequentially)</li>
+<li>Place unrelated actions in the same modal</li>
+<li>Make modal content scrollable within the footer area</li>
+<li>Use decorative icons that don&#39;t relate to the modal purpose</li>
+</ul>
+<h2>Rules Specific to Modals</h2>
+<ol>
+<li><strong>Full-screen backdrop</strong>: Modal backdrop covers the entire viewport and is fixed positioned</li>
+<li><strong>Centered card</strong>: Modal card is centered both horizontally and vertically on the screen</li>
+<li><strong>Z-index 1000</strong>: Ensures modal appears above all other page elements</li>
+<li><strong>Close on Escape</strong>: Modal closes when user presses Escape key</li>
+<li><strong>Close on backdrop click</strong>: Clicking the semi-transparent backdrop closes the modal</li>
+<li><strong>Close button (×)</strong>: Always present in the top-right corner of the header</li>
+<li><strong>Title in header</strong>: Every modal has a clear, bold title (monospace 13px font-weight 700)</li>
+<li><strong>Right-aligned footer</strong>: Footer buttons are right-aligned; text buttons appear on the left</li>
+<li><strong>Subtle top border on footer</strong>: A thin 1px border separates the body from footer</li>
+<li><strong>Max-width limits</strong>: Simple dialogs max 500px, complex layouts max 90vw</li>
+<li><strong>No overflow hidden</strong>: Body should be scrollable if content exceeds viewport height</li>
+<li><strong>Smooth animations</strong>: Modal appears with fade-in and slight scale animation (0.15s)</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

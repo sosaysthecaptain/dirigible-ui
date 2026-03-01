@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>table — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html" class="active">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <style>
+      .dg-table { width:100%; border-collapse:collapse; font-family:'Lucida Grande','Lucida Sans Unicode','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; }
+      .dg-table th { text-align:left; padding:3px 6px; font-weight:600; border-bottom:1px solid var(--border); height:24px; cursor:pointer; white-space:nowrap; font-size:11px; position:relative; }
+      .dg-table th:hover { background:var(--hover); }
+      .dg-table td { padding:0 6px; border-bottom:none; vertical-align:middle; height:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-right:1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+      .dg-table td:last-child { border-right:none; }
+      .dg-table tr:hover td { background:var(--hover); }
+      .dg-table tr.dg-selected td { background:color-mix(in srgb, #0066cc 15%, var(--bg)); }
+      .dg-table tr.dg-alt td { background:var(--sidebar-bg); }
+      .dg-hdr-menu { display:none; position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:10px; color:var(--muted); cursor:pointer; }
+      .dg-table th:hover .dg-hdr-menu { display:block; }
+    </style>
+    <div style="overflow-x:auto;">
+      <table class="dg-table">
+        <thead>
+          <tr>
+            <th style="width:28px; text-align:center;">#</th>
+            <th style="min-width:180px;">Title <svg width="8" height="8" viewBox="0 0 10 6" fill="currentColor" style="margin-left:4px;opacity:0.5;"><path d="M0 6l5-6 5 6z"/></svg> <span class="dg-hdr-menu">&#9662;</span></th>
+            <th style="min-width:140px;">Artist <span class="dg-hdr-menu">&#9662;</span></th>
+            <th style="min-width:160px;">Album <span class="dg-hdr-menu">&#9662;</span></th>
+            <th style="width:44px; text-align:right;">Year <span class="dg-hdr-menu">&#9662;</span></th>
+            <th style="width:48px; text-align:right;">Time</th>
+            <th style="width:50px; text-align:right;">Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="text-align:center;">1</td><td>Astronaut</td><td>Amanda Palmer</td><td>Who Killed Amanda Palmer</td><td style="text-align:right;">2008</td><td style="text-align:right;">4:37</td><td style="text-align:right;">8.6 MB</td></tr>
+          <tr class="dg-alt"><td style="text-align:center;">2</td><td>Runs in the Family</td><td>Amanda Palmer</td><td>Who Killed Amanda Palmer</td><td style="text-align:right;">2008</td><td style="text-align:right;">2:44</td><td style="text-align:right;">5.1 MB</td></tr>
+          <tr class="dg-selected"><td style="text-align:center;">3</td><td>Ampersand</td><td>Amanda Palmer</td><td>Who Killed Amanda Palmer</td><td style="text-align:right;">2008</td><td style="text-align:right;">5:58</td><td style="text-align:right;">11.0 MB</td></tr>
+          <tr class="dg-selected"><td style="text-align:center;">4</td><td>Coin-Operated Boy</td><td>Amanda Palmer</td><td>Who Killed Amanda Palmer</td><td style="text-align:right;">2008</td><td style="text-align:right;">4:24</td><td style="text-align:right;">8.1 MB</td></tr>
+          <tr class="dg-alt"><td style="text-align:center;">1</td><td>I Saw Her Standing There</td><td>The Beatles</td><td>Please Please Me</td><td style="text-align:right;">1963</td><td style="text-align:right;">2:55</td><td style="text-align:right;">4.5 MB</td></tr>
+          <tr><td style="text-align:center;">2</td><td>Misery</td><td>The Beatles</td><td>Please Please Me</td><td style="text-align:right;">1963</td><td style="text-align:right;">1:50</td><td style="text-align:right;">2.8 MB</td></tr>
+          <tr class="dg-alt"><td style="text-align:center;">3</td><td>Anna (Go to Him)</td><td>The Beatles</td><td>Please Please Me</td><td style="text-align:right;">1963</td><td style="text-align:right;">2:57</td><td style="text-align:right;">4.7 MB</td></tr>
+        </tbody>
+      </table>
+      <div style="padding:8px 6px; font-size:11px; color:var(--muted); border-top:1px solid var(--border); font-family:'Lucida Grande','Lucida Sans Unicode','Helvetica Neue',Helvetica,Arial,sans-serif;">2,189 songs &middot; 5d 15h 5m &middot; 13.8 GB</div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Technology: TanStack React Table + row virtualization · Font: Lucida Grande 11px · Row height: 18px · Selected: #0066cc at 15% (rows 3-4) · Header menu &#9662; on hover · Multi-select: click, cmd+click, shift+click · Alternating rows use sidebar-bg · Inline editing on slow second-click</p>
+  
+  </div>
+</div>
+<h1>Table</h1>
+<h2>Description</h2>
+<p>Displays structured data in rows and columns. Dirigible uses tables for listing notes, music tracks, and other collections. Tables feature sortable headers, optional row selection, fixed headers, and hover highlights. Two main variants exist: Notes table (with checkboxes) and Music table (grouped by album).</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Notes library</strong>: Display list of notes with metadata (title, type, modified date, tags, size)</li>
+<li><strong>Music collections</strong>: Show tracks grouped by album with artist, duration, and size</li>
+<li><strong>Data grids</strong>: Any multi-column data that needs sorting and filtering</li>
+<li><strong>Collections</strong>: Display folders, projects, or any hierarchical data</li>
+</ul>
+<p>Do not use tables for simple lists; use list components instead.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Columns</th>
+<th>Row Groups</th>
+<th>Selection</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Notes Table</strong></td>
+<td>Checkbox, Title, Type, Modified, Date, Tags, Size</td>
+<td>None</td>
+<td>Checkboxes</td>
+<td>Library of notes and documents</td>
+</tr>
+<tr>
+<td><strong>Music Table</strong></td>
+<td>#, Title, Artist, Album, Year, Time, Size</td>
+<td>By album</td>
+<td>None</td>
+<td>Music/audio collections</td>
+</tr>
+<tr>
+<td><strong>Generic Table</strong></td>
+<td>Varies by context</td>
+<td>Optional</td>
+<td>Optional</td>
+<td>Any tabular data</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<h3>Notes Table</h3>
+<pre><code>&lt;table class=&quot;table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th class=&quot;table-header table-header-checkbox&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;table-checkbox&quot; /&gt;
+      &lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Title&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Type&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Modified&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Date&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Tags&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-right&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr class=&quot;table-row&quot;&gt;
+      &lt;td class=&quot;table-cell table-cell-checkbox&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;table-checkbox&quot; /&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-title&quot;&gt;
+        &lt;svg class=&quot;table-icon&quot;&gt;&lt;!-- doc icon --&gt;&lt;/svg&gt;
+        &lt;span&gt;Note Title&lt;/span&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;
+        &lt;span class=&quot;status-dot status-dot-published&quot;&gt;&lt;/span&gt;
+        Note
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Today&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Mar 18, 2025&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;
+        &lt;span class=&quot;tag-dot&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;tag-dot&quot;&gt;&lt;/span&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;12.5 KB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+<h3>Music Table</h3>
+<pre><code>&lt;table class=&quot;table table-music&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th class=&quot;table-header&quot;&gt;#&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Title&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Artist&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Album&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Year&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-right&quot;&gt;Time&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-right&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;!-- Group header --&gt;
+    &lt;tr class=&quot;table-group-header&quot;&gt;
+      &lt;td colspan=&quot;7&quot;&gt;
+        &lt;strong&gt;Artist Name - Album Name&lt;/strong&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- Rows for this album --&gt;
+    &lt;tr class=&quot;table-row&quot;&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Track Title&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Artist&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Album&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;2020&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;3:42&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;8.5 MB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;!-- Stats footer --&gt;
+  &lt;tfoot&gt;
+    &lt;tr class=&quot;table-footer&quot;&gt;
+      &lt;td colspan=&quot;7&quot;&gt;2,189 songs · 5d 15h 5m · 13.8 GB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li><code>&lt;table&gt;</code> with class <code>.table</code> and optional variant class (<code>.table-music</code>)</li>
+<li><code>&lt;thead&gt;</code> with sortable column headers</li>
+<li><code>&lt;tbody&gt;</code> with data rows, each <code>&lt;tr class=&quot;table-row&quot;&gt;</code></li>
+<li>Optional <code>&lt;tfoot&gt;</code> with summary stats for music tables</li>
+<li>Row selection via checkbox in first column</li>
+<li>Status indicators via colored dots</li>
+<li>Icons for content type (document, music note, etc.)</li>
+<li>Tag indicators as small dots in tags column</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Font</strong>: <code>Lucida Grande</code>, system-ui, sans-serif — <strong>not monospace</strong> (this is a deliberate density choice)</li>
+<li><strong>Font size</strong>: 11px for cell text, 11px semibold for headers</li>
+<li><strong>Row height</strong>: 18px (extremely dense; the music library is designed for scanning large collections)</li>
+<li><strong>Cell padding</strong>: 4px horizontal, 1px vertical</li>
+<li><strong>Border</strong>: 1px subtle dividers between rows</li>
+<li><strong>Hover background</strong>: Slight highlight color (--hover-bg)</li>
+<li><strong>Selected row</strong>: Accent background (--accent at ~15% opacity)</li>
+<li><strong>Multi-select</strong>: Shift+click for range, Cmd+click for toggle (no checkboxes in music table)</li>
+<li><strong>Status dot</strong>: 8px circle, --success (green), --warning (orange), --danger (red)</li>
+<li><strong>Tag dot</strong>: 6px circle, muted color</li>
+<li><strong>Icon size</strong>: 16px for content type icons</li>
+<li><strong>Checkbox size</strong>: 16px (notes table only)</li>
+<li><strong>Sortable indicator</strong>: Small up/down arrow on clickable headers</li>
+<li><strong>Align right</strong>: Size and time columns are right-aligned</li>
+<li><strong>Virtualization</strong>: Uses TanStack React Table with row virtualization for large datasets (2000+ tracks)</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Notes Table</h3>
+<pre><code class="language-html">&lt;table class=&quot;table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th class=&quot;table-header table-header-checkbox&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;table-checkbox&quot; aria-label=&quot;Select all notes&quot; /&gt;
+      &lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;title&quot;&gt;
+        Title
+        &lt;svg class=&quot;table-sort-icon&quot; width=&quot;12&quot; height=&quot;12&quot;&gt;&lt;!-- sort arrow --&gt;&lt;/svg&gt;
+      &lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;type&quot;&gt;Type&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;modified&quot;&gt;Modified&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;date&quot;&gt;Date&lt;/th&gt;
+      &lt;th class=&quot;table-header&quot;&gt;Tags&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable table-header-right&quot; data-sort=&quot;size&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr class=&quot;table-row&quot; data-id=&quot;note-1&quot;&gt;
+      &lt;td class=&quot;table-cell table-cell-checkbox&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;table-checkbox&quot; /&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-title&quot;&gt;
+        &lt;svg class=&quot;table-icon&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;&lt;!-- document icon --&gt;&lt;/svg&gt;
+        &lt;span&gt;Getting Started with Dirigible&lt;/span&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;
+        &lt;span class=&quot;status-dot status-dot-published&quot;&gt;&lt;/span&gt;
+        Note
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Today&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Mar 18, 2025&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;
+        &lt;span class=&quot;tag-dot&quot; title=&quot;Writing&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;tag-dot&quot; title=&quot;Tutorial&quot;&gt;&lt;/span&gt;
+        &lt;span class=&quot;tag-dot&quot; title=&quot;Documentation&quot;&gt;&lt;/span&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;12.5 KB&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr class=&quot;table-row&quot; data-id=&quot;note-2&quot;&gt;
+      &lt;td class=&quot;table-cell table-cell-checkbox&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; class=&quot;table-checkbox&quot; /&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-title&quot;&gt;
+        &lt;svg class=&quot;table-icon&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;&lt;!-- document icon --&gt;&lt;/svg&gt;
+        &lt;span&gt;Advanced Features&lt;/span&gt;
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;
+        Note
+      &lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Last week&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Mar 12, 2025&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;8.2 KB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+<h3>Music Table</h3>
+<pre><code class="language-html">&lt;table class=&quot;table table-music&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;track&quot;&gt;#&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;title&quot;&gt;Title&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;artist&quot;&gt;Artist&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;album&quot;&gt;Album&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable&quot; data-sort=&quot;year&quot;&gt;Year&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable table-header-right&quot; data-sort=&quot;time&quot;&gt;Time&lt;/th&gt;
+      &lt;th class=&quot;table-header table-header-sortable table-header-right&quot; data-sort=&quot;size&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;!-- Group 1 --&gt;
+    &lt;tr class=&quot;table-group-header&quot;&gt;
+      &lt;td colspan=&quot;7&quot;&gt;&lt;strong&gt;Radiohead - OK Computer&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class=&quot;table-row&quot; data-track-id=&quot;1&quot;&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Airbag&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Radiohead&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;OK Computer&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1997&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;4:44&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;10.2 MB&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class=&quot;table-row&quot; data-track-id=&quot;2&quot;&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;2&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Paranoid Android&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Radiohead&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;OK Computer&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1997&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;6:23&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;14.5 MB&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;!-- Group 2 --&gt;
+    &lt;tr class=&quot;table-group-header&quot;&gt;
+      &lt;td colspan=&quot;7&quot;&gt;&lt;strong&gt;The Beatles - Abbey Road&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class=&quot;table-row&quot; data-track-id=&quot;3&quot;&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Come Together&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;The Beatles&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;Abbey Road&lt;/td&gt;
+      &lt;td class=&quot;table-cell&quot;&gt;1969&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;4:15&lt;/td&gt;
+      &lt;td class=&quot;table-cell table-cell-right&quot;&gt;9.8 MB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr class=&quot;table-footer&quot;&gt;
+      &lt;td colspan=&quot;7&quot;&gt;2,189 songs · 5d 15h 5m · 13.8 GB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: &#39;Lucida Grande&#39;, system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--foreground);
+}
+
+.table thead {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-secondary);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+.table-header {
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--foreground);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: background-color 0.1s ease;
+}
+
+.table-header:hover {
+  background-color: var(--hover-bg);
+}
+
+.table-header-sortable {
+  cursor: pointer;
+}
+
+.table-header-right {
+  text-align: right;
+}
+
+.table-header-checkbox {
+  width: 48px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.table-sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  transition: opacity 0.1s ease;
+}
+
+.table-header-sortable:hover .table-sort-icon {
+  opacity: 1;
+}
+
+.table-row {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.1s ease;
+}
+
+.table-row:hover {
+  background-color: var(--hover-bg);
+  cursor: pointer;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+  word-break: break-word;
+}
+
+.table-cell-right {
+  text-align: right;
+}
+
+.table-cell-checkbox {
+  width: 48px;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.table-cell-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.table-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-muted);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.table-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  background-color: var(--color-muted);
+}
+
+.status-dot-published {
+  background-color: var(--success);
+}
+
+.status-dot-warning {
+  background-color: var(--warning);
+}
+
+.status-dot-danger {
+  background-color: var(--danger);
+}
+
+.tag-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-muted);
+  margin-right: 4px;
+}
+
+/* Music table specific */
+.table-group-header {
+  background-color: var(--background-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+
+.table-group-header td {
+  padding: 8px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.table-footer {
+  background-color: var(--background-secondary);
+  border-top: 1px solid var(--border);
+  padding: 8px;
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: right;
+}
+
+/* Alternating row backgrounds (optional) */
+.table-row:nth-child(odd) {
+  background-color: var(--background-alt);
+}
+
+.table-row:hover {
+  background-color: var(--hover-bg);
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Notes Table Component
+const [notes, setNotes] = useState([
+  {
+    id: &#39;note-1&#39;,
+    title: &#39;Getting Started with Dirigible&#39;,
+    type: &#39;Note&#39;,
+    modified: &#39;Today&#39;,
+    date: &#39;Mar 18, 2025&#39;,
+    tags: [&#39;Writing&#39;, &#39;Tutorial&#39;, &#39;Documentation&#39;],
+    size: &#39;12.5 KB&#39;,
+    published: true,
+  },
+  {
+    id: &#39;note-2&#39;,
+    title: &#39;Advanced Features&#39;,
+    type: &#39;Note&#39;,
+    modified: &#39;Last week&#39;,
+    date: &#39;Mar 12, 2025&#39;,
+    tags: [],
+    size: &#39;8.2 KB&#39;,
+    published: false,
+  },
+]);
+
+const [selectedNotes, setSelectedNotes] = useState(new Set());
+const [sortBy, setSortBy] = useState(&#39;title&#39;);
+
+const toggleRowSelection = (noteId) =&gt; {
+  const newSelection = new Set(selectedNotes);
+  if (newSelection.has(noteId)) {
+    newSelection.delete(noteId);
+  } else {
+    newSelection.add(noteId);
+  }
+  setSelectedNotes(newSelection);
+};
+
+const toggleAllSelection = (e) =&gt; {
+  if (e.target.checked) {
+    setSelectedNotes(new Set(notes.map((n) =&gt; n.id)));
+  } else {
+    setSelectedNotes(new Set());
+  }
+};
+
+const handleSort = (column) =&gt; {
+  setSortBy(sortBy === column ? `-${column}` : column);
+};
+
+&lt;table className=&quot;table&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th className=&quot;table-header table-header-checkbox&quot;&gt;
+        &lt;input
+          type=&quot;checkbox&quot;
+          className=&quot;table-checkbox&quot;
+          onChange={toggleAllSelection}
+          checked={selectedNotes.size === notes.length}
+        /&gt;
+      &lt;/th&gt;
+      &lt;th
+        className=&quot;table-header table-header-sortable&quot;
+        onClick={() =&gt; handleSort(&#39;title&#39;)}
+      &gt;
+        Title
+      &lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Type&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Modified&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Date&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Tags&lt;/th&gt;
+      &lt;th className=&quot;table-header table-header-right&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {notes.map((note) =&gt; (
+      &lt;tr
+        key={note.id}
+        className=&quot;table-row&quot;
+        onClick={() =&gt; openNote(note.id)}
+      &gt;
+        &lt;td className=&quot;table-cell table-cell-checkbox&quot;&gt;
+          &lt;input
+            type=&quot;checkbox&quot;
+            className=&quot;table-checkbox&quot;
+            checked={selectedNotes.has(note.id)}
+            onChange={() =&gt; toggleRowSelection(note.id)}
+            onClick={(e) =&gt; e.stopPropagation()}
+          /&gt;
+        &lt;/td&gt;
+        &lt;td className=&quot;table-cell table-cell-title&quot;&gt;
+          &lt;DocumentIcon className=&quot;table-icon&quot; width=&quot;16&quot; height=&quot;16&quot; /&gt;
+          &lt;span&gt;{note.title}&lt;/span&gt;
+        &lt;/td&gt;
+        &lt;td className=&quot;table-cell&quot;&gt;
+          {note.published &amp;&amp; (
+            &lt;span className=&quot;status-dot status-dot-published&quot;&gt;&lt;/span&gt;
+          )}
+          {note.type}
+        &lt;/td&gt;
+        &lt;td className=&quot;table-cell&quot;&gt;{note.modified}&lt;/td&gt;
+        &lt;td className=&quot;table-cell&quot;&gt;{note.date}&lt;/td&gt;
+        &lt;td className=&quot;table-cell&quot;&gt;
+          {note.tags.map((tag, idx) =&gt; (
+            &lt;span key={idx} className=&quot;tag-dot&quot; title={tag}&gt;&lt;/span&gt;
+          ))}
+        &lt;/td&gt;
+        &lt;td className=&quot;table-cell table-cell-right&quot;&gt;{note.size}&lt;/td&gt;
+      &lt;/tr&gt;
+    ))}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+// Music Table Component
+const [tracks, setTracks] = useState([
+  {
+    id: 1,
+    artist: &#39;Radiohead&#39;,
+    album: &#39;OK Computer&#39;,
+    track: 1,
+    title: &#39;Airbag&#39;,
+    year: 1997,
+    time: &#39;4:44&#39;,
+    size: &#39;10.2 MB&#39;,
+  },
+  {
+    id: 2,
+    artist: &#39;Radiohead&#39;,
+    album: &#39;OK Computer&#39;,
+    track: 2,
+    title: &#39;Paranoid Android&#39;,
+    year: 1997,
+    time: &#39;6:23&#39;,
+    size: &#39;14.5 MB&#39;,
+  },
+]);
+
+const groupedTracks = tracks.reduce((acc, track) =&gt; {
+  const groupKey = `${track.artist} - ${track.album}`;
+  if (!acc[groupKey]) acc[groupKey] = [];
+  acc[groupKey].push(track);
+  return acc;
+}, {});
+
+const stats = {
+  totalSongs: tracks.length,
+  totalDuration: &#39;5d 15h 5m&#39;,
+  totalSize: &#39;13.8 GB&#39;,
+};
+
+&lt;table className=&quot;table table-music&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th className=&quot;table-header&quot;&gt;#&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Title&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Artist&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Album&lt;/th&gt;
+      &lt;th className=&quot;table-header&quot;&gt;Year&lt;/th&gt;
+      &lt;th className=&quot;table-header table-header-right&quot;&gt;Time&lt;/th&gt;
+      &lt;th className=&quot;table-header table-header-right&quot;&gt;Size&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    {Object.entries(groupedTracks).map(([groupKey, groupTracks]) =&gt; (
+      &lt;tbody key={groupKey}&gt;
+        &lt;tr className=&quot;table-group-header&quot;&gt;
+          &lt;td colSpan=&quot;7&quot;&gt;
+            &lt;strong&gt;{groupKey}&lt;/strong&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        {groupTracks.map((track) =&gt; (
+          &lt;tr key={track.id} className=&quot;table-row&quot;&gt;
+            &lt;td className=&quot;table-cell&quot;&gt;{track.track}&lt;/td&gt;
+            &lt;td className=&quot;table-cell&quot;&gt;{track.title}&lt;/td&gt;
+            &lt;td className=&quot;table-cell&quot;&gt;{track.artist}&lt;/td&gt;
+            &lt;td className=&quot;table-cell&quot;&gt;{track.album}&lt;/td&gt;
+            &lt;td className=&quot;table-cell&quot;&gt;{track.year}&lt;/td&gt;
+            &lt;td className=&quot;table-cell table-cell-right&quot;&gt;{track.time}&lt;/td&gt;
+            &lt;td className=&quot;table-cell table-cell-right&quot;&gt;{track.size}&lt;/td&gt;
+          &lt;/tr&gt;
+        ))}
+      &lt;/tbody&gt;
+    ))}
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr className=&quot;table-footer&quot;&gt;
+      &lt;td colSpan=&quot;7&quot;&gt;
+        {stats.totalSongs.toLocaleString()} songs · {stats.totalDuration} · {stats.totalSize}
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Use fixed/sticky headers so they stay visible when scrolling</li>
+<li>Make column headers sortable with visual indicators (sort arrows)</li>
+<li>Use right-alignment for numeric columns (Size, Time)</li>
+<li>Include row hover highlights for clarity</li>
+<li>Use Lucida Grande at 11px for music table text (not monospace)</li>
+<li>Group related rows (e.g., by album in music tables)</li>
+<li>Show status indicators via small colored dots</li>
+<li>Include row selection checkboxes when bulk actions are needed</li>
+<li>Use icons to indicate content type (document, music, etc.)</li>
+<li>Provide summary stats in a footer for data tables (music table)</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use tables for simple lists (use list components instead)</li>
+<li>Create tables without sortable headers</li>
+<li>Left-align numeric columns (should be right-aligned)</li>
+<li>Use thick borders between rows; keep borders subtle (1px)</li>
+<li>Mix content types in table columns (one type per column)</li>
+<li>Create tables wider than the viewport without horizontal scroll</li>
+<li>Use unnecessary visual effects (gradients, shadows on rows)</li>
+<li>Forget to make rows clickable when they lead to detail views</li>
+<li>Use different fonts or font sizes within the same table</li>
+<li>Create tables with too many columns (consider scrolling or collapsible sections)</li>
+</ul>
+<h2>Rules Specific to Tables</h2>
+<ol>
+<li><strong>Sticky headers</strong>: Table headers remain visible when scrolling vertically</li>
+<li><strong>Sortable headers</strong>: Column headers are clickable to sort by that column</li>
+<li><strong>Row borders subtle</strong>: Only 1px solid --border between rows, never thick</li>
+<li><strong>Hover highlight</strong>: Rows highlight on hover with --hover-bg color</li>
+<li><strong>Icons for content type</strong>: First meaningful column includes icon (document, music, etc.)</li>
+<li><strong>Status dots small</strong>: 8px diameter colored circles indicate state</li>
+<li><strong>Tag indicators</strong>: Use small dots in tags column instead of full tag text</li>
+<li><strong>Checkboxes for selection</strong>: Rows include left-column checkboxes for multi-select</li>
+<li><strong>Right-align numbers</strong>: Size, time, and other numeric columns are right-aligned</li>
+<li><strong>Group headers for music</strong>: Music tables have group headers (Artist - Album)</li>
+<li><strong>Stats footer</strong>: Music tables include footer with total stats</li>
+<li><strong>Alternating backgrounds</strong>: Music table uses subtle alternating row backgrounds for scanability</li>
+<li><strong>Fixed height rows</strong>: Music table rows are 18px; notes table rows are ~32px</li>
+<li><strong>Row click navigates</strong>: Clicking row opens detail view (unless checkbox clicked)</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

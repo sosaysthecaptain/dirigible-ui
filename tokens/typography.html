@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>typography — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html" class="active">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <h1>Typography</h1>
+<p>Type system design tokens for the Dirigible design system. Dirigible uses a carefully curated font stack optimized for code-first applications with proportional typography for published content.</p>
+<h2>Font Stacks</h2>
+<p>Dirigible supports four font families, each with specific use cases:</p>
+<table>
+<thead>
+<tr>
+<th>Font Stack</th>
+<th>CSS Variable</th>
+<th>Primary Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SF Mono, Cascadia Code, Fira Code, JetBrains Mono, Menlo, monospace</td>
+<td><code>--font-mono</code></td>
+<td>Default UI, code blocks, sidebar, buttons, labels</td>
+</tr>
+<tr>
+<td>IBM Plex Sans, system-ui, sans-serif</td>
+<td><code>--font-sans</code></td>
+<td>Published content body text, blog/wiki pages</td>
+</tr>
+<tr>
+<td>Crimson Pro, Georgia, serif</td>
+<td><code>--font-serif</code></td>
+<td>Published content body text, blog/wiki pages</td>
+</tr>
+<tr>
+<td>Lucida Grande, system-ui, sans-serif</td>
+<td>(inline)</td>
+<td>Music library table, data grids</td>
+</tr>
+</tbody></table>
+<h3>CSS Custom Properties</h3>
+<pre><code class="language-css">:root {
+  --font-mono: &#39;SF Mono&#39;, &#39;Cascadia Code&#39;, &#39;Fira Code&#39;, &#39;JetBrains Mono&#39;, Menlo, Monaco, Consolas, &#39;Courier New&#39;, monospace;
+  --font-sans: &#39;IBM Plex Sans&#39;, system-ui, sans-serif;
+  --font-serif: &#39;Crimson Pro&#39;, Georgia, serif;
+}
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> SF Mono is the primary monospace font. It ships with macOS and is preferred for its compact, clean letterforms. The fallback chain ensures consistent rendering across platforms. Lucida Grande is used specifically for the music library data grid (see <code>table.md</code>) and is applied inline rather than via a CSS variable.</p>
+</blockquote>
+<h2>Type Scale</h2>
+<p>The Dirigible type scale is based on a consistent 4px baseline grid with specific line height relationships optimized for code and content readability.</p>
+<h3>Scale Table</h3>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Font Size</th>
+<th>Line Height</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>xs</code></td>
+<td>11px</td>
+<td>16px</td>
+<td>Fine print, badges, metadata, button text</td>
+</tr>
+<tr>
+<td><code>sm</code></td>
+<td>13px</td>
+<td>20px</td>
+<td><strong>Default UI text</strong>, sidebar items, form labels, input text</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>14px</td>
+<td>22px</td>
+<td>Note body text, form inputs, code comments</td>
+</tr>
+<tr>
+<td><code>md</code></td>
+<td>16px</td>
+<td>24px</td>
+<td>Published content body, blog posts, wiki text</td>
+</tr>
+<tr>
+<td><code>lg</code></td>
+<td>18px</td>
+<td>28px</td>
+<td>Section headers, content subheadings</td>
+</tr>
+<tr>
+<td><code>xl</code></td>
+<td>24px</td>
+<td>32px</td>
+<td>Page titles, modal headers</td>
+</tr>
+<tr>
+<td><code>2xl</code></td>
+<td>32px</td>
+<td>40px</td>
+<td>Hero titles (published sites only)</td>
+</tr>
+</tbody></table>
+<h3>CSS Examples</h3>
+<pre><code class="language-css">/* Tiny badge or metadata text */
+.badge {
+  font-size: 11px;
+  line-height: 16px;
+  font-family: var(--font-mono);
+}
+
+/* Default UI text - the workhorse */
+.label {
+  font-size: 13px;
+  line-height: 20px;
+  font-family: var(--font-mono);
+}
+
+/* Note body */
+.note-body {
+  font-size: 14px;
+  line-height: 22px;
+  font-family: var(--font-mono);
+}
+
+/* Published content */
+.blog-post {
+  font-size: 16px;
+  line-height: 24px;
+  font-family: var(--font-sans);
+}
+
+/* Section header */
+.section-heading {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* Page title */
+.page-title {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+</code></pre>
+<h2>Font Weights</h2>
+<p>Dirigible uses three font weight levels for clear typographic hierarchy:</p>
+<table>
+<thead>
+<tr>
+<th>Weight</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Normal</td>
+<td>400</td>
+<td>Body text, default labels, regular content</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>500</td>
+<td>Subtle emphasis, secondary headings, active states</td>
+</tr>
+<tr>
+<td>Semibold</td>
+<td>600</td>
+<td>Primary headings, strong labels, accent states</td>
+</tr>
+</tbody></table>
+<h3>CSS Examples</h3>
+<pre><code class="language-css">/* Body text */
+body {
+  font-weight: 400;
+}
+
+/* Subtle emphasis */
+.sidebar-item.active {
+  font-weight: 500;
+}
+
+/* Heading */
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+/* Strong label */
+.button-primary {
+  font-weight: 600;
+}
+</code></pre>
+<h2>Design Rules</h2>
+<h3>Monospace is Default</h3>
+<ul>
+<li><strong>13px is the workhorse.</strong> The vast majority of UI text uses 13px SF Mono.</li>
+<li>This includes: buttons, labels, form fields, sidebar items, tabs, dialogs, and settings.</li>
+<li>Monospace ensures code examples and command output blend naturally with the interface.</li>
+</ul>
+<h3>Data Grid Exception</h3>
+<ul>
+<li>The music library table uses <strong>Lucida Grande</strong> at <strong>11px</strong> with <strong>18px row height</strong> — not monospace.</li>
+<li>This is a deliberate density optimization: proportional type fits more data per row.</li>
+<li>Applied inline via <code>font-family: &#39;Lucida Grande&#39;, system-ui, sans-serif</code>.</li>
+</ul>
+<h3>Minimum Size</h3>
+<ul>
+<li><strong>Never go below 11px.</strong> This is the absolute minimum for badges and metadata only.</li>
+<li>Use 13px for all user-facing interactive text.</li>
+</ul>
+<h3>Headings are Semantic</h3>
+<ul>
+<li>Headings are defined by weight + size combinations, <strong>never</strong> by <code>text-transform</code> or letter-spacing.</li>
+<li>Use <code>font-weight: 600</code> to create heading emphasis, paired with larger sizes.</li>
+<li>Example: <code>h2 { font-size: 18px; font-weight: 600; }</code> (not <code>text-transform: uppercase</code>).</li>
+</ul>
+<h3>Published Content is Larger</h3>
+<ul>
+<li>Notes, blog posts, and wiki pages use a larger proportional type scale.</li>
+<li><strong>Base font size is 16px</strong> (vs. 13px for UI).</li>
+<li>Use proportional fonts (<code>--font-sans</code> or <code>--font-serif</code>) for extended reading.</li>
+<li>The scale maintains consistent line-height ratios for comfortable reading.</li>
+</ul>
+<h3>Per-Note Theme Selector</h3>
+<ul>
+<li>Note view includes a <strong>per-note theme selector</strong> allowing users to choose typography:<ul>
+<li><strong>Raw</strong> — Monospace rendering (code-like)</li>
+<li><strong>Monospace</strong> — Monospace font (SF Mono)</li>
+<li><strong>Serif</strong> — Serif proportional font (Crimson Pro)</li>
+<li><strong>Sans</strong> — Sans-serif proportional font (IBM Plex Sans)</li>
+</ul>
+</li>
+<li>Respect user selection. These are personal reading preferences.</li>
+</ul>
+<h3>Line Height Relationships</h3>
+<ul>
+<li>Line height is always tied to a 4px grid:<ul>
+<li>11px text → 16px line height (45% extra)</li>
+<li>13px text → 20px line height (54% extra)</li>
+<li>14px text → 22px line height (57% extra)</li>
+<li>16px text → 24px line height (50% extra)</li>
+</ul>
+</li>
+<li>Larger text uses slightly tighter ratios for elegance.</li>
+</ul>
+<h2>Usage Examples</h2>
+<h3>UI Button</h3>
+<pre><code class="language-css">.button {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+}
+</code></pre>
+<h3>Form Label</h3>
+<pre><code class="language-css">.form-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--foreground);
+}
+</code></pre>
+<h3>Blog Post Body</h3>
+<pre><code class="language-css">.blog-content {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--foreground);
+}
+</code></pre>
+<h3>Modal Header</h3>
+<pre><code class="language-css">.modal-header {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+</code></pre>
+<h3>Sidebar Item</h3>
+<pre><code class="language-css">.sidebar-item {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.sidebar-item.active {
+  font-weight: 500;
+}
+</code></pre>
+<h2>Accessibility Notes</h2>
+<ul>
+<li>All font sizes maintain proper contrast ratios when paired with semantic colors.</li>
+<li>Line heights (1.45–2.0) ensure readability for extended text.</li>
+<li>Monospace fonts aid users with dyslexia and improve code clarity.</li>
+<li>Proportional fonts for published content follow standard web typography best practices.</li>
+</ul>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

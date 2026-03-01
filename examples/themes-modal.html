@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirigible: Themes Modal</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fefefe;
+            --fg: #1a1a1a;
+            --border: #e8e6e3;
+            --sidebar: #faf9f8;
+            --muted: #777777;
+            --accent: #E8915A;
+            --hover: #f5f4f2;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --card-radius: 6px;
+            --modal-radius: 8px;
+            --button-radius: 4px;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme {
+            --bg: #181716;
+            --fg: #f2f0ed;
+            --border: #302e2b;
+            --sidebar: #1e1d1b;
+            --muted: #999795;
+            --accent: #6ba3d6;
+            --hover: #27251f;
+            --success: #4ec9b0;
+            --warning: #ce9178;
+            --danger: #ef4444;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--modal-radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .modal-left {
+            width: 240px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .theme-group {
+            margin-bottom: 28px;
+        }
+
+        .theme-group-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .theme-item {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--fg);
+            font-size: 13px;
+        }
+
+        .theme-item:hover {
+            background-color: var(--hover);
+        }
+
+        .theme-item.active {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .theme-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .modal-center {
+            flex: 1;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            display: flex;
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+        }
+
+        .preview-tab {
+            padding: 4px 12px;
+            margin-right: 8px;
+            border-radius: var(--button-radius);
+            font-size: 12px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .preview-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .preview-sidebar {
+            width: 140px;
+            background-color: var(--sidebar);
+            border-radius: var(--card-radius);
+            padding: 12px;
+            font-size: 12px;
+        }
+
+        .preview-sidebar-item {
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            border-radius: 3px;
+            color: var(--fg);
+        }
+
+        .preview-sidebar-item.active {
+            background-color: var(--hover);
+            color: var(--accent);
+        }
+
+        .preview-sidebar-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .preview-main {
+            flex: 1;
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--fg);
+        }
+
+        .preview-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--fg);
+            margin-bottom: 8px;
+        }
+
+        .preview-text strong {
+            font-weight: 600;
+        }
+
+        .preview-text em {
+            font-style: italic;
+        }
+
+        .preview-code {
+            background-color: var(--hover);
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            border-left: 2px solid var(--accent);
+        }
+
+        .preview-quote {
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .preview-link {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-right {
+            width: 200px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .ui-section {
+            margin-bottom: 24px;
+        }
+
+        .ui-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .button-demo {
+            width: 100%;
+            padding: 6px 12px;
+            margin-bottom: 6px;
+            border: 2px solid var(--fg);
+            border-radius: var(--button-radius);
+            background-color: transparent;
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .button-demo:hover {
+            opacity: 0.8;
+        }
+
+        .button-demo.primary {
+            background-color: var(--fg);
+            color: var(--bg);
+        }
+
+        .button-demo.danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .button-demo.danger.filled {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .menu-demo {
+            background-color: var(--sidebar);
+            border: 1px solid var(--border);
+            border-radius: var(--button-radius);
+            padding: 4px;
+            font-size: 12px;
+        }
+
+        .menu-item {
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            border-radius: 2px;
+            color: var(--fg);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: var(--hover);
+        }
+
+        .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-demo {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .link-demo {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--fg);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .link-demo.accent {
+            color: var(--accent);
+        }
+
+        .link-demo.muted {
+            color: var(--muted);
+        }
+
+        .link-demo:hover {
+            opacity: 0.8;
+        }
+
+        .toggle-demo {
+            width: 40px;
+            height: 22px;
+            border-radius: 11px;
+            border: 2px solid var(--border);
+            background-color: var(--hover);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+        }
+
+        .toggle-demo.on {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .toggle-dot-demo {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background-color: white;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+
+        .toggle-demo.on .toggle-dot-demo {
+            left: 18px;
+        }
+
+        .input-demo {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--button-radius);
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .input-demo:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .input-demo::placeholder {
+            color: var(--muted);
+        }
+
+        .color-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background-color: var(--sidebar);
+        }
+
+        .color-swatch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--button-radius);
+            border: 1px solid var(--border);
+        }
+
+        .color-label {
+            font-size: 10px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--sidebar);
+        }
+
+        .footer-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .restore-link {
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .restore-link:hover {
+            color: var(--accent);
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .text-button:hover {
+            color: var(--accent);
+        }
+
+        .primary-button {
+            background-color: var(--fg);
+            color: var(--bg);
+            border: none;
+            padding: 8px 20px;
+            border-radius: var(--button-radius);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .primary-button:hover {
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background-color: var(--sidebar);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--button-radius);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--fg);
+            transition: all 0.3s;
+            z-index: 110;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover);
+        }
+
+        .theme-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">☀️ Light</button>
+
+    <div class="backdrop">
+        <div class="modal">
+            <div class="modal-content">
+                <!-- LEFT: Theme List -->
+                <div class="modal-left">
+                    <div class="theme-group">
+                        <div class="theme-group-title">Light</div>
+                        <div class="theme-item active" onclick="selectTheme('light', this)">
+                            <div class="theme-swatch" style="background-color: #fefefe; border: 1px solid #ddd;"></div>
+                            Dirigible Light
+                        </div>
+                        <div class="theme-item" onclick="selectTheme('alabaster', this)">
+                            <div class="theme-swatch" style="background-color: #f5f4f2;"></div>
+                            Alabaster
+                        </div>
+                    </div>
+
+                    <div class="theme-group">
+                        <div class="theme-group-title">Dark</div>
+                        <div class="theme-item" onclick="selectTheme('dark', this)">
+                            <div class="theme-swatch" style="background-color: #181716;"></div>
+                            Dirigible Dark
+                        </div>
+                        <div class="theme-item" onclick="selectTheme('amber', this)">
+                            <div class="theme-swatch" style="background-color: #3d3531;"></div>
+                            Amber Terminal
+                        </div>
+                        <div class="theme-item" onclick="selectTheme('green', this)">
+                            <div class="theme-swatch" style="background-color: #0d3b2f;"></div>
+                            Green Terminal
+                        </div>
+                        <div class="theme-item" onclick="selectTheme('catppuccin', this)">
+                            <div class="theme-swatch" style="background-color: #1e1e2e;"></div>
+                            Catppuccin Mocha
+                        </div>
+                        <div class="theme-item" onclick="selectTheme('tokyo', this)">
+                            <div class="theme-swatch" style="background-color: #1a1b26;"></div>
+                            Tokyo Night
+                        </div>
+                    </div>
+
+                    <button class="restore-link" onclick="restoreDefaults()">Restore defaults</button>
+                </div>
+
+                <!-- CENTER: Live Preview -->
+                <div class="modal-center">
+                    <div class="preview-header">
+                        <div class="preview-tab active">Raw</div>
+                        <div class="preview-tab">Monospace</div>
+                        <div class="preview-tab">Serif</div>
+                        <div class="preview-tab">Sans</div>
+                    </div>
+
+                    <div class="preview-content">
+                        <div class="preview-sidebar">
+                            <div class="preview-sidebar-title">Notes</div>
+                            <div class="preview-sidebar-item">Journal</div>
+                            <div class="preview-sidebar-item">Ideas</div>
+                            <div class="preview-sidebar-item active">Research</div>
+
+                            <div class="preview-sidebar-title">Projects</div>
+                            <div class="preview-sidebar-item">Roadmap</div>
+                            <div class="preview-sidebar-item">Design Spec</div>
+
+                            <div class="preview-sidebar-title">Library</div>
+                            <div class="preview-sidebar-item">Photos</div>
+                            <div class="preview-sidebar-item">Music</div>
+                        </div>
+
+                        <div class="preview-main">
+                            <div class="preview-title">Sample Note Title</div>
+                            <div class="preview-text"><strong>Bold text</strong> and <em>italic text</em> can be combined.</div>
+                            <div class="preview-code">const example = () => console.log("hello");</div>
+                            <div class="preview-quote">This is a blockquote for emphasis or citations.</div>
+                            <div class="preview-text">A <span class="preview-link">link to another note</span> can be embedded inline.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: UI Elements -->
+                <div class="modal-right">
+                    <div class="ui-section">
+                        <div class="ui-section-title">Buttons</div>
+                        <button class="button-demo primary">Primary</button>
+                        <button class="button-demo">Secondary</button>
+                        <button class="button-demo danger filled">Danger</button>
+                    </div>
+
+                    <div class="ui-section">
+                        <div class="ui-section-title">Context Menu</div>
+                        <div class="menu-demo">
+                            <div class="menu-item">Edit Note</div>
+                            <div class="menu-item">Duplicate</div>
+                            <div class="menu-item">Delete</div>
+                        </div>
+                    </div>
+
+                    <div class="ui-section">
+                        <div class="ui-section-title">Status</div>
+                        <div class="status-demo">
+                            <div class="status-dot" style="background-color: var(--success);"></div>
+                            <span>Success</span>
+                        </div>
+                        <div class="status-demo">
+                            <div class="status-dot" style="background-color: var(--warning);"></div>
+                            <span>Warning</span>
+                        </div>
+                        <div class="status-demo">
+                            <div class="status-dot" style="background-color: var(--danger);"></div>
+                            <span>Danger</span>
+                        </div>
+                    </div>
+
+                    <div class="ui-section">
+                        <div class="ui-section-title">Links</div>
+                        <div class="link-demo">Regular link</div>
+                        <div class="link-demo accent">Accent link</div>
+                        <div class="link-demo muted">Muted link</div>
+                    </div>
+
+                    <div class="ui-section">
+                        <div class="ui-section-title">Toggle</div>
+                        <div class="toggle-demo on">
+                            <div class="toggle-dot-demo"></div>
+                        </div>
+                        <div class="toggle-demo">
+                            <div class="toggle-dot-demo"></div>
+                        </div>
+                    </div>
+
+                    <div class="ui-section">
+                        <div class="ui-section-title">Input</div>
+                        <input type="text" class="input-demo" placeholder="Placeholder text...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Swatches -->
+            <div class="color-swatches">
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--bg);"></div>
+                    <div class="color-label">BG</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--fg);"></div>
+                    <div class="color-label">FG</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--border);"></div>
+                    <div class="color-label">Border</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--accent);"></div>
+                    <div class="color-label">Accent</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--success);"></div>
+                    <div class="color-label">Success</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--warning);"></div>
+                    <div class="color-label">Warning</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: var(--danger);"></div>
+                    <div class="color-label">Danger</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <div class="footer-left">
+                    <span class="theme-label" id="current-theme">Dirigible Light · light</span>
+                </div>
+                <div class="footer-right">
+                    <button class="text-button">Close</button>
+                    <button class="primary-button">Set as default light theme</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themes = {
+            light: {
+                bg: '#fefefe',
+                fg: '#1a1a1a',
+                border: '#e8e6e3',
+                sidebar: '#faf9f8',
+                muted: '#777777',
+                accent: '#E8915A',
+                hover: '#f5f4f2',
+                success: '#22c55e',
+                warning: '#f59e0b',
+                danger: '#dc2626'
+            },
+            alabaster: {
+                bg: '#f5f4f2',
+                fg: '#1a1a1a',
+                border: '#ddd9d1',
+                sidebar: '#ece9e2',
+                muted: '#888888',
+                accent: '#d9824f',
+                hover: '#e8e4db',
+                success: '#22c55e',
+                warning: '#f59e0b',
+                danger: '#dc2626'
+            },
+            dark: {
+                bg: '#181716',
+                fg: '#f2f0ed',
+                border: '#302e2b',
+                sidebar: '#1e1d1b',
+                muted: '#999795',
+                accent: '#6ba3d6',
+                hover: '#27251f',
+                success: '#4ec9b0',
+                warning: '#ce9178',
+                danger: '#ef4444'
+            },
+            amber: {
+                bg: '#2b2520',
+                fg: '#f2f0ed',
+                border: '#3d3531',
+                sidebar: '#3d3531',
+                muted: '#999795',
+                accent: '#d9a84f',
+                hover: '#4a423b',
+                success: '#4ec9b0',
+                warning: '#ce9178',
+                danger: '#ef4444'
+            },
+            green: {
+                bg: '#0f4038',
+                fg: '#d4f1d4',
+                border: '#1a5c54',
+                sidebar: '#1a5c54',
+                muted: '#8fb8b1',
+                accent: '#2dd4a4',
+                hover: '#2a7468',
+                success: '#2dd4a4',
+                warning: '#ce9178',
+                danger: '#ef4444'
+            },
+            catppuccin: {
+                bg: '#1e1e2e',
+                fg: '#cdd6f4',
+                border: '#45475a',
+                sidebar: '#313244',
+                muted: '#a6adc8',
+                accent: '#89b4fa',
+                hover: '#45475a',
+                success: '#a6e3a1',
+                warning: '#f9e2af',
+                danger: '#f38ba8'
+            },
+            tokyo: {
+                bg: '#1a1b26',
+                fg: '#c0caf5',
+                border: '#3b4261',
+                sidebar: '#252d38',
+                muted: '#9099a8',
+                accent: '#7aa2f7',
+                hover: '#3b4261',
+                success: '#9ece6a',
+                warning: '#ff9e64',
+                danger: '#f7768e'
+            }
+        };
+
+        function selectTheme(themeName, element) {
+            const theme = themes[themeName];
+            const root = document.documentElement;
+
+            for (const [key, value] of Object.entries(theme)) {
+                root.style.setProperty(`--${key}`, value);
+            }
+
+            document.querySelectorAll('.theme-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            const labels = {
+                light: 'Dirigible Light · light',
+                dark: 'Dirigible Dark · dark',
+                alabaster: 'Alabaster · light',
+                amber: 'Amber Terminal · dark',
+                green: 'Green Terminal · dark',
+                catppuccin: 'Catppuccin Mocha · dark',
+                tokyo: 'Tokyo Night · dark'
+            };
+
+            document.getElementById('current-theme').textContent = labels[themeName];
+        }
+
+        function restoreDefaults() {
+            selectTheme('light', document.querySelector('.theme-item.active'));
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Load saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.querySelector('.theme-toggle').textContent = '🌙 Dark';
+        }
+    </script>
+</body>
+</html>

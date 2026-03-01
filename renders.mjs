@@ -30,7 +30,7 @@ const I = {
   search: `<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
   download: `<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>`,
   upload: `<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>`,
-  save: `<path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>`,
+  save: `<path d="M3 5.25A2.25 2.25 0 015.25 3h10.19a2.25 2.25 0 011.59.659l2.56 2.56c.422.422.66.994.66 1.59v10.94A2.25 2.25 0 0118 21H5.25A2.25 2.25 0 013 18.75V5.25z"/><path d="M7.5 3v4.5h6.75V3"/><path d="M7.5 14.25h9v6h-9v-6z"/>`,
   bookmark: `<path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/>`,
   clock: `<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>`,
   "cloud-sync": `<path d="M12 10v6m0 0l3-3m-3 3l-3-3M6.75 19.25a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.5 3.5 0 0118 19.25H6.75z"/>`,
@@ -39,16 +39,15 @@ const I = {
   moon: `<path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>`,
   user: `<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>`,
   "external-link": `<path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>`,
-  link: `<path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.54a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.627"/>`,
+  link: `<path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.674-5.11a4.5 4.5 0 00-6.364-6.364L4.5 8.25"/>`,
   trash: `<path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>`,
-  palette: `<path d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197"/>`,
+  themes: `<path d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/>`,
   print: `<path d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/>`,
   settings: `<path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>`,
   "more-vert": `<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-width="2"/>`,
   copy: `<path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>`,
   edit: `<path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>`,
   "sign-out": `<path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>`,
-  blog: `<path d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 18V8.625c0-.621.504-1.125 1.125-1.125H9"/>`,
   image: `<path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>`,
 };
 
@@ -61,10 +60,10 @@ function icon(name, size = 14) {
 
 const BTN = `font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px;`;
 const BTN_PRI = `${BTN} background:var(--fg); color:var(--bg); border:1px solid var(--fg);`;
-const BTN_PRI_INV = `onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)';this.style.border='1px solid var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.border='1px solid var(--fg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.border='1px solid var(--fg)'"`;
-const BTN_SEC = `${BTN} background:transparent; color:var(--fg); border:1px solid var(--border);`;
+const BTN_PRI_INV = `onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)';this.style.border='2px solid var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.border='1px solid var(--fg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)';this.style.border='1px solid var(--fg)'"`;
+const BTN_SEC = `${BTN} background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:bold;`;
 const BTN_SEC_INV = `onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'"`;
-const BTN_DNG = `${BTN} background:transparent; color:var(--danger); border:1px solid var(--border);`;
+const BTN_DNG = `${BTN} background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:bold;`;
 const BTN_DNG_INV = `onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'"`;
 
 
@@ -83,7 +82,7 @@ export const renders = {
       <button style="${BTN_PRI} opacity:0.5; pointer-events:none;">Disabled primary</button>
       <button style="${BTN_SEC} opacity:0.5; pointer-events:none;">Disabled secondary</button>
     </div>
-    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Primary (inverts on click) · Secondary (inverts on click) · Danger = secondary + red text (inverts red on click) · Text-only · Disabled states · All borders 1px</p>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Primary (inverts on click, 2px border when inverted) · Secondary bold (inverts on click) · Danger = secondary bold + red text (inverts red on click) · Text-only · Disabled states · All borders 1px (primary invert: 2px)</p>
   `,
 
   input: `
@@ -162,7 +161,7 @@ export const renders = {
         <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Radio group (horizontal, card-style)</p>
         <div style="display:flex; gap:8px;">
           <div style="flex:1; padding:12px; border:2px solid var(--accent); border-radius:4px; cursor:pointer; background:color-mix(in srgb, var(--accent) 8%, var(--bg));">
-            <div style="font-size:13px; font-weight:600; margin-bottom:2px; display:flex; align-items:center; gap:6px;">${icon('blog')} Blog</div>
+            <div style="font-size:13px; font-weight:600; margin-bottom:2px; display:flex; align-items:center; gap:6px;">${icon('note')} Blog</div>
             <div style="font-size:11px; color:var(--muted);">Posts by date</div>
           </div>
           <div style="flex:1; padding:12px; border:1px solid var(--border); border-radius:4px; cursor:pointer;">
@@ -221,23 +220,17 @@ export const renders = {
   `,
 
   modal: `
-    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Publication modal (with tabs)</p>
-    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:6px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:380px;">
-      <div style="background:var(--bg); border-radius:6px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:448px; overflow:hidden; display:flex; flex-direction:column;">
-        <div style="padding:12px 12px 16px; display:flex; align-items:center; justify-content:space-between;">
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Publication modal (with underline tabs)</p>
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:380px;">
+      <div style="background:var(--bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:448px; overflow:hidden; display:flex; flex-direction:column;">
+        <div style="padding:12px 12px 0; display:flex; align-items:center; justify-content:space-between;">
           <span style="font-size:18px; font-weight:600;">Publish</span>
           <button style="font-family:inherit; background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; display:flex;">${icon('x', 16)}</button>
         </div>
         <div style="padding:0 12px 20px; flex:1;">
-          <div style="display:flex; gap:8px; margin-bottom:16px;">
-            <div style="flex:1; padding:10px; border:2px solid var(--accent); border-radius:4px; cursor:pointer; background:color-mix(in srgb, var(--accent) 8%, var(--bg));">
-              <div style="font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px;">${icon('blog')} Blog</div>
-              <div style="font-size:11px; color:var(--muted);">Posts by date</div>
-            </div>
-            <div style="flex:1; padding:10px; border:1px solid var(--border); border-radius:4px; cursor:pointer;">
-              <div style="font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px;">${icon('document')} Wiki</div>
-              <div style="font-size:11px; color:var(--muted);">Folder hierarchy</div>
-            </div>
+          <div style="display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:16px;">
+            <span style="padding:8px 12px; font-size:13px; border-bottom:2px solid var(--accent); margin-bottom:-2px; color:var(--accent); cursor:pointer;">Blog</span>
+            <span style="padding:8px 12px; font-size:13px; color:var(--muted); cursor:pointer;">Wiki</span>
           </div>
           <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Site title</label>
           <input type="text" value="Botanical Journal" style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none; margin-bottom:12px;" />
@@ -247,7 +240,7 @@ export const renders = {
             <input type="text" value="demo-botany" style="font-family:inherit; font-size:14px; padding:6px 8px; border:none; background:var(--bg); color:var(--fg); flex:1; outline:none;" />
           </div>
         </div>
-        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px; border-top:1px solid var(--border);">
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px;">
           <button style="${BTN_SEC}" ${BTN_SEC_INV}>Cancel</button>
           <button style="${BTN_PRI}" ${BTN_PRI_INV}>Publish</button>
         </div>
@@ -255,8 +248,8 @@ export const renders = {
     </div>
 
     <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:24px; margin-bottom:12px;">Modal with left sidebar panel (themes / appearance)</p>
-    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:6px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:360px;">
-      <div style="background:var(--bg); border-radius:6px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:560px; overflow:hidden; display:flex; flex-direction:column;">
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center; min-height:360px;">
+      <div style="background:var(--bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:560px; overflow:hidden; display:flex; flex-direction:column;">
         <div style="padding:12px 12px 0; display:flex; align-items:center; justify-content:space-between;">
           <span style="font-size:18px; font-weight:600;">Themes</span>
           <button style="font-family:inherit; background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; display:flex;">${icon('x', 16)}</button>
@@ -298,9 +291,9 @@ export const renders = {
             </div>
             <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
               ${[
-                ["#fefefe", "bg"], ["#1a1a1a", "fg"], ["#0066cc", "accent"], ["#777777", "muted"],
-                ["#e8e6e3", "border"], ["#faf9f8", "sidebar"], ["#f5f4f2", "hover"], ["#22c55e", "success"],
-                ["#f59e0b", "warning"], ["#dc2626", "danger"], ["#0066cc", "link"], ["#f5f5f5", "code-bg"],
+                ["var(--bg)", "bg"], ["var(--fg)", "fg"], ["var(--accent)", "accent"], ["var(--muted)", "muted"],
+                ["var(--border)", "border"], ["var(--sidebar-bg)", "sidebar"], ["var(--hover)", "hover"], ["var(--success)", "success"],
+                ["var(--warning)", "warning"], ["var(--danger)", "danger"], ["var(--link)", "link"], ["var(--code-bg)", "code-bg"],
               ].map(([c, l]) => `<div style="display:flex;flex-direction:column;gap:2px;"><div style="height:24px;border-radius:0;border:1px solid var(--border);background:${c};"></div><span style="font-size:9px;color:var(--muted);">${l}</span></div>`).join("")}
             </div>
           </div>
@@ -309,15 +302,15 @@ export const renders = {
     </div>
 
     <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:24px; margin-bottom:12px;">Confirm dialog (simple)</p>
-    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:6px; padding:40px; display:flex; align-items:center; justify-content:center;">
-      <div style="background:var(--bg); border-radius:6px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:384px; overflow:hidden; display:flex; flex-direction:column;">
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="background:var(--bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:384px; overflow:hidden; display:flex; flex-direction:column;">
         <div style="padding:12px 12px 16px;">
           <span style="font-size:18px; font-weight:600;">Delete note?</span>
         </div>
         <div style="padding:0 12px 20px; font-size:14px; line-height:22px; color:var(--fg);">
           This will permanently delete "Aconitum napellus". This action cannot be undone.
         </div>
-        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px; border-top:1px solid var(--border);">
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px;">
           <button style="${BTN_SEC}" ${BTN_SEC_INV}>Cancel</button>
           <button style="${BTN_DNG}" ${BTN_DNG_INV}>Delete</button>
         </div>
@@ -325,8 +318,8 @@ export const renders = {
     </div>
 
     <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:24px; margin-bottom:12px;">Sync modal (informational + action)</p>
-    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:6px; padding:40px; display:flex; align-items:center; justify-content:center;">
-      <div style="background:var(--bg); border-radius:6px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:448px; overflow:hidden; display:flex; flex-direction:column;">
+    <div style="position:relative; background:rgba(0,0,0,0.3); border-radius:4px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="background:var(--bg); border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:100%; max-width:448px; overflow:hidden; display:flex; flex-direction:column;">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 12px 16px;">
           <div style="display:flex; align-items:center; gap:8px; font-size:18px; font-weight:600;">
             ${icon('cloud-sync', 18)} Sync to Local Folder
@@ -342,14 +335,14 @@ export const renders = {
             <li>Subsequent syncs only update what changed</li>
           </ul>
         </div>
-        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px; border-top:1px solid var(--border);">
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px;">
           <button style="${BTN} background:transparent; color:var(--muted); border:none; text-decoration:underline; margin-right:auto;">Import from backup</button>
           <button style="${BTN_SEC}" ${BTN_SEC_INV}>Cancel</button>
           <button style="${BTN_PRI}" ${BTN_PRI_INV}>Choose folder</button>
         </div>
       </div>
     </div>
-    <p style="margin-top:12px; font-size:11px; color:var(--muted);">All modals: 6px border-radius · max-width 28rem (448px) · 1px border-top above footer buttons · Footer right-aligned gap:8px · Backdrop rgba(0,0,0,0.4) blur(2px) · 150ms ease-out scale from 0.95 · Left sidebar variant for themes/appearance</p>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">All modals: 4px border-radius · max-width 28rem (448px) · No divider above footer buttons · Footer right-aligned gap:8px · Backdrop rgba(0,0,0,0.4) blur(2px) · 150ms ease-out scale from 0.95 · Left sidebar variant for themes/appearance</p>
   `,
 
   popover: `
@@ -397,7 +390,7 @@ export const renders = {
       <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('download', 12)}</span> Download</div>
       <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('print', 12)}</span> Print</div>
       <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
-      <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('blog', 12)}</span> Publication</div>
+      <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('note', 12)}</span> Publication</div>
       <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('external-link', 12)}</span> Visit site</div>
       <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
       <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; font-size:13px;"><span style="width:14px; display:flex; color:var(--muted);">${icon('save', 12)}</span> Save version</div>
@@ -497,7 +490,7 @@ export const renders = {
         <div style="padding:6px 8px; border-top:1px solid var(--border); display:flex; align-items:center; gap:2px;">
           <button style="background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:4px; display:flex;" title="Sync to folder">${icon('cloud-sync', 14)}</button>
           <span style="flex:1;"></span>
-          <button style="background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:4px; display:flex;" title="Themes">${icon('palette', 14)}</button>
+          <button style="background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:4px; display:flex;" title="Themes">${icon('themes', 14)}</button>
           <button style="background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:4px; display:flex;" title="Toggle dark mode">${icon('moon', 14)}</button>
           <button style="background:none; border:none; cursor:pointer; color:var(--muted); padding:6px; border-radius:4px; display:flex;" title="Account">${icon('user', 14)}</button>
         </div>
@@ -661,10 +654,9 @@ export const renders = {
         ["sun", "sun"],
         ["moon", "moon"],
         ["user", "user"],
-        ["palette", "palette"],
+        ["themes", "themes"],
         ["settings", "settings"],
         ["sign-out", "sign-out"],
-        ["blog", "blog"],
         ["image", "image"],
       ].map(([name, label]) => `<div style="display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border:1px solid var(--border); border-radius:4px;">
         ${icon(name, 20)}
@@ -707,11 +699,11 @@ export const renders = {
         <div style="padding:4px 12px; font-size:11px; color:var(--muted);">... 13 more dark themes</div>
       </div>
     </div>
-    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Triggered from palette icon in sidebar bottom bar · Colored swatch = theme's sidebar-bg color · Selected row gets accent highlight · Moon/sun icon toggles light/dark appearance · 23 built-in themes total (2 light, 21 dark)</p>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Triggered from themes icon in sidebar bottom bar · Colored swatch = theme's sidebar-bg color · Selected row gets accent highlight · Moon/sun icon toggles light/dark appearance · 23 built-in themes total (2 light, 21 dark)</p>
   `,
 
   "color-swatch": `
-    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Current theme color tokens (see also: theme-system pattern for cross-theme comparison)</p>
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Current theme color tokens (live CSS variables)</p>
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:8px;">
       ${[
         ["var(--bg)", "background", "#fefefe"],
@@ -727,12 +719,120 @@ export const renders = {
         ["var(--link)", "link", "#0066cc"],
         ["var(--code-bg)", "code-bg", "#f5f5f5"],
       ].map(([color, label, hex]) => `<div style="display:flex; flex-direction:column; gap:4px;">
-        <div style="width:100%; height:28px; border:1px solid var(--border); background:${color}; cursor:pointer;" title="${hex}"></div>
-        <span style="font-size:10px; color:var(--muted);">${label}</span>
+        <div style="width:100%; height:40px; border:1px solid var(--border); background:${color}; cursor:pointer;" title="${hex}"></div>
+        <span style="font-size:10px; color:var(--fg); font-weight:600;">${label}</span>
+        <span style="font-size:9px; color:var(--muted);">${hex}</span>
+      </div>`).join("")}
+    </div>
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:24px; margin-bottom:8px;">Dirigible Light defaults (hardcoded hex values)</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:8px;">
+      ${[
+        ["#fefefe", "background"], ["#1a1a1a", "foreground"], ["#0066cc", "accent"], ["#777777", "muted"],
+        ["#e8e6e3", "border"], ["#faf9f8", "sidebar-bg"], ["#f5f4f2", "hover"], ["#22c55e", "success"],
+        ["#f59e0b", "warning"], ["#dc2626", "danger"], ["#0066cc", "link"], ["#f5f5f5", "code-bg"],
+      ].map(([hex, label]) => `<div style="display:flex; flex-direction:column; gap:4px;">
+        <div style="width:100%; height:40px; border:1px solid #e8e6e3; background:${hex}; cursor:pointer;"></div>
+        <span style="font-size:10px; color:var(--fg); font-weight:600;">${label}</span>
+        <span style="font-size:9px; color:var(--muted);">${hex}</span>
+      </div>`).join("")}
+    </div>
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:24px; margin-bottom:8px;">Dirigible Dark defaults</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:8px;">
+      ${[
+        ["#181716", "background"], ["#f2f0ed", "foreground"], ["#6ba3d6", "accent"], ["#999795", "muted"],
+        ["#302e2b", "border"], ["#1e1d1b", "sidebar-bg"], ["#252422", "hover"], ["#4ec9b0", "success"],
+        ["#e8a735", "warning"], ["#ef4444", "danger"], ["#6ba3d6", "link"], ["#252422", "code-bg"],
+      ].map(([hex, label]) => `<div style="display:flex; flex-direction:column; gap:4px;">
+        <div style="width:100%; height:40px; border:1px solid #302e2b; background:${hex}; cursor:pointer;"></div>
+        <span style="font-size:10px; color:var(--fg); font-weight:600;">${label}</span>
         <span style="font-size:9px; color:var(--muted);">${hex}</span>
       </div>`).join("")}
     </div>
     <p style="margin-top:12px; font-size:11px; color:var(--muted);">Accent is #0066cc (blue) in light · #6ba3d6 in dark · Toggle uses #3b82f6 (separate from accent) · See theme-system for full cross-theme comparison table</p>
+  `,
+
+  slider: `
+    <div style="display:flex; flex-direction:column; gap:24px; max-width:400px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Range slider (favicon size)</p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <input type="range" min="16" max="64" value="32" style="flex:1; height:4px; accent-color:var(--accent); cursor:pointer;" />
+          <span style="font-size:13px; min-width:32px; text-align:right;">32px</span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">With label and bounds</p>
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Image quality</label>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:11px; color:var(--muted);">0</span>
+          <input type="range" min="0" max="100" value="75" style="flex:1; height:4px; accent-color:var(--accent); cursor:pointer;" />
+          <span style="font-size:11px; color:var(--muted);">100</span>
+        </div>
+        <div style="text-align:center; font-size:12px; margin-top:4px;">75%</div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Disabled state</p>
+        <div style="display:flex; align-items:center; gap:12px; opacity:0.5;">
+          <input type="range" min="0" max="100" value="50" disabled style="flex:1; height:4px; cursor:not-allowed;" />
+          <span style="font-size:13px;">50</span>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Native &lt;input type="range"&gt; · accent-color: var(--accent) · Track height: 4px · Used in: publication favicon size · Disabled: 50% opacity, cursor:not-allowed</p>
+  `,
+
+  "selection-list": `
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Selection list (left sidebar panel — used in themes modal, settings)</p>
+    <div style="display:flex; gap:16px;">
+      <div style="width:210px; background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+        <div style="padding:4px 12px; font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:4px;">Light</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; background:color-mix(in srgb, var(--accent) 15%, transparent); color:var(--accent); cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#f0eeeb; border:1.5px solid #ccc; flex-shrink:0;"></div>
+          Dirigible Light
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#f0f0f0; border:1.5px solid #d0d0d0; flex-shrink:0;"></div>
+          Alabaster
+        </div>
+        <div style="padding:4px 12px; font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:6px;">Dark</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#302e2b; border:1.5px solid #1a1918; flex-shrink:0;"></div>
+          Dirigible Dark
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#1e1008; border:1.5px solid #0d0a04; flex-shrink:0;"></div>
+          Amber Terminal
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#0d1a0d; border:1.5px solid #091209; flex-shrink:0;"></div>
+          Green Terminal
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:3px; background:#1e1e2e; border:1.5px solid #11111b; flex-shrink:0;"></div>
+          Catppuccin Mocha
+        </div>
+        <div style="padding:4px 12px; font-size:11px; color:var(--muted); margin-bottom:4px;">... 16 more</div>
+      </div>
+      <div style="width:210px; background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+        <div style="padding:4px 12px; font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:4px;">Settings</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; background:color-mix(in srgb, var(--accent) 15%, transparent); color:var(--accent); cursor:pointer;">
+          ${icon('user', 14)} Account
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          ${icon('themes', 14)} Appearance
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          ${icon('settings', 14)} Preferences
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          ${icon('cloud-sync', 14)} Sync
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer; color:var(--danger);">
+          ${icon('sign-out', 14)} Sign out
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Width: 210px · Background: sidebar-bg · Section labels: 11px uppercase muted · Selected row: accent 15% tint + accent text · Items: 6px 12px padding, 13px font · Used in: themes modal left pane, settings navigation</p>
   `,
 
   // ─── PATTERNS ───────────────────────────────────────────────────────────

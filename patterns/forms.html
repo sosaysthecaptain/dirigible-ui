@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>forms — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html" class="active">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="max-width:400px; display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Title</label>
+        <input type="text" value="My New Collection" style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none;" />
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Description</label>
+        <textarea rows="3" placeholder="Optional description..." style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none; resize:vertical;"></textarea>
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Cover image</label>
+        <div style="border:2px dashed var(--border); border-radius:4px; padding:24px; text-align:center; color:var(--muted); font-size:13px; cursor:pointer;">Upload cover image</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <span>Include in site</span>
+        <div style="width:40px; height:22px; border-radius:9999px; background:#3b82f6; position:relative; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; right:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end; padding-top:8px; border-top:1px solid var(--border);">
+        <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
+        <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg);" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Create collection</button>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Forms</h1>
+<h2>Description</h2>
+<p>How form elements are laid out and validated in Dirigible. Forms follow a clean, monospace-first approach with clear hierarchy and error handling.</p>
+<h2>Patterns</h2>
+<h3>Stacked Form</h3>
+<p>The default form layout used in modals and panels.</p>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Label above input</li>
+<li>8px gap between label and input</li>
+<li>16px gap between separate fields</li>
+<li>Labels are 13px JetBrains Mono, uppercase, <code>--muted</code> color</li>
+<li>Example labels: &quot;URL SLUG&quot;, &quot;COVER IMAGE&quot;, &quot;EXCERPT&quot;, &quot;TITLE&quot;</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;form class=&quot;form-stack&quot;&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;title&quot; class=&quot;form-label&quot;&gt;TITLE&lt;/label&gt;
+    &lt;input id=&quot;title&quot; type=&quot;text&quot; class=&quot;form-input&quot; /&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;slug&quot; class=&quot;form-label&quot;&gt;URL SLUG&lt;/label&gt;
+    &lt;input id=&quot;slug&quot; type=&quot;text&quot; class=&quot;form-input&quot; /&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;excerpt&quot; class=&quot;form-label&quot;&gt;EXCERPT&lt;/label&gt;
+    &lt;textarea id=&quot;excerpt&quot; class=&quot;form-input&quot;&gt;&lt;/textarea&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.form-input {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  border: 2px solid var(--border);
+  border-radius: 0;
+  padding: 8px 12px;
+  background: var(--editor-bg);
+  color: var(--foreground);
+  transition: border-color 150ms ease-out;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+</code></pre>
+<h3>Inline Form</h3>
+<p>Used for simple single-field forms where label and input share a row.</p>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Filter input in table headers</li>
+<li>Quick search overlays</li>
+<li>Simple toggle controls with labels</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;form class=&quot;form-inline&quot;&gt;
+  &lt;label for=&quot;filter&quot; class=&quot;form-label&quot;&gt;SEARCH&lt;/label&gt;
+  &lt;input id=&quot;filter&quot; type=&quot;text&quot; class=&quot;form-input&quot; placeholder=&quot;notes, albums...&quot; /&gt;
+&lt;/form&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.form-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-inline .form-label {
+  white-space: nowrap;
+}
+
+.form-inline .form-input {
+  flex: 1;
+  min-width: 0;
+}
+</code></pre>
+<h3>Validation</h3>
+<p>Error states are indicated with color and messaging, never with inline icons.</p>
+<p><strong>Error State:</strong></p>
+<ul>
+<li>Border changes to <code>--danger</code> color</li>
+<li>Error message appears below input</li>
+<li>Message is 11px JetBrains Mono in <code>--danger</code> color</li>
+<li>Label remains unchanged</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;form-group&quot;&gt;
+  &lt;label for=&quot;email&quot; class=&quot;form-label&quot;&gt;EMAIL&lt;/label&gt;
+  &lt;input id=&quot;email&quot; type=&quot;email&quot; class=&quot;form-input is-invalid&quot; value=&quot;invalid&quot; /&gt;
+  &lt;span class=&quot;form-error&quot;&gt;Invalid email format&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.form-input.is-invalid {
+  border-color: var(--danger);
+}
+
+.form-error {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 11px;
+  color: var(--danger);
+  margin-top: 4px;
+  display: block;
+}
+</code></pre>
+<h3>Upload Area</h3>
+<p>Used for file uploads, particularly cover images in the publication panel.</p>
+<p><strong>Design:</strong></p>
+<ul>
+<li>Dashed 2px border in <code>--border</code> color</li>
+<li>Centered text &quot;Upload cover image&quot;</li>
+<li>Click-to-browse interaction</li>
+<li>Accepts drag-and-drop</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;form-group&quot;&gt;
+  &lt;label for=&quot;cover&quot; class=&quot;form-label&quot;&gt;COVER IMAGE&lt;/label&gt;
+  &lt;div class=&quot;upload-area&quot;&gt;
+    &lt;input id=&quot;cover&quot; type=&quot;file&quot; class=&quot;upload-input&quot; accept=&quot;image/*&quot; /&gt;
+    &lt;div class=&quot;upload-placeholder&quot;&gt;
+      &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot;&gt;
+        &lt;path d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot; /&gt;
+        &lt;polyline points=&quot;17 8 12 3 7 8&quot; /&gt;
+        &lt;line x1=&quot;12&quot; y1=&quot;3&quot; x2=&quot;12&quot; y2=&quot;15&quot; /&gt;
+      &lt;/svg&gt;
+      &lt;span&gt;Upload cover image&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 0;
+  padding: 32px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+  background: var(--editor-bg);
+}
+
+.upload-area:hover {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.upload-area:hover .upload-placeholder {
+  color: var(--accent);
+}
+</code></pre>
+<h3>Toggle with Label</h3>
+<p>Toggle switch paired with descriptive label text.</p>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>&quot;Include in site&quot; in publication panel</li>
+<li>Boolean settings throughout the app</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-html">&lt;div class=&quot;form-group form-toggle&quot;&gt;
+  &lt;label class=&quot;toggle-label&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; class=&quot;toggle-switch&quot; /&gt;
+    &lt;span class=&quot;toggle-track&quot;&gt;
+      &lt;span class=&quot;toggle-thumb&quot;&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class=&quot;toggle-text&quot;&gt;INCLUDE IN SITE&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>CSS:</strong></p>
+<pre><code class="language-css">.form-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toggle-switch {
+  display: none;
+}
+
+.toggle-track {
+  display: inline-flex;
+  width: 32px;
+  height: 16px;
+  background: var(--border);
+  border: 2px solid var(--border);
+  position: relative;
+  border-radius: 0;
+  transition: background-color 150ms ease-out;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--foreground);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 150ms ease-out;
+}
+
+.toggle-switch:checked + .toggle-track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle-switch:checked + .toggle-track .toggle-thumb {
+  left: 16px;
+}
+
+.toggle-text {
+  flex: 1;
+}
+</code></pre>
+<h2>Design Rules</h2>
+<ol>
+<li><strong>Labels are always uppercase monospace</strong> in panels and modals. Never use sentence case.</li>
+<li><strong>Never use placeholder text as a label substitute.</strong> Placeholders are optional hints only.</li>
+<li><strong>Group related fields with 16px gap</strong> between groups (indicated by increased spacing).</li>
+<li><strong>Submit/primary buttons are always at the bottom, right-aligned</strong> within forms.</li>
+<li><strong>All form inputs use the same base style:</strong> JetBrains Mono 13px, 2px border, 4px grid alignment.</li>
+<li><strong>Focus state is consistent:</strong> border changes to <code>--accent</code> color, no visible outline.</li>
+<li><strong>Error handling is explicit:</strong> red border + red text message, no icons.</li>
+<li><strong>Upload areas use dashed borders</strong> to distinguish them from regular inputs.</li>
+<li><strong>Maintain 8px gap between label and input</strong> in stacked layouts for proper hierarchy.</li>
+<li><strong>All form padding aligns to the 4px grid:</strong> Use multiples of 4 (4px, 8px, 12px, 16px, 20px, etc.).</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

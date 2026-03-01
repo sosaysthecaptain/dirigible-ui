@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>color swatch — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html" class="active">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-bottom:12px;">Current theme swatches</p>
+    <div style="display:grid; gap:6px 16px; grid-template-columns:repeat(auto-fill, minmax(105px, 1fr));">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--bg);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Background</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--fg);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Foreground</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--accent);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Accent</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--muted);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Muted</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--border);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Border</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--sidebar-bg);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Sidebar</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--hover);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Hover</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--success);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Success</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--warning);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Warning</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--danger);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Danger</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--link);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Link</span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid var(--border); background:var(--code-bg);"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Code BG</span>
+      </div>
+    </div>
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-top:24px; margin-bottom:12px;">Dirigible Light</p>
+    <div style="display:grid; gap:6px 16px; grid-template-columns:repeat(auto-fill, minmax(105px, 1fr));">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#fefefe;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Background <span style="opacity:0.7">#fefefe</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#1a1a1a;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Foreground <span style="opacity:0.7">#1a1a1a</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#0066cc;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Accent <span style="opacity:0.7">#0066cc</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#777777;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Muted <span style="opacity:0.7">#777777</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#e8e6e3;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Border <span style="opacity:0.7">#e8e6e3</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#faf9f8;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Sidebar <span style="opacity:0.7">#faf9f8</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#f5f4f2;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Hover <span style="opacity:0.7">#f5f4f2</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#22c55e;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Success <span style="opacity:0.7">#22c55e</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#f59e0b;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Warning <span style="opacity:0.7">#f59e0b</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#dc2626;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Danger <span style="opacity:0.7">#dc2626</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#0066cc;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Link <span style="opacity:0.7">#0066cc</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #e8e6e3; background:#f5f5f5;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Code BG <span style="opacity:0.7">#f5f5f5</span></span>
+      </div>
+    </div>
+    <p style="font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); margin-top:24px; margin-bottom:12px;">Dirigible Dark</p>
+    <div style="display:grid; gap:6px 16px; grid-template-columns:repeat(auto-fill, minmax(105px, 1fr));">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#181716;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Background <span style="opacity:0.7">#181716</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#f2f0ed;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Foreground <span style="opacity:0.7">#f2f0ed</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#6ba3d6;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Accent <span style="opacity:0.7">#6ba3d6</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#999795;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Muted <span style="opacity:0.7">#999795</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#302e2b;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Border <span style="opacity:0.7">#302e2b</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#1e1d1b;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Sidebar <span style="opacity:0.7">#1e1d1b</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#252422;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Hover <span style="opacity:0.7">#252422</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#4ec9b0;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Success <span style="opacity:0.7">#4ec9b0</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#e8a735;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Warning <span style="opacity:0.7">#e8a735</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#ef4444;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Danger <span style="opacity:0.7">#ef4444</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#6ba3d6;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Link <span style="opacity:0.7">#6ba3d6</span></span>
+      </div><div style="display:flex; align-items:center; gap:6px;">
+        <div style="width:14px; height:14px; border-radius:2px; flex-shrink:0; border:1px solid #302e2b; background:#252422;"></div>
+        <span style="font-size:10px; color:var(--muted); white-space:nowrap;">Code BG <span style="opacity:0.7">#252422</span></span>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Accent is #0066cc (blue) in light · #6ba3d6 in dark · Toggle uses #3b82f6 (separate from accent) · See theme-system for full cross-theme comparison table</p>
+  
+  </div>
+</div>
+<h1>Color Swatch</h1>
+<h2>Description</h2>
+<p>Small visual color patches used to display color values in theme editors and settings. Color swatches show the actual color with an optional label, and may be clickable to open a color picker for customization.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Theme editor</strong>: Show all colors in a theme (background, foreground, accent, etc.)</li>
+<li><strong>Theme list</strong>: Display a small swatch beside each theme name</li>
+<li><strong>Color customization</strong>: Allow users to edit theme colors via color picker</li>
+<li><strong>Color legend</strong>: Show what each color in the theme represents</li>
+<li><strong>Color comparison</strong>: Compare colors between different themes</li>
+</ul>
+<p>Do not use color swatches for standalone color indicators; use status dots instead.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Size</th>
+<th>Labels</th>
+<th>Interactive</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Theme swatch</strong></td>
+<td>16px square</td>
+<td>None</td>
+<td>No</td>
+<td>Next to theme name in list</td>
+</tr>
+<tr>
+<td><strong>Swatch grid</strong></td>
+<td>16px square</td>
+<td>Below/beside</td>
+<td>Optional</td>
+<td>Full theme color display</td>
+</tr>
+<tr>
+<td><strong>Large swatch</strong></td>
+<td>32px square</td>
+<td>Beside</td>
+<td>Optional</td>
+<td>Theme preview or editor</td>
+</tr>
+<tr>
+<td><strong>Editable swatch</strong></td>
+<td>24px square</td>
+<td>Below</td>
+<td>Yes (click opens picker)</td>
+<td>Color customization</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<h3>Standard Swatch</h3>
+<pre><code>&lt;div class=&quot;color-swatch-item&quot;&gt;
+  &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #fefefe;&quot;&gt;&lt;/div&gt;
+  &lt;span class=&quot;color-swatch-label&quot;&gt;Background&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Outer container <code>.color-swatch-item</code></li>
+<li>Inner colored box <code>.color-swatch</code></li>
+<li>Optional label text below or beside</li>
+<li>Optional input/picker hidden until clicked</li>
+</ul>
+<h3>Swatch Grid</h3>
+<pre><code>&lt;div class=&quot;color-swatch-grid&quot;&gt;
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot;&gt;&lt;!-- color --&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;BG&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;!-- More swatches --&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Container grid with multiple swatch items</li>
+<li>Each item is independently styled</li>
+<li>Labels abbreviated or full text</li>
+<li>Can be arranged 2-column, 3-column, or 1-column</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Standard size</strong>: 16px × 16px square</li>
+<li><strong>Large size</strong>: 32px × 32px square</li>
+<li><strong>Edit size</strong>: 24px × 24px square</li>
+<li><strong>Border</strong>: 1px solid --border (#e8e6e3)</li>
+<li><strong>Border radius</strong>: 2px</li>
+<li><strong>Label font</strong>: 11px monospace</li>
+<li><strong>Label color</strong>: <code>--color-muted</code> (#777777)</li>
+<li><strong>Gap</strong>: 4px between swatch and label</li>
+<li><strong>Spacing</strong>: 8px between swatch items in grid</li>
+<li><strong>Cursor</strong>: <code>pointer</code> on clickable swatches</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Single Swatch</h3>
+<pre><code class="language-html">&lt;div class=&quot;color-swatch-item&quot;&gt;
+  &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #fefefe;&quot;&gt;
+    &lt;!-- Color display --&gt;
+  &lt;/div&gt;
+  &lt;span class=&quot;color-swatch-label&quot;&gt;Background&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Swatch Grid (Theme Colors)</h3>
+<pre><code class="language-html">&lt;div class=&quot;color-swatch-grid&quot;&gt;
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #fefefe;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Background&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #181716;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Foreground&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #E8915A;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Accent&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #777777;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Muted&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #e8e6e3;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Border&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #16a34a;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Success&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #f59e0b;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Warning&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;div class=&quot;color-swatch&quot; style=&quot;background-color: #dc2626;&quot;&gt;&lt;/div&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Danger&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Theme List with Swatches</h3>
+<pre><code class="language-html">&lt;div class=&quot;themes-list&quot;&gt;
+  &lt;button class=&quot;theme-item theme-item-active&quot;&gt;
+    &lt;span class=&quot;theme-swatch&quot; style=&quot;background-color: #fefefe;&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;theme-name&quot;&gt;Light&lt;/span&gt;
+  &lt;/button&gt;
+
+  &lt;button class=&quot;theme-item&quot;&gt;
+    &lt;span class=&quot;theme-swatch&quot; style=&quot;background-color: #181716;&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;theme-name&quot;&gt;Dark&lt;/span&gt;
+  &lt;/button&gt;
+
+  &lt;button class=&quot;theme-item&quot;&gt;
+    &lt;span class=&quot;theme-swatch&quot; style=&quot;background-color: #e8e6e3;&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;theme-name&quot;&gt;Neutral&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Editable Swatch Grid</h3>
+<pre><code class="language-html">&lt;div class=&quot;color-swatch-grid color-swatch-grid-editable&quot;&gt;
+  &lt;div class=&quot;color-swatch-item&quot;&gt;
+    &lt;button
+      class=&quot;color-swatch color-swatch-editable&quot;
+      style=&quot;background-color: #fefefe;&quot;
+      title=&quot;Click to edit background color&quot;
+      aria-label=&quot;Edit background color&quot;
+      data-color-key=&quot;background&quot;
+    &gt;
+      &lt;!-- Clickable swatch --&gt;
+    &lt;/button&gt;
+    &lt;span class=&quot;color-swatch-label&quot;&gt;Background&lt;/span&gt;
+    &lt;input
+      type=&quot;color&quot;
+      class=&quot;color-swatch-picker&quot;
+      value=&quot;#fefefe&quot;
+      style=&quot;display: none;&quot;
+    /&gt;
+  &lt;/div&gt;
+  &lt;!-- More editable swatches --&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.color-swatch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.color-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.color-swatch-label {
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 60px;
+  word-wrap: break-word;
+}
+
+/* Swatch Grid */
+.color-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+
+@media (max-width: 600px) {
+  .color-swatch-grid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 8px;
+  }
+}
+
+/* Large swatches */
+.color-swatch-large {
+  width: 32px;
+  height: 32px;
+}
+
+.color-swatch-item.color-swatch-item-large {
+  gap: 6px;
+}
+
+.color-swatch-item.color-swatch-item-large .color-swatch-label {
+  font-size: 12px;
+}
+
+/* Editable swatches */
+.color-swatch-editable {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.color-swatch-editable:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.color-swatch-editable:active {
+  transform: scale(0.95);
+}
+
+.color-swatch-picker {
+  display: none;
+  cursor: pointer;
+}
+
+/* Theme list swatches */
+.theme-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.theme-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.theme-item:hover {
+  background-color: var(--hover-bg);
+}
+
+.theme-item-active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.theme-item-active .theme-swatch {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.theme-name {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  flex: 1;
+  text-align: left;
+}
+
+/* Multiple columns for theme editor */
+.color-swatch-grid-wide {
+  grid-template-columns: repeat(3, 1fr);
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Color Swatch Component
+const ColorSwatch = ({
+  color,
+  label,
+  size = &#39;sm&#39;,
+  editable = false,
+  onColorChange,
+}) =&gt; {
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const pickerRef = useRef(null);
+
+  const sizeClass = {
+    sm: &#39;color-swatch&#39;,
+    md: &#39;color-swatch color-swatch-md&#39;,
+    lg: &#39;color-swatch color-swatch-large&#39;,
+  }[size];
+
+  const handleSwatchClick = () =&gt; {
+    if (editable) {
+      pickerRef.current?.click();
+    }
+  };
+
+  const handleColorChange = (e) =&gt; {
+    const newColor = e.target.value;
+    onColorChange?.(newColor);
+  };
+
+  return (
+    &lt;div className=&quot;color-swatch-item&quot;&gt;
+      &lt;div
+        className={editable ? `${sizeClass} color-swatch-editable` : sizeClass}
+        style={{ backgroundColor: color }}
+        onClick={handleSwatchClick}
+        title={editable ? &#39;Click to edit color&#39; : undefined}
+      /&gt;
+      {label &amp;&amp; &lt;span className=&quot;color-swatch-label&quot;&gt;{label}&lt;/span&gt;}
+      {editable &amp;&amp; (
+        &lt;input
+          ref={pickerRef}
+          type=&quot;color&quot;
+          value={color}
+          onChange={handleColorChange}
+          style={{ display: &#39;none&#39; }}
+        /&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+// Theme Color Grid
+const ThemeColorGrid = ({ theme, onColorChange }) =&gt; {
+  const colors = [
+    { key: &#39;background&#39;, label: &#39;Background&#39;, value: theme.background },
+    { key: &#39;foreground&#39;, label: &#39;Foreground&#39;, value: theme.foreground },
+    { key: &#39;accent&#39;, label: &#39;Accent&#39;, value: theme.accent },
+    { key: &#39;muted&#39;, label: &#39;Muted&#39;, value: theme.muted },
+    { key: &#39;border&#39;, label: &#39;Border&#39;, value: theme.border },
+    { key: &#39;success&#39;, label: &#39;Success&#39;, value: theme.success },
+    { key: &#39;warning&#39;, label: &#39;Warning&#39;, value: theme.warning },
+    { key: &#39;danger&#39;, label: &#39;Danger&#39;, value: theme.danger },
+  ];
+
+  return (
+    &lt;div className=&quot;color-swatch-grid&quot;&gt;
+      {colors.map((colorDef) =&gt; (
+        &lt;ColorSwatch
+          key={colorDef.key}
+          color={colorDef.value}
+          label={colorDef.label}
+          editable={true}
+          onColorChange={(newColor) =&gt; onColorChange(colorDef.key, newColor)}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+};
+
+// Theme List with Swatches
+const ThemeList = ({ themes, selectedTheme, onThemeSelect }) =&gt; {
+  return (
+    &lt;div className=&quot;themes-list&quot;&gt;
+      {themes.map((theme) =&gt; (
+        &lt;button
+          key={theme.id}
+          className={`theme-item ${selectedTheme.id === theme.id ? &#39;theme-item-active&#39; : &#39;&#39;}`}
+          onClick={() =&gt; onThemeSelect(theme)}
+        &gt;
+          &lt;span
+            className=&quot;theme-swatch&quot;
+            style={{ backgroundColor: theme.primaryColor }}
+          /&gt;
+          &lt;span className=&quot;theme-name&quot;&gt;{theme.name}&lt;/span&gt;
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  );
+};
+
+// Usage Example
+const ThemeEditor = () =&gt; {
+  const [currentTheme, setCurrentTheme] = useState({
+    background: &#39;#fefefe&#39;,
+    foreground: &#39;#181716&#39;,
+    accent: &#39;#E8915A&#39;,
+    muted: &#39;#777777&#39;,
+    border: &#39;#e8e6e3&#39;,
+    success: &#39;#16a34a&#39;,
+    warning: &#39;#f59e0b&#39;,
+    danger: &#39;#dc2626&#39;,
+  });
+
+  const handleColorChange = (colorKey, newColor) =&gt; {
+    setCurrentTheme((prev) =&gt; ({
+      ...prev,
+      [colorKey]: newColor,
+    }));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Theme Colors&lt;/h2&gt;
+      &lt;ThemeColorGrid theme={currentTheme} onColorChange={handleColorChange} /&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Use small swatches (16px) by default</li>
+<li>Include descriptive labels for each color</li>
+<li>Place labels below or beside swatches</li>
+<li>Show actual color values without filters</li>
+<li>Use 1px subtle borders on swatches</li>
+<li>Keep swatch borders consistent (2px radius)</li>
+<li>Group related colors in grids</li>
+<li>Make swatches clickable only if editable</li>
+<li>Use monospace font for labels (11px)</li>
+<li>Provide clear visual feedback on hover/click</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use oversized swatches in compact views</li>
+<li>Hide color values or approximate colors</li>
+<li>Make swatches appear as buttons unless editable</li>
+<li>Use thick borders on swatches</li>
+<li>Display too many swatches in a single row</li>
+<li>Change swatch styling outside the defined variants</li>
+<li>Use colorful backgrounds behind swatches</li>
+<li>Forget to label swatches</li>
+<li>Mix label positions (keep consistent)</li>
+<li>Use swatches for status indicators (use status dots instead)</li>
+</ul>
+<h2>Rules Specific to Color Swatches</h2>
+<ol>
+<li><strong>Standard size 16px</strong>: Small square color patches are 16×16 pixels</li>
+<li><strong>2px border radius</strong>: Swatches have slightly rounded corners (2px radius)</li>
+<li><strong>1px subtle border</strong>: All swatches have 1px solid --border</li>
+<li><strong>11px monospace labels</strong>: Labels use 11px JetBrains Mono, --muted color</li>
+<li><strong>4px gap</strong>: Gap between swatch and label is 4px</li>
+<li><strong>Grid layout</strong>: Multiple swatches use CSS grid (3-column or flexible)</li>
+<li><strong>8px item spacing</strong>: Gap between swatch items in grid is 8px</li>
+<li><strong>No shadow</strong>: Swatches are flat, no drop shadows (except on editable hover)</li>
+<li><strong>Exact color display</strong>: Show the actual hex/RGB color value without filters</li>
+<li><strong>Editable swatches scale</strong>: Clickable swatches grow 10% on hover, shrink on click</li>
+<li><strong>Color picker hidden</strong>: Native color picker input is hidden, triggered by swatch click</li>
+<li><strong>Consistent placement</strong>: Labels always below or beside, not mixed</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

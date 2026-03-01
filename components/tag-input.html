@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tag input — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html" class="active">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Tag display (inline badges, 12 pastel colors)</p>
+        <div style="display:flex; flex-wrap:wrap; gap:4px;">
+          <span style="display:inline-flex; align-items:center; gap:4px; background:rgba(245,158,11,0.15); color:#b45309; border-radius:4px; padding:2px 8px; font-size:12px;">botany <span style="cursor:pointer; opacity:0.6;">&times;</span></span>
+          <span style="display:inline-flex; align-items:center; gap:4px; background:rgba(34,197,94,0.15); color:#15803d; border-radius:4px; padding:2px 8px; font-size:12px;">medicinal <span style="cursor:pointer; opacity:0.6;">&times;</span></span>
+          <span style="display:inline-flex; align-items:center; gap:4px; background:rgba(168,85,247,0.15); color:#7c3aed; border-radius:4px; padding:2px 8px; font-size:12px;">poisonous <span style="cursor:pointer; opacity:0.6;">&times;</span></span>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Tag popover (two-panel system)</p>
+        <div style="display:flex; gap:0;">
+          <div style="width:250px; background:var(--bg); border:1px solid var(--border); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); overflow:hidden;">
+            <div style="padding:8px;">
+              <input type="text" placeholder="Search or create tag..." style="font-family:inherit; font-size:13px; border:2px solid var(--border); border-radius:4px; padding:4px 8px; background:var(--bg); color:var(--fg); width:100%; outline:none;" />
+            </div>
+            <div style="max-height:200px; overflow-y:auto;">
+              <div style="display:flex; align-items:center; gap:8px; padding:4px 12px; cursor:pointer; font-size:13px;">
+                <input type="checkbox" checked style="accent-color:#0066cc;" />
+                <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(245,158,11,0.6);"></span>
+                botany
+                <span style="margin-left:auto; cursor:pointer; color:var(--muted); font-size:16px;">&hellip;</span>
+              </div><div style="display:flex; align-items:center; gap:8px; padding:4px 12px; cursor:pointer; font-size:13px;">
+                <input type="checkbox" checked style="accent-color:#0066cc;" />
+                <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(34,197,94,0.6);"></span>
+                medicinal
+                <span style="margin-left:auto; cursor:pointer; color:var(--muted); font-size:16px;">&hellip;</span>
+              </div><div style="display:flex; align-items:center; gap:8px; padding:4px 12px; cursor:pointer; font-size:13px;">
+                <input type="checkbox" checked style="accent-color:#0066cc;" />
+                <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(168,85,247,0.6);"></span>
+                poisonous
+                <span style="margin-left:auto; cursor:pointer; color:var(--muted); font-size:16px;">&hellip;</span>
+              </div><div style="display:flex; align-items:center; gap:8px; padding:4px 12px; cursor:pointer; font-size:13px;">
+                <input type="checkbox"  style="accent-color:#0066cc;" />
+                <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(14,165,233,0.6);"></span>
+                perennial
+                <span style="margin-left:auto; cursor:pointer; color:var(--muted); font-size:16px;">&hellip;</span>
+              </div><div style="display:flex; align-items:center; gap:8px; padding:4px 12px; cursor:pointer; font-size:13px;">
+                <input type="checkbox"  style="accent-color:#0066cc;" />
+                <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(244,63,94,0.6);"></span>
+                european
+                <span style="margin-left:auto; cursor:pointer; color:var(--muted); font-size:16px;">&hellip;</span>
+              </div>
+            </div>
+          </div>
+          <div style="width:200px; background:var(--bg); border:1px solid var(--border); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-left:-1px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <label style="font-size:11px; text-transform:uppercase; color:var(--muted);">Rename</label>
+            <input type="text" value="botany" style="font-family:inherit; font-size:13px; border:2px solid var(--border); border-radius:4px; padding:4px 8px; background:var(--bg); color:var(--fg); width:100%; outline:none;" />
+            <label style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-top:4px;">Color</label>
+            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:4px;">
+              <div style="width:24px;height:24px;border-radius:4px;background:rgba(245,158,11,0.6);cursor:pointer;border:2px solid #0066cc;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(34,197,94,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(14,165,233,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(168,85,247,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(244,63,94,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(20,184,166,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(249,115,22,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(99,102,241,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(236,72,153,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(6,182,212,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(132,204,22,0.6);cursor:pointer;border:2px solid transparent;"></div><div style="width:24px;height:24px;border-radius:4px;background:rgba(156,163,175,0.6);cursor:pointer;border:2px solid transparent;"></div>
+            </div>
+            <button style="font-family:inherit; font-size:12px; color:var(--danger); background:none; border:none; cursor:pointer; text-align:left; margin-top:4px;">Delete tag everywhere</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Tag Input</h1>
+<h2>Description</h2>
+<p>An interactive input component for managing tags on notes. Tags are displayed as small pill-shaped chips that can be removed individually. The input supports creating new tags by pressing Enter or comma, with autocomplete suggestions from existing tags.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Note tagging</strong>: Add/remove tags from notes in the note header or settings</li>
+<li><strong>Bulk categorization</strong>: Apply multiple categories to a single note</li>
+<li><strong>Tag management</strong>: Edit existing tags or remove unwanted tags</li>
+<li><strong>Search/filter</strong>: Filter notes by tags</li>
+</ul>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Display</th>
+<th>Interaction</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Expanded</strong></td>
+<td>Full tag pills visible, input visible</td>
+<td>Full edit capability</td>
+<td>In note headers, tag editors</td>
+</tr>
+<tr>
+<td><strong>Collapsed</strong></td>
+<td>Dots only, expandable</td>
+<td>Click to expand</td>
+<td>In table cells, compact views</td>
+</tr>
+<tr>
+<td><strong>Read-only</strong></td>
+<td>Tag pills displayed</td>
+<td>View only, no editing</td>
+<td>In previews or locked items</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<pre><code>&lt;div class=&quot;tag-input-wrapper&quot;&gt;
+  &lt;div class=&quot;tag-list&quot;&gt;
+    &lt;span class=&quot;tag-pill&quot;&gt;
+      &lt;span class=&quot;tag-text&quot;&gt;Writing&lt;/span&gt;
+      &lt;button class=&quot;tag-remove&quot; aria-label=&quot;Remove tag&quot;&gt;×&lt;/button&gt;
+    &lt;/span&gt;
+    &lt;span class=&quot;tag-pill&quot;&gt;
+      &lt;span class=&quot;tag-text&quot;&gt;Tutorial&lt;/span&gt;
+      &lt;button class=&quot;tag-remove&quot;&gt;×&lt;/button&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;tag-input-field&quot;&gt;
+    &lt;input
+      type=&quot;text&quot;
+      class=&quot;tag-input&quot;
+      placeholder=&quot;Add tags...&quot;
+      autocomplete=&quot;off&quot;
+    /&gt;
+    &lt;ul class=&quot;tag-suggestions&quot; role=&quot;listbox&quot;&gt;
+      &lt;li class=&quot;tag-suggestion&quot; role=&quot;option&quot;&gt;Documentation&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Container <code>.tag-input-wrapper</code></li>
+<li><code>.tag-list</code> containing individual tag pills</li>
+<li>Each tag is a <code>.tag-pill</code> with text and remove button</li>
+<li><code>.tag-input-field</code> containing the input box and autocomplete dropdown</li>
+<li>Autocomplete suggestions displayed below input</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Pill background</strong>: <code>--background-secondary</code> or light gray</li>
+<li><strong>Pill text</strong>: <code>--foreground</code> (#181716), 13px monospace</li>
+<li><strong>Pill border</strong>: Optional <code>1px solid --border</code></li>
+<li><strong>Pill padding</strong>: 4px 8px</li>
+<li><strong>Pill border radius</strong>: 9999px (rounded pill shape)</li>
+<li><strong>Remove button</strong>: Monospace ×, color <code>--color-muted</code>, hover darker</li>
+<li><strong>Input font</strong>: 13px monospace</li>
+<li><strong>Input border</strong>: 2px solid <code>--border</code>, 4px radius</li>
+<li><strong>Autocomplete background</strong>: <code>--background</code>, <code>1px solid --border</code></li>
+<li><strong>Suggestion hover</strong>: <code>--hover-bg</code></li>
+<li><strong>Gap between pills</strong>: 4px</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Tag Input in Note Header</h3>
+<pre><code class="language-html">&lt;div class=&quot;tag-input-wrapper&quot;&gt;
+  &lt;label class=&quot;tag-input-label&quot;&gt;Tags&lt;/label&gt;
+
+  &lt;div class=&quot;tag-list&quot;&gt;
+    &lt;span class=&quot;tag-pill&quot;&gt;
+      &lt;span class=&quot;tag-text&quot;&gt;Writing&lt;/span&gt;
+      &lt;button
+        class=&quot;tag-remove&quot;
+        aria-label=&quot;Remove tag Writing&quot;
+        onClick=&quot;removeTag(&#39;Writing&#39;)&quot;
+      &gt;
+        ×
+      &lt;/button&gt;
+    &lt;/span&gt;
+
+    &lt;span class=&quot;tag-pill&quot;&gt;
+      &lt;span class=&quot;tag-text&quot;&gt;Tutorial&lt;/span&gt;
+      &lt;button
+        class=&quot;tag-remove&quot;
+        aria-label=&quot;Remove tag Tutorial&quot;
+        onClick=&quot;removeTag(&#39;Tutorial&#39;)&quot;
+      &gt;
+        ×
+      &lt;/button&gt;
+    &lt;/span&gt;
+
+    &lt;span class=&quot;tag-pill&quot;&gt;
+      &lt;span class=&quot;tag-text&quot;&gt;Documentation&lt;/span&gt;
+      &lt;button class=&quot;tag-remove&quot; aria-label=&quot;Remove tag Documentation&quot;&gt;
+        ×
+      &lt;/button&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;tag-input-field&quot;&gt;
+    &lt;input
+      type=&quot;text&quot;
+      class=&quot;tag-input&quot;
+      placeholder=&quot;Add more tags...&quot;
+      autocomplete=&quot;off&quot;
+      aria-label=&quot;Enter new tag&quot;
+    /&gt;
+
+    &lt;ul class=&quot;tag-suggestions&quot; role=&quot;listbox&quot;&gt;
+      &lt;li class=&quot;tag-suggestion&quot; role=&quot;option&quot;&gt;Community&lt;/li&gt;
+      &lt;li class=&quot;tag-suggestion&quot; role=&quot;option&quot;&gt;Workflow&lt;/li&gt;
+      &lt;li class=&quot;tag-suggestion&quot; role=&quot;option&quot;&gt;Tips&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Collapsed Tag View (in Table)</h3>
+<pre><code class="language-html">&lt;td class=&quot;table-cell&quot;&gt;
+  &lt;div class=&quot;tag-list-collapsed&quot;&gt;
+    &lt;span class=&quot;tag-dot&quot; title=&quot;Writing&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;tag-dot&quot; title=&quot;Tutorial&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;tag-dot&quot; title=&quot;Documentation&quot;&gt;&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/td&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.tag-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+}
+
+.tag-input-label {
+  font-size: 13px;
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  color: var(--foreground);
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.tag-text {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-remove {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 600;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tag-remove:hover {
+  color: var(--foreground);
+}
+
+.tag-input-field {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.tag-input {
+  width: 100%;
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  padding: 6px 8px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: border-color 0.15s ease;
+}
+
+.tag-input::placeholder {
+  color: var(--color-muted);
+}
+
+.tag-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.tag-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 10;
+}
+
+.tag-suggestions.visible {
+  display: block;
+}
+
+.tag-suggestion {
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  color: var(--foreground);
+}
+
+.tag-suggestion:hover {
+  background-color: var(--hover-bg);
+}
+
+.tag-suggestion.selected {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+/* Collapsed view */
+.tag-list-collapsed {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.tag-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-muted);
+  flex-shrink: 0;
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Tag Input Component
+const [tags, setTags] = useState([&#39;Writing&#39;, &#39;Tutorial&#39;, &#39;Documentation&#39;]);
+const [inputValue, setInputValue] = useState(&#39;&#39;);
+const [suggestions, setSuggestions] = useState([]);
+const [showSuggestions, setShowSuggestions] = useState(false);
+const [allAvailableTags] = useState([
+  &#39;Writing&#39;, &#39;Tutorial&#39;, &#39;Documentation&#39;, &#39;Community&#39;, &#39;Workflow&#39;,
+  &#39;Tips&#39;, &#39;Python&#39;, &#39;JavaScript&#39;, &#39;Design&#39;, &#39;Research&#39;
+]);
+
+const handleInputChange = (e) =&gt; {
+  const value = e.target.value;
+  setInputValue(value);
+
+  if (value.trim()) {
+    const filtered = allAvailableTags.filter(
+      (tag) =&gt;
+        !tags.includes(tag) &amp;&amp;
+        tag.toLowerCase().includes(value.toLowerCase())
+    );
+    setSuggestions(filtered);
+    setShowSuggestions(filtered.length &gt; 0);
+  } else {
+    setShowSuggestions(false);
+  }
+};
+
+const handleAddTag = (tag) =&gt; {
+  if (!tags.includes(tag) &amp;&amp; tag.trim()) {
+    setTags([...tags, tag.trim()]);
+    setInputValue(&#39;&#39;);
+    setShowSuggestions(false);
+  }
+};
+
+const handleKeyDown = (e) =&gt; {
+  if ((e.key === &#39;Enter&#39; || e.key === &#39;,&#39;) &amp;&amp; inputValue.trim()) {
+    e.preventDefault();
+    handleAddTag(inputValue);
+  } else if (e.key === &#39;Backspace&#39; &amp;&amp; !inputValue &amp;&amp; tags.length &gt; 0) {
+    setTags(tags.slice(0, -1));
+  }
+};
+
+const handleRemoveTag = (tagToRemove) =&gt; {
+  setTags(tags.filter((tag) =&gt; tag !== tagToRemove));
+};
+
+const handleSuggestionClick = (suggestion) =&gt; {
+  handleAddTag(suggestion);
+};
+
+&lt;div className=&quot;tag-input-wrapper&quot;&gt;
+  &lt;label className=&quot;tag-input-label&quot;&gt;Tags&lt;/label&gt;
+
+  &lt;div className=&quot;tag-list&quot;&gt;
+    {tags.map((tag) =&gt; (
+      &lt;span key={tag} className=&quot;tag-pill&quot;&gt;
+        &lt;span className=&quot;tag-text&quot;&gt;{tag}&lt;/span&gt;
+        &lt;button
+          className=&quot;tag-remove&quot;
+          aria-label={`Remove tag ${tag}`}
+          onClick={() =&gt; handleRemoveTag(tag)}
+        &gt;
+          ×
+        &lt;/button&gt;
+      &lt;/span&gt;
+    ))}
+  &lt;/div&gt;
+
+  &lt;div className=&quot;tag-input-field&quot;&gt;
+    &lt;input
+      type=&quot;text&quot;
+      className=&quot;tag-input&quot;
+      placeholder=&quot;Add more tags...&quot;
+      value={inputValue}
+      onChange={handleInputChange}
+      onKeyDown={handleKeyDown}
+      onFocus={() =&gt; setShowSuggestions(suggestions.length &gt; 0)}
+      aria-label=&quot;Enter new tag&quot;
+      autoComplete=&quot;off&quot;
+    /&gt;
+
+    {showSuggestions &amp;&amp; (
+      &lt;ul className=&quot;tag-suggestions visible&quot; role=&quot;listbox&quot;&gt;
+        {suggestions.map((suggestion) =&gt; (
+          &lt;li
+            key={suggestion}
+            className=&quot;tag-suggestion&quot;
+            role=&quot;option&quot;
+            onClick={() =&gt; handleSuggestionClick(suggestion)}
+          &gt;
+            {suggestion}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    )}
+  &lt;/div&gt;
+&lt;/div&gt;
+
+// Collapsed Tag View (in Table)
+&lt;div className=&quot;tag-list-collapsed&quot;&gt;
+  {tags.slice(0, 3).map((tag) =&gt; (
+    &lt;span key={tag} className=&quot;tag-dot&quot; title={tag}&gt;&lt;/span&gt;
+  ))}
+  {tags.length &gt; 3 &amp;&amp; (
+    &lt;span className=&quot;tag-count&quot; title={`${tags.length - 3} more tags`}&gt;
+      +{tags.length - 3}
+    &lt;/span&gt;
+  )}
+&lt;/div&gt;
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Display tags as rounded pill shapes with consistent styling</li>
+<li>Support adding tags via Enter or comma keys</li>
+<li>Autocomplete suggestions from existing tags</li>
+<li>Allow removing tags with × button in each pill</li>
+<li>Support keyboard deletion (Backspace removes last tag)</li>
+<li>Show autocomplete dropdown when user types</li>
+<li>Use monospace font for all tag text</li>
+<li>Make tag pills easily scannable and removable</li>
+<li>Organize tags inline with wrapping</li>
+<li>Provide visual feedback on hover</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Use tags for non-categorical data</li>
+<li>Create tags that are too long (truncate if needed)</li>
+<li>Hide the remove button on tags</li>
+<li>Autocomplete unrelated or system-only tags</li>
+<li>Make tag pills look like buttons</li>
+<li>Use different colors for different tags (keep styling consistent)</li>
+<li>Allow duplicate tags in the same input</li>
+<li>Forget to show suggestions when user types</li>
+<li>Use tags where buttons or separate input fields would be clearer</li>
+<li>Make tag input too wide or cramped</li>
+</ul>
+<h2>Rules Specific to Tag Inputs</h2>
+<ol>
+<li><strong>Pill shape</strong>: Tags are fully rounded (9999px border-radius) rounded pills</li>
+<li><strong>Monospace throughout</strong>: All tag text is 13px JetBrains Mono</li>
+<li><strong>Remove button always visible</strong>: × button appears on every tag pill</li>
+<li><strong>Auto-suggest on input</strong>: Suggestions appear as user types</li>
+<li><strong>Add on Enter/comma</strong>: Both keys create a new tag</li>
+<li><strong>Backspace to remove</strong>: Pressing Backspace when input is empty removes last tag</li>
+<li><strong>No duplicate tags</strong>: Input prevents adding the same tag twice</li>
+<li><strong>Autocomplete from existing</strong>: Suggestions only include existing tags that aren&#39;t already added</li>
+<li><strong>Wrapping layout</strong>: Tags wrap to next line, not horizontal scroll</li>
+<li><strong>4px gap between pills</strong>: Consistent spacing between tag pills</li>
+<li><strong>Collapsed dots in tables</strong>: Compact view shows small dots instead of full pills</li>
+<li><strong>Monospace input</strong>: Input field uses same monospace font as tag pills</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

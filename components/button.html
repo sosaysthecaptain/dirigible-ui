@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>button — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html" class="active">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg);" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Choose folder</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseup="this.style.background='transparent';this.style.color='var(--fg)'" onmouseleave="this.style.background='transparent';this.style.color='var(--fg)'">Cancel</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--danger); border:1px solid var(--border); font-weight:600;" onmousedown="this.style.background='var(--danger)';this.style.color='#fff'" onmouseup="this.style.background='transparent';this.style.color='var(--danger)'" onmouseleave="this.style.background='transparent';this.style.color='var(--danger)'">Delete</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:none; text-decoration:underline; text-decoration-color:var(--border);">Import from backup</button>
+    </div>
+    <div style="margin-top:16px; display:flex; gap:8px; align-items:center;">
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); opacity:0.5; pointer-events:none;">Disabled primary</button>
+      <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); font-weight:600; opacity:0.5; pointer-events:none;">Disabled secondary</button>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Primary (inverts on click) · Secondary semibold (inverts on click) · Danger = secondary + red text, semibold (inverts red on click) · Text-only · Disabled states · All borders 1px</p>
+  
+  </div>
+</div>
+<h1>Button</h1>
+<h2>Description</h2>
+<p>A versatile interactive element used to trigger actions throughout the Dirigible app. Buttons come in three distinct variants (Primary, Secondary, Danger) to clearly communicate the importance and nature of the action they represent.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Primary</strong>: Main calls-to-action like &quot;Choose folder&quot;, &quot;Set as default light theme&quot;, or form submissions</li>
+<li><strong>Secondary</strong>: Alternative actions like &quot;Cancel&quot;, &quot;Browse all&quot;, or non-critical navigation</li>
+<li><strong>Danger</strong>: Destructive confirmations like &quot;Delete folder&quot; or &quot;Permanently remove&quot;</li>
+<li><strong>Text-only</strong>: Lightweight actions in modal footers, &quot;Import from backup&quot;, &quot;Close&quot;</li>
+</ul>
+<p>Buttons should use sentence case, never uppercase. Do not include icons inside buttons; icons are separate interactive elements.</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Background</th>
+<th>Text Color</th>
+<th>Border</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Primary</strong></td>
+<td>#1a1a1a (dark gray/black)</td>
+<td>#ffffff (white)</td>
+<td>2px solid #1a1a1a</td>
+<td>Main action, affirmative choice</td>
+</tr>
+<tr>
+<td><strong>Secondary</strong></td>
+<td>transparent/white</td>
+<td>#181716 (dark text)</td>
+<td>2px solid --border (#e8e6e3)</td>
+<td>Alternative actions, cancel</td>
+</tr>
+<tr>
+<td><strong>Danger</strong></td>
+<td>#dc2626 (red)</td>
+<td>#ffffff (white)</td>
+<td>2px solid #dc2626</td>
+<td>Destructive actions only</td>
+</tr>
+<tr>
+<td><strong>Text-only</strong></td>
+<td>none</td>
+<td>#181716</td>
+<td>none</td>
+<td>Supplementary actions, links</td>
+</tr>
+</tbody></table>
+<h3>States</h3>
+<p>All button variants support these interactive states:</p>
+<ul>
+<li><strong>Default</strong>: Base styling as defined above</li>
+<li><strong>Hover</strong>: Background slightly lighter (Primary) or darker (Secondary); Danger hover at #b91c1c</li>
+<li><strong>Active/Pressed</strong>: Background darkens further, slight inset shadow</li>
+<li><strong>Disabled</strong>: Opacity 0.5, <code>cursor: not-allowed</code>, no pointer events</li>
+</ul>
+<h2>Anatomy</h2>
+<pre><code>&lt;button class=&quot;btn btn-primary&quot;&gt;
+  [Label Text]
+&lt;/button&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Outer <code>&lt;button&gt;</code> element with class <code>btn</code> and variant class (<code>btn-primary</code>, <code>btn-secondary</code>, <code>btn-danger</code>, <code>btn-text</code>)</li>
+<li>Inner text content (no nested elements)</li>
+<li>No icons; icon-buttons are separate components</li>
+<li>No aria-labels needed if text is clear; add for icon-only buttons (not applicable here)</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Font</strong>: <code>--font-family-mono</code> (JetBrains Mono), <code>--font-size-base</code> (13px)</li>
+<li><strong>Colors</strong>:<ul>
+<li>Primary: <code>--color-bg-primary</code> (#1a1a1a), <code>--color-text-light</code> (#ffffff)</li>
+<li>Secondary: <code>--color-bg-secondary</code> (transparent), <code>--color-border</code> (#e8e6e3), <code>--color-text-dark</code> (#181716)</li>
+<li>Danger: <code>--color-danger</code> (#dc2626), <code>--color-text-light</code> (#ffffff)</li>
+<li>Text-only: <code>--color-text-dark</code>, <code>--color-border</code> (on hover)</li>
+</ul>
+</li>
+<li><strong>Spacing</strong>: Padding <code>4px 12px</code></li>
+<li><strong>Border</strong>: <code>2px solid</code></li>
+<li><strong>Radius</strong>: <code>4px</code></li>
+<li><strong>Line height</strong>: Inherit from 13px base (typically 1.4 = ~18px)</li>
+</ul>
+<h2>HTML Example</h2>
+<h3>Primary Button</h3>
+<pre><code class="language-html">&lt;button class=&quot;btn btn-primary&quot;&gt;Choose folder&lt;/button&gt;
+</code></pre>
+<h3>Secondary Button</h3>
+<pre><code class="language-html">&lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+</code></pre>
+<h3>Danger Button</h3>
+<pre><code class="language-html">&lt;button class=&quot;btn btn-danger&quot;&gt;Delete permanently&lt;/button&gt;
+</code></pre>
+<h3>Text-Only Button (in modal footer)</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal-footer&quot;&gt;
+  &lt;button class=&quot;btn btn-text&quot;&gt;Import from backup&lt;/button&gt;
+  &lt;button class=&quot;btn btn-secondary&quot;&gt;Cancel&lt;/button&gt;
+  &lt;button class=&quot;btn btn-primary&quot;&gt;Choose folder&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>CSS Example</h2>
+<pre><code class="language-css">.btn {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.btn-primary {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border-color: #1a1a1a;
+}
+
+.btn-primary:hover {
+  background-color: #2d2d2d;
+  border-color: #2d2d2d;
+}
+
+.btn-primary:active {
+  background-color: #0f0f0f;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #181716;
+  border-color: #e8e6e3;
+}
+
+.btn-secondary:hover {
+  background-color: #f7f5f2;
+  border-color: #d4d1ce;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #181716;
+  padding: 4px 0;
+  text-decoration: none;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+</code></pre>
+<h2>JSX Example</h2>
+<pre><code class="language-jsx">// Primary button
+&lt;button className=&quot;btn btn-primary&quot; onClick={handleChooseFolder}&gt;
+  Choose folder
+&lt;/button&gt;
+
+// Secondary button
+&lt;button className=&quot;btn btn-secondary&quot; onClick={handleCancel}&gt;
+  Cancel
+&lt;/button&gt;
+
+// Danger button with confirmation pattern
+const [confirmDelete, setConfirmDelete] = useState(false);
+
+{!confirmDelete ? (
+  &lt;button className=&quot;btn btn-danger&quot; onClick={() =&gt; setConfirmDelete(true)}&gt;
+    Delete
+  &lt;/button&gt;
+) : (
+  &lt;&gt;
+    &lt;span&gt;Are you sure?&lt;/span&gt;
+    &lt;button className=&quot;btn btn-danger&quot; onClick={handleConfirmDelete}&gt;
+      Yes, delete
+    &lt;/button&gt;
+    &lt;button className=&quot;btn btn-secondary&quot; onClick={() =&gt; setConfirmDelete(false)}&gt;
+      Cancel
+    &lt;/button&gt;
+  &lt;/&gt;
+)}
+
+// Text-only button
+&lt;button className=&quot;btn btn-text&quot; onClick={handleImportBackup}&gt;
+  Import from backup
+&lt;/button&gt;
+</code></pre>
+<h2>Do&#39;s and Don&#39;ts</h2>
+<h3>Do</h3>
+<ul>
+<li>Use <strong>Primary</strong> buttons for the main action on a page or modal</li>
+<li>Use <strong>Secondary</strong> buttons for alternative or cancel actions</li>
+<li>Use <strong>Danger</strong> buttons only for destructive operations</li>
+<li>Implement a two-click confirmation pattern for destructive actions (first click reveals &quot;Are you sure?&quot;, second click confirms)</li>
+<li>Use sentence case: &quot;Set as default light theme&quot; not &quot;SET AS DEFAULT LIGHT THEME&quot;</li>
+<li>Keep button labels short and action-oriented: &quot;Choose&quot;, &quot;Save&quot;, &quot;Delete&quot;, not &quot;Click here to choose&quot;</li>
+<li>Use consistent padding (4px 12px) across all buttons for visual uniformity</li>
+</ul>
+<h3>Don&#39;t</h3>
+<ul>
+<li>Mix button styles in a single action group (primary should be the dominant action)</li>
+<li>Place icons inside buttons; use separate icon-button components instead</li>
+<li>Use Danger buttons for non-destructive actions</li>
+<li>Use all-caps text in buttons</li>
+<li>Create custom button styles outside these three variants</li>
+<li>Skip the destructive confirmation pattern; always require two clicks for dangerous actions</li>
+<li>Use buttons for navigation; use links instead (unless it&#39;s a form submission)</li>
+<li>Make button text longer than ~30 characters</li>
+</ul>
+<h2>Rules Specific to Buttons</h2>
+<ol>
+<li><strong>Monospace-only</strong>: All button text uses JetBrains Mono at 13px; no other fonts</li>
+<li><strong>Two-click destructive pattern</strong>: Danger buttons must hide their action on first click and show a confirmation state before the second click executes</li>
+<li><strong>No nested elements</strong>: Buttons contain only text nodes; no <code>&lt;span&gt;</code>, <code>&lt;i&gt;</code>, or child elements</li>
+<li><strong>Consistent sizing</strong>: All buttons use the same padding and font size regardless of content</li>
+<li><strong>Border always 2px</strong>: No thinner borders, no outlines; only solid 2px borders</li>
+<li><strong>Text-only buttons are not primary</strong>: Text buttons should never be the main CTA; they&#39;re supplementary</li>
+<li><strong>Disabled state</strong>: Use <code>disabled</code> attribute on the button element; never use a separate &quot;disabled&quot; class on a parent</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

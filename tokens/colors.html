@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>colors — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html" class="active">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <h1>Colors</h1>
+<p>Design tokens for the Dirigible design system color palette. Dirigible supports 20+ built-in themes with a comprehensive semantic color system and extensive syntax highlighting support.</p>
+<h2>Semantic Colors</h2>
+<p>The core semantic color tokens define the Dirigible house style. These provide the foundation for all UI elements and should be used as the primary color reference.</p>
+<h3>Light Theme</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--foreground</code></td>
+<td><code>#1a1a1a</code></td>
+<td>Primary text, headings, foreground elements</td>
+</tr>
+<tr>
+<td><code>--background</code></td>
+<td><code>#faf9f7</code></td>
+<td>Main background, page surface</td>
+</tr>
+<tr>
+<td><code>--border</code></td>
+<td><code>#e0ddd8</code></td>
+<td>Dividers, borders, subtle separators</td>
+</tr>
+<tr>
+<td><code>--muted</code></td>
+<td><code>#8a8580</code></td>
+<td>Disabled text, secondary labels, metadata</td>
+</tr>
+<tr>
+<td><code>--hover</code></td>
+<td><code>#f0eeea</code></td>
+<td>Hover states, subtle background highlights</td>
+</tr>
+<tr>
+<td><code>--accent</code></td>
+<td><code>#E8915A</code></td>
+<td>Primary actions, interactive elements (warm orange)</td>
+</tr>
+<tr>
+<td><code>--accent-hover</code></td>
+<td><code>#d4804a</code></td>
+<td>Accent hover state, pressed buttons</td>
+</tr>
+<tr>
+<td><code>--danger</code></td>
+<td><code>#dc2626</code></td>
+<td>Destructive actions, errors, alerts</td>
+</tr>
+<tr>
+<td><code>--success</code></td>
+<td><code>#16a34a</code></td>
+<td>Successful states, confirmations, valid inputs</td>
+</tr>
+<tr>
+<td><code>--warning</code></td>
+<td><code>#f59e0b</code></td>
+<td>Cautions, warnings, non-critical alerts</td>
+</tr>
+</tbody></table>
+<h3>Dark Theme</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--foreground</code></td>
+<td><code>#f2f0ed</code></td>
+<td>Primary text, headings, foreground elements</td>
+</tr>
+<tr>
+<td><code>--background</code></td>
+<td><code>#181716</code></td>
+<td>Main background, page surface</td>
+</tr>
+<tr>
+<td><code>--border</code></td>
+<td><code>#302e2b</code></td>
+<td>Dividers, borders, subtle separators</td>
+</tr>
+<tr>
+<td><code>--muted</code></td>
+<td><code>#999795</code></td>
+<td>Disabled text, secondary labels, metadata</td>
+</tr>
+<tr>
+<td><code>--hover</code></td>
+<td><code>#232120</code></td>
+<td>Hover states, subtle background highlights</td>
+</tr>
+<tr>
+<td><code>--accent</code></td>
+<td><code>#E8915A</code></td>
+<td>Primary actions, interactive elements (warm orange)</td>
+</tr>
+<tr>
+<td><code>--accent-hover</code></td>
+<td><code>#d4804a</code></td>
+<td>Accent hover state, pressed buttons</td>
+</tr>
+<tr>
+<td><code>--danger</code></td>
+<td><code>#ef4444</code></td>
+<td>Destructive actions, errors, alerts</td>
+</tr>
+<tr>
+<td><code>--success</code></td>
+<td><code>#4ec9b0</code></td>
+<td>Successful states, confirmations, valid inputs</td>
+</tr>
+<tr>
+<td><code>--warning</code></td>
+<td><code>#ce9178</code></td>
+<td>Cautions, warnings, non-critical alerts</td>
+</tr>
+</tbody></table>
+<h2>Theme CSS Variables</h2>
+<p>Dirigible includes a built-in themes system that provides complete CSS variable sets for each theme. The actual runtime implementation uses the following variables (shown for Light and Dark themes):</p>
+<h3>Light Theme Variables</h3>
+<pre><code class="language-css">:root[data-theme=&quot;light&quot;] {
+  --background: #fefefe;
+  --foreground: #1a1a1a;
+  --accent: #0066cc;
+  --accent-muted: #3d8bd4;
+  --selection: #0066cc;
+  --muted: #777777;
+  --border: #e8e6e3;
+  --sidebar-bg: #faf9f8;
+  --editor-bg: #fefefe;
+  --hover: #f5f4f2;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --pdf-bg: #eae8e4;
+  --btn-primary-bg: #1a1a1a;
+  --btn-primary-fg: #ffffff;
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-fg: #1a1a1a;
+  --danger: #dc2626;
+  --context-menu-bg: #ffffff;
+  --context-menu-border: #e0e0e0;
+  --context-menu-divider: #e0e0e0;
+  --context-menu-hover: rgba(0, 0, 0, 0.08);
+  --code-bg: #f5f5f5;
+  --code-fg: #1f2937;
+  --code-muted: #6b7280;
+  --link: #0969da;
+  --link-underline: rgba(9, 105, 218, 0.4);
+  --scrollbar-thumb: #ccc;
+  --scrollbar-track: #faf9f8;
+}
+</code></pre>
+<h3>Dark Theme Variables</h3>
+<pre><code class="language-css">:root[data-theme=&quot;dark&quot;] {
+  --background: #181716;
+  --foreground: #f2f0ed;
+  --accent: #6ba3d6;
+  --accent-muted: #3d6a8a;
+  --selection: #3d6a8a;
+  --muted: #999795;
+  --border: #302e2b;
+  --sidebar-bg: #1e1d1b;
+  --editor-bg: #181716;
+  --hover: #232120;
+  --success: #4ec9b0;
+  --warning: #ce9178;
+  --pdf-bg: #252320;
+  --btn-primary-bg: #e5e5e5;
+  --btn-primary-fg: #1a1a1a;
+  --btn-secondary-bg: #1a1a1a;
+  --btn-secondary-fg: #e5e5e5;
+  --danger: #ef4444;
+  --context-menu-bg: #252525;
+  --context-menu-border: #444444;
+  --context-menu-divider: #333333;
+  --context-menu-hover: rgba(255, 255, 255, 0.1);
+  --code-bg: #1e1e1e;
+  --code-fg: #d4d4d4;
+  --code-muted: #858585;
+  --link: #58a6ff;
+  --link-underline: rgba(88, 166, 255, 0.4);
+  --scrollbar-thumb: #444;
+  --scrollbar-track: #1e1d1b;
+}
+</code></pre>
+<h2>Syntax Highlighting Colors</h2>
+<p>Markdown and code syntax highlighting tokens for the light theme:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--syntax-text</code></td>
+<td><code>#005661</code></td>
+<td>Default text color</td>
+</tr>
+<tr>
+<td><code>--syntax-caret</code></td>
+<td><code>#005661</code></td>
+<td>Cursor/caret color</td>
+</tr>
+<tr>
+<td><code>--syntax-heading</code></td>
+<td><code>#ff5792</code></td>
+<td>Markdown headings</td>
+</tr>
+<tr>
+<td><code>--syntax-emphasis</code></td>
+<td><code>#fa8900</code></td>
+<td>Italics, emphasis</td>
+</tr>
+<tr>
+<td><code>--syntax-strong</code></td>
+<td><code>#fa8900</code></td>
+<td>Bold text</td>
+</tr>
+<tr>
+<td><code>--syntax-strikethrough</code></td>
+<td><code>#8ca6a6</code></td>
+<td>Strikethrough text</td>
+</tr>
+<tr>
+<td><code>--syntax-code</code></td>
+<td><code>#00b368</code></td>
+<td>Inline code</td>
+</tr>
+<tr>
+<td><code>--syntax-code-bg</code></td>
+<td><code>rgba(0, 179, 104, 0.08)</code></td>
+<td>Inline code background</td>
+</tr>
+<tr>
+<td><code>--syntax-link</code></td>
+<td><code>#00bdd6</code></td>
+<td>Link text</td>
+</tr>
+<tr>
+<td><code>--syntax-url</code></td>
+<td><code>#0095a8</code></td>
+<td>URLs and anchors</td>
+</tr>
+<tr>
+<td><code>--syntax-quote</code></td>
+<td><code>#8ca6a6</code></td>
+<td>Block quotes</td>
+</tr>
+<tr>
+<td><code>--syntax-meta</code></td>
+<td><code>#5842ff</code></td>
+<td>Metadata, attributes</td>
+</tr>
+<tr>
+<td><code>--syntax-label</code></td>
+<td><code>#b3694d</code></td>
+<td>Labels, tags</td>
+</tr>
+<tr>
+<td><code>--syntax-selection</code></td>
+<td><code>rgba(0, 149, 168, 0.2)</code></td>
+<td>Selected text background</td>
+</tr>
+<tr>
+<td><code>--syntax-selection-focused</code></td>
+<td><code>rgba(0, 149, 168, 0.3)</code></td>
+<td>Selected text (focused)</td>
+</tr>
+<tr>
+<td><code>--syntax-active-line</code></td>
+<td><code>rgba(0, 86, 97, 0.06)</code></td>
+<td>Active line background</td>
+</tr>
+</tbody></table>
+<h2>Available Themes</h2>
+<p>Dirigible includes 22 built-in themes:</p>
+<ol>
+<li>Dirigible Light</li>
+<li>Alabaster</li>
+<li>Dirigible Dark</li>
+<li>Amber Terminal</li>
+<li>Green Terminal</li>
+<li>Catppuccin Mocha</li>
+<li>Tokyo Night</li>
+<li>Catppuccin Frappé</li>
+<li>Gruvbox Dark</li>
+<li>Rosé Pine</li>
+<li>Nord</li>
+<li>Dracula</li>
+<li>Ayu Dark</li>
+<li>Kanagawa</li>
+<li>Vesper</li>
+<li>Monokai Pro</li>
+<li>Nightfox</li>
+<li>Solarized Dark</li>
+<li>Catppuccin Macchiato</li>
+<li>GitHub Dark</li>
+<li>Poimandres</li>
+<li>Everforest</li>
+<li>Desert</li>
+</ol>
+<h2>Usage</h2>
+<h3>CSS Variables</h3>
+<p>Apply colors using CSS custom properties:</p>
+<pre><code class="language-css">/* Text and backgrounds */
+color: var(--foreground);
+background-color: var(--background);
+
+/* Interactive elements */
+background-color: var(--accent);
+border-color: var(--border);
+
+/* States */
+background-color: var(--hover);
+color: var(--muted);
+
+/* Semantic colors */
+background-color: var(--success);
+background-color: var(--danger);
+background-color: var(--warning);
+</code></pre>
+<h3>Theme Switching</h3>
+<p>Themes are applied via <code>data-theme</code> attribute on the root element:</p>
+<pre><code class="language-html">&lt;html data-theme=&quot;light&quot;&gt;
+  &lt;!-- Light theme applied --&gt;
+&lt;/html&gt;
+
+&lt;html data-theme=&quot;dark&quot;&gt;
+  &lt;!-- Dark theme applied --&gt;
+&lt;/html&gt;
+</code></pre>
+<h2>Design Notes</h2>
+<ul>
+<li><strong>Semantic vs. Theme System</strong>: The design system provides semantic color tokens (foreground, background, accent, etc.) as the primary language. The runtime theme system extends these with specialized variables for UI components (buttons, context menus, code blocks, etc.).</li>
+<li><strong>Accent Colors</strong>: Dirigible house style uses warm orange (<code>#E8915A</code>) as the primary accent. However, individual themes can override this with their own accent colors. Check your theme&#39;s CSS variables for the authoritative color values at runtime.</li>
+<li><strong>Light &amp; Dark</strong>: Always use CSS variables rather than hardcoded colors. This ensures proper theme support across all 22+ built-in themes.</li>
+<li><strong>Contrast</strong>: All color combinations meet WCAG AA accessibility standards for text and interactive elements.</li>
+<li><strong>Syntax Highlighting</strong>: The syntax colors are designed for markdown and code readability. They adapt per theme automatically.</li>
+</ul>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>theme picker — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html" class="active">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Theme picker (popover from sidebar bottom bar)</p>
+    <div style="display:inline-block; background:var(--bg); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,0.12); width:240px; max-height:400px; overflow:hidden; display:flex; flex-direction:column;">
+      <div style="padding:12px 12px 8px; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:16px; font-weight:600;">Themes</span>
+        <button style="background:none; border:none; cursor:pointer; color:var(--muted); display:flex; padding:2px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg></button>
+      </div>
+      <div style="overflow-y:auto; padding:0 0 8px;">
+        <div style="padding:4px 12px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase;">Light</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; background:color-mix(in srgb, var(--accent) 15%, transparent);">
+          <div style="width:16px; height:16px; border-radius:4px; background:#f0eeeb; border:1.5px solid #ccc; flex-shrink:0;"></div>
+          Dirigible Light
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#f0f0f0; border:1.5px solid #d0d0d0; flex-shrink:0;"></div>
+          Alabaster
+        </div>
+        <div style="padding:4px 12px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; margin-top:4px;">Dark</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#302e2b; border:1.5px solid #1a1918; flex-shrink:0;"></div>
+          Dirigible Dark
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#1e1008; border:1.5px solid #0d0a04; flex-shrink:0;"></div>
+          Amber Terminal
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#0d1a0d; border:1.5px solid #091209; flex-shrink:0;"></div>
+          Green Terminal
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#1e1e2e; border:1.5px solid #11111b; flex-shrink:0;"></div>
+          Catppuccin Mocha
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#1a1b26; border:1.5px solid #0f0f14; flex-shrink:0;"></div>
+          Tokyo Night
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#303446; border:1.5px solid #232634; flex-shrink:0;"></div>
+          Catppuccin Frappé
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#282828; border:1.5px solid #1d2021; flex-shrink:0;"></div>
+          Gruvbox Dark
+        </div><div style="display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:13px; cursor:pointer;">
+          <div style="width:16px; height:16px; border-radius:4px; background:#191724; border:1.5px solid #1f1d2e; flex-shrink:0;"></div>
+          Rosé Pine
+        </div>
+        <div style="padding:4px 12px; font-size:11px; color:var(--muted);">... 13 more dark themes</div>
+      </div>
+    </div>
+    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Triggered from themes icon in sidebar bottom bar · Colored swatch = theme's sidebar-bg color · Selected row gets accent highlight · Moon/sun icon toggles light/dark appearance · 23 built-in themes total (2 light, 21 dark)</p>
+  
+  </div>
+</div>
+<h1>Theme Picker</h1>
+<h2>Description</h2>
+<p>A popover that opens from the palette icon in the sidebar bottom bar, allowing users to switch between 23 built-in color themes. Displays themes in Light/Dark sections with colored swatches next to each name. Also includes a light/dark mode toggle button in the header.</p>
+<h2>When to Use</h2>
+<ul>
+<li><strong>Theme switching</strong>: User wants to change the overall color scheme of the app</li>
+<li><strong>Appearance customization</strong>: Accessed via the palette icon in the sidebar bottom bar</li>
+</ul>
+<p>Do not use the theme picker for per-note font themes (those are in the context menu).</p>
+<h2>Variants</h2>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Built-in themes</strong></td>
+<td>23 pre-defined themes (2 light, 21 dark)</td>
+</tr>
+<tr>
+<td><strong>Custom themes</strong></td>
+<td>User-created themes with CSS editor (advanced)</td>
+</tr>
+</tbody></table>
+<h2>Anatomy</h2>
+<pre><code>&lt;div class=&quot;theme-picker&quot;&gt;
+  &lt;div class=&quot;theme-picker-header&quot;&gt;
+    &lt;span class=&quot;theme-picker-title&quot;&gt;Themes&lt;/span&gt;
+    &lt;button class=&quot;theme-picker-mode-toggle&quot;&gt;&lt;!-- moon/sun icon --&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;theme-picker-section-label&quot;&gt;LIGHT&lt;/div&gt;
+  &lt;div class=&quot;theme-picker-item theme-picker-item-selected&quot;&gt;
+    &lt;div class=&quot;theme-picker-swatch&quot; style=&quot;background: #f0eeeb;&quot;&gt;&lt;/div&gt;
+    &lt;span&gt;Dirigible Light&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;theme-picker-item&quot;&gt;
+    &lt;div class=&quot;theme-picker-swatch&quot; style=&quot;background: #f0f0f0;&quot;&gt;&lt;/div&gt;
+    &lt;span&gt;Alabaster&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;theme-picker-section-label&quot;&gt;DARK&lt;/div&gt;
+  &lt;!-- Dark theme items... --&gt;
+&lt;/div&gt;
+</code></pre>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>Popover container anchored to the palette button in sidebar bottom bar</li>
+<li>Header with &quot;Themes&quot; title and moon/sun toggle</li>
+<li>Section labels: &quot;LIGHT&quot; and &quot;DARK&quot;</li>
+<li>Each theme item has a 16x16 swatch square and theme name</li>
+<li>Selected theme gets accent background highlight</li>
+<li>Scrollable list for the full 23 themes</li>
+</ul>
+<h2>Token Usage</h2>
+<ul>
+<li><strong>Swatch size</strong>: 16x16px, border-radius 4px</li>
+<li><strong>Swatch color</strong>: Uses each theme&#39;s <code>sidebar-bg</code> color as the swatch fill</li>
+<li><strong>Swatch border</strong>: 1.5px solid, slightly darker than the swatch color</li>
+<li><strong>Selected item</strong>: Background uses <code>color-mix(in srgb, var(--accent) 15%, transparent)</code></li>
+<li><strong>Section labels</strong>: 11px uppercase, muted color</li>
+<li><strong>Item padding</strong>: 6px 12px</li>
+<li><strong>Item font</strong>: 13px monospace</li>
+<li><strong>Popover width</strong>: ~240px</li>
+<li><strong>Popover border-radius</strong>: 6px</li>
+<li><strong>Popover shadow</strong>: <code>0 4px 16px rgba(0,0,0,0.12)</code></li>
+</ul>
+<h2>Rules Specific to Theme Picker</h2>
+<ol>
+<li><strong>Swatch represents theme</strong>: Each swatch shows the theme&#39;s sidebar-bg color</li>
+<li><strong>Light/Dark sections</strong>: Always separate themes into appearance groups</li>
+<li><strong>Single selection</strong>: Only one theme active at a time</li>
+<li><strong>Instant preview</strong>: Theme applies immediately on click (no confirm button)</li>
+<li><strong>Moon/Sun toggle</strong>: Switches between light and dark appearance independently</li>
+<li><strong>Popover positioning</strong>: Anchored above the palette icon, opens upward</li>
+<li><strong>23 built-in themes</strong>: 2 light (Dirigible Light, Alabaster) + 21 dark</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>

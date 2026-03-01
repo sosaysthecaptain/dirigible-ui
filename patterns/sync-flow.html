@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sync flow — Dirigible UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #0066cc;
+      --accent-muted: #004d99;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section { margin-bottom: 4px; }
+
+    .nav-section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 16px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .sidebar a:hover { background: var(--hover); }
+    .sidebar a.active {
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      color: var(--accent);
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 800px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
+    .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+    .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
+    .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
+    .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
+    .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
+    .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
+    .main a:hover { text-decoration-color: var(--link); }
+    .main strong { font-weight: 600; }
+    .main em { font-style: italic; }
+    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
+    .main code { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
+    .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
+    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
+    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .main tr:hover td { background: var(--hover); }
+    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .main img { max-width: 100%; border-radius: var(--radius-md); }
+
+    .render-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .render-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .render-panel-header .render-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .render-panel-header .render-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .render-panel-body {
+      padding: 24px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+    </div>
+    <a href="../index.html">Overview</a>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Tokens</div>
+          <a href="../tokens/colors.html">Colors</a>
+          <a href="../tokens/spacing.html">Spacing</a>
+          <a href="../tokens/typography.html">Typography</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Components</div>
+          <a href="../components/badge.html">Badge</a>
+          <a href="../components/breadcrumb.html">Breadcrumb</a>
+          <a href="../components/button.html">Button</a>
+          <a href="../components/color-swatch.html">Color Swatch</a>
+          <a href="../components/context-menu.html">Context Menu</a>
+          <a href="../components/icon.html">Icon</a>
+          <a href="../components/image-uploader.html">Image Uploader</a>
+          <a href="../components/input.html">Input</a>
+          <a href="../components/modal.html">Modal</a>
+          <a href="../components/popover.html">Popover</a>
+          <a href="../components/radio-button.html">Radio Button</a>
+          <a href="../components/selection-list.html">Selection List</a>
+          <a href="../components/sidebar.html">Sidebar</a>
+          <a href="../components/slider.html">Slider</a>
+          <a href="../components/table.html">Table</a>
+          <a href="../components/tag-input.html">Tag Input</a>
+          <a href="../components/theme-picker.html">Theme Picker</a>
+          <a href="../components/toast.html">Toast</a>
+          <a href="../components/toggle.html">Toggle</a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Patterns</div>
+          <a href="../patterns/forms.html">Forms</a>
+          <a href="../patterns/navigation.html">Navigation</a>
+          <a href="../patterns/publish-flow.html">Publish Flow</a>
+          <a href="../patterns/sync-flow.html" class="active">Sync Flow</a>
+          <a href="../patterns/theme-system.html">Theme System</a>
+        </div>
+  </nav>
+  <main class="main">
+    <div class="render-panel">
+  <div class="render-panel-header">
+    <span class="render-label"><span class="render-dot"></span> Live render</span>
+  </div>
+  <div class="render-panel-body">
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 10v6m0 0l3-3m-3 3l-3-3M6.75 19.25a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.5 3.5 0 0118 19.25H6.75z"/></svg></span>
+        <span style="font-size:13px;">Click sync icon in sidebar bottom bar</span>
+      </div>
+      <div style="font-size:13px; color:var(--muted);">&darr;</div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; max-width:300px;">
+        <div style="font-weight:600; margin-bottom:4px; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 10v6m0 0l3-3m-3 3l-3-3M6.75 19.25a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.5 3.5 0 0118 19.25H6.75z"/></svg> Sync to Local Folder</div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">.md files &middot; image folders &middot; music structure &middot; PDFs as-is</div>
+        <button style="font-family:inherit; font-size:13px; border-radius:4px; cursor:pointer; padding:4px 14px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); font-size:12px; padding:3px 10px;" onmousedown="this.style.background='var(--bg)';this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)';this.style.color='var(--bg)'" onmouseleave="this.style.background='var(--fg)';this.style.color='var(--bg)'">Choose folder</button>
+      </div>
+      <div style="font-size:13px; color:var(--muted);">&darr;</div>
+      <div style="max-width:300px; background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; padding:12px; display:flex; flex-direction:column; gap:6px;">
+        <div style="font-size:13px; display:flex; align-items:center; gap:8px;">
+          <span style="display:inline-block; width:14px; height:14px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:dg-spin 1s linear infinite;"></span>
+          Syncing...
+        </div>
+        <div style="height:4px; background:var(--border);"><div style="height:100%; width:65%; background:var(--fg);"></div></div>
+      </div>
+      <div style="font-size:13px; color:var(--muted);">&darr;</div>
+      <div style="max-width:300px; background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; padding:12px; display:flex; align-items:center; gap:8px; font-size:13px;">
+        <span style="color:#22c55e; display:flex;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4.5 12.75l6 6 9-13.5"/></svg></span> Complete — 2,189 items
+      </div>
+    </div>
+  
+  </div>
+</div>
+<h1>Sync Flow</h1>
+<h2>Description</h2>
+<p>How Dirigible syncs content to a local folder on the user&#39;s computer. The sync feature enables users to back up their entire library, work offline, or integrate with external tools.</p>
+<h2>Sync Flow</h2>
+<h3>Step 1: Initiate Sync</h3>
+<p>User clicks the cloud download icon (↓) in the sidebar bottom bar.</p>
+<p><strong>Icon location:</strong> Bottom right of sidebar, next to theme and settings controls.</p>
+<h3>Step 2: Sync Modal Opens</h3>
+<p>A modal window appears with the following content:</p>
+<p><strong>Modal Header:</strong></p>
+<ul>
+<li>Icon: Cloud with download arrow</li>
+<li>Title: &quot;Sync to Local Folder&quot;</li>
+</ul>
+<p><strong>Modal Body:</strong></p>
+<p>Description paragraph:</p>
+<blockquote>
+<p>&quot;Export your Dirigible library to a folder on your computer.&quot;</p>
+</blockquote>
+<p>Bullet list explaining what gets synced:</p>
+<ul>
+<li>Notes are saved as .md (Markdown) files</li>
+<li>Albums are saved as folders of images + metadata</li>
+<li>Music libraries keep their artist/album structure</li>
+<li>Documents (PDF/EPUB) are downloaded as-is</li>
+<li>Subsequent syncs only update what changed</li>
+</ul>
+<p><strong>Modal Footer:</strong></p>
+<p>Three buttons:</p>
+<ol>
+<li>&quot;Import from backup&quot; (text link) — allows restoring from a previous sync</li>
+<li>&quot;Cancel&quot; (secondary button) — close without syncing</li>
+<li>&quot;Choose folder&quot; (primary button) — opens file picker to select destination</li>
+</ol>
+<h3>Step 3: Select Destination Folder</h3>
+<p>User clicks &quot;Choose folder&quot; button → native file picker opens.</p>
+<p><strong>File Picker Behavior:</strong></p>
+<ul>
+<li>Starts in home directory or last-used directory</li>
+<li>User selects an empty folder (or Dirigible creates one)</li>
+<li>Folder path is confirmed</li>
+</ul>
+<h3>Step 4: Sync Begins</h3>
+<p>Once folder is selected, sync starts immediately.</p>
+<p><strong>Progress Indicator:</strong></p>
+<ul>
+<li>A dismissible toast appears at the bottom of the screen</li>
+<li>Shows: progress bar, item count (e.g., &quot;Syncing 247 items...&quot;)</li>
+<li>Progress bar fills from left to right</li>
+<li>Bar uses <code>--accent</code> color</li>
+</ul>
+<p><strong>During Sync:</strong></p>
+<ul>
+<li>User can continue using Dirigible</li>
+<li>Cannot cancel mid-sync</li>
+<li>Other modals are disabled</li>
+</ul>
+<h3>Step 5: Sync Completes</h3>
+<p>When sync finishes:</p>
+<p><strong>Success Toast:</strong></p>
+<ul>
+<li>Message: &quot;Synced X items to /path/to/folder&quot;</li>
+<li>Icon: Checkmark in <code>--success</code> color</li>
+<li>Auto-dismisses after 4 seconds</li>
+<li>User can click to dismiss earlier</li>
+</ul>
+<h3>Step 6: Subsequent Syncs</h3>
+<p>The next time user syncs:</p>
+<ul>
+<li>If the same folder is used, it shows &quot;Syncing X new/updated items&quot;</li>
+<li>Only changed files are transferred (incremental sync)</li>
+<li>Much faster than initial sync</li>
+</ul>
+<p><strong>Resuming Sync:</strong></p>
+<ul>
+<li>If Dirigible is closed during sync, next sync continues from where it left off</li>
+<li>&quot;Import from backup&quot; link allows recovering from previous syncs</li>
+</ul>
+<h2>Components Involved</h2>
+<ul>
+<li><strong>Modal</strong> (sync container with centered layout)</li>
+<li><strong>Button</strong> (primary: Choose folder, secondary: Cancel, text: Import from backup)</li>
+<li><strong>Toast</strong> (progress indicator and success notification)</li>
+<li><strong>Progress Bar</strong> (visual sync progress)</li>
+<li><strong>Icon</strong> (cloud with download arrow)</li>
+<li><strong>File Picker</strong> (native OS file selection)</li>
+</ul>
+<h2>Design Details</h2>
+<h3>Sync Modal Structure</h3>
+<pre><code class="language-html">&lt;div class=&quot;modal modal-sync&quot; role=&quot;dialog&quot; aria-labelledby=&quot;sync-title&quot;&gt;
+  &lt;div class=&quot;modal-header&quot;&gt;
+    &lt;svg class=&quot;modal-icon&quot; width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot;&gt;
+      &lt;!-- Cloud with download arrow --&gt;
+      &lt;path d=&quot;M19 13v6H5v-6M12 5v8M9 10l3 3 3-3&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; /&gt;
+    &lt;/svg&gt;
+    &lt;h1 id=&quot;sync-title&quot; class=&quot;modal-title&quot;&gt;Sync to Local Folder&lt;/h1&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;modal-body&quot;&gt;
+    &lt;p class=&quot;modal-description&quot;&gt;Export your Dirigible library to a folder on your computer.&lt;/p&gt;
+
+    &lt;ul class=&quot;sync-details&quot;&gt;
+      &lt;li&gt;Notes are saved as &lt;code&gt;.md&lt;/code&gt; (Markdown) files&lt;/li&gt;
+      &lt;li&gt;Albums are saved as folders of images + metadata&lt;/li&gt;
+      &lt;li&gt;Music libraries keep their artist/album structure&lt;/li&gt;
+      &lt;li&gt;Documents (PDF/EPUB) are downloaded as-is&lt;/li&gt;
+      &lt;li&gt;Subsequent syncs only update what changed&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;modal-footer&quot;&gt;
+    &lt;button class=&quot;btn btn-text&quot; data-action=&quot;import-backup&quot;&gt;
+      Import from backup
+    &lt;/button&gt;
+
+    &lt;div class=&quot;modal-actions&quot;&gt;
+      &lt;button class=&quot;btn btn-secondary&quot; data-action=&quot;cancel&quot;&gt;
+        Cancel
+      &lt;/button&gt;
+      &lt;button class=&quot;btn btn-primary&quot; data-action=&quot;choose-folder&quot;&gt;
+        Choose folder
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Sync Modal CSS</h3>
+<pre><code class="language-css">.modal-sync {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--background);
+  border: 2px solid var(--border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+  z-index: 200;
+  max-width: 480px;
+  width: 90vw;
+  max-height: 80vh;
+  border-radius: 0;
+  overflow: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 2px solid var(--border);
+}
+
+.modal-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-description {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--foreground);
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+}
+
+.sync-details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.sync-details li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.sync-details li::before {
+  content: &#39;•&#39;;
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+.sync-details code {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 12px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 2px 6px;
+  border-radius: 0;
+}
+
+.modal-footer {
+  padding: 24px;
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions .btn {
+  min-width: 120px;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 150ms ease-out;
+}
+
+.btn-text:hover {
+  color: var(--foreground);
+}
+</code></pre>
+<h3>Progress Toast</h3>
+<pre><code class="language-html">&lt;div class=&quot;toast toast-progress&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;
+  &lt;div class=&quot;toast-content&quot;&gt;
+    &lt;span class=&quot;toast-message&quot;&gt;Syncing 247 items...&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;toast-progress-bar&quot;&gt;
+    &lt;div class=&quot;progress-fill&quot; style=&quot;width: 42%&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Progress Toast CSS</h3>
+<pre><code class="language-css">.toast-progress {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  min-width: 320px;
+  overflow: hidden;
+  z-index: 150;
+}
+
+.toast-content {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-message {
+  font-family: &#39;JetBrains Mono&#39;, monospace;
+  font-size: 13px;
+  color: var(--foreground);
+}
+
+.toast-progress-bar {
+  height: 4px;
+  background: var(--border);
+  width: 100%;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 300ms ease-out;
+  display: block;
+}
+</code></pre>
+<h3>Success Toast</h3>
+<pre><code class="language-html">&lt;div class=&quot;toast toast-success&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;
+  &lt;div class=&quot;toast-content&quot;&gt;
+    &lt;svg class=&quot;toast-icon&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 20 20&quot;&gt;
+      &lt;path d=&quot;M2 10l5 5L18 3&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; /&gt;
+    &lt;/svg&gt;
+    &lt;span class=&quot;toast-message&quot;&gt;Synced 247 items to ~/Dirigible&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3>Success Toast CSS</h3>
+<pre><code class="language-css">.toast-success {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--background);
+  border: 2px solid var(--success);
+  border-radius: 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  min-width: 320px;
+  padding: 16px 20px;
+  z-index: 150;
+  animation: slideIn 300ms ease-out;
+}
+
+.toast-success .toast-icon {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-success {
+  animation: slideIn 300ms ease-out, slideOut 300ms ease-out 3.7s forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+</code></pre>
+<h2>User Flow Diagram</h2>
+<pre><code>Click cloud ↓ icon in sidebar
+    ↓
+Sync Modal Opens
+    ├─ Title: &quot;Sync to Local Folder&quot;
+    ├─ Description: &quot;Export your library...&quot;
+    ├─ Details bullet list
+    └─ Footer: Import / Cancel / Choose folder
+    ↓
+Click &quot;Choose folder&quot;
+    ↓
+Native File Picker Opens
+    ├─ User selects or creates destination folder
+    └─ Confirms selection
+    ↓
+Sync Begins
+    ├─ Progress toast appears
+    ├─ Shows &quot;Syncing X items...&quot;
+    ├─ Progress bar fills (0% → 100%)
+    └─ User can continue using app
+    ↓
+Sync Completes
+    ├─ Success toast appears
+    ├─ Shows &quot;Synced X items to /path&quot;
+    ├─ Checkmark icon in green
+    └─ Auto-dismisses after 4 seconds
+    ↓
+Next Sync (Same Folder)
+    ├─ Shows &quot;Syncing X new/updated items&quot;
+    ├─ Much faster (incremental)
+    └─ Only changed files transferred
+</code></pre>
+<h2>Export Structure</h2>
+<p>When syncing to a local folder, the structure looks like:</p>
+<pre><code>Dirigible/
+├── notes/
+│   ├── my-first-note.md
+│   ├── project-planning.md
+│   └── ideas/
+│       ├── feature-ideas.md
+│       └── design-thoughts.md
+├── albums/
+│   ├── summer-2025/
+│   │   ├── metadata.json
+│   │   ├── photo-1.jpg
+│   │   ├── photo-2.jpg
+│   │   └── ...
+│   └── travel/
+│       ├── metadata.json
+│       └── ...
+├── music/
+│   ├── Artists/
+│   │   ├── Miles Davis/
+│   │   │   └── Kind of Blue/
+│   │   │       ├── metadata.json
+│   │   │       ├── track-1.mp3
+│   │   │       └── ...
+│   │   └── ...
+├── documents/
+│   ├── manual.pdf
+│   ├── guide.epub
+│   └── ...
+└── .dirigible-sync
+    ├── last-sync.json
+    └── sync-log.json
+</code></pre>
+<h2>Design Rules</h2>
+<ol>
+<li><strong>Sync modal is centered and modal</strong> — prevents accidental interaction during sync setup.</li>
+<li><strong>Progress toast is non-blocking</strong> — user can continue working during sync.</li>
+<li><strong>Progress bar is always visible</strong> during sync — provides clear feedback.</li>
+<li><strong>Success toast auto-dismisses</strong> — no need for user to close it.</li>
+<li><strong>File picker uses native OS dialog</strong> — respects system conventions.</li>
+<li><strong>Subsequent syncs are incremental</strong> — significant performance improvement for updates.</li>
+<li><strong>Sync can be resumed</strong> — if app closes, next sync continues from checkpoint.</li>
+<li><strong>Import from backup is accessible</strong> — users can restore from previous syncs.</li>
+<li><strong>Detailed bullet list explains what&#39;s included</strong> — manages expectations about what gets synced.</li>
+<li><strong>Cloud icon in sidebar bottom bar is consistent</strong> with other utility controls (theme, settings).</li>
+</ol>
+
+  </main>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
+      localStorage.setItem('dirigible-ui-theme', next);
+    }
+    const saved = localStorage.getItem('dirigible-ui-theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+  </script>
+</body>
+</html>
