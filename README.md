@@ -1,5 +1,7 @@
 # dirigible-ui
 
+**[Browse the live site](https://sosaysthecaptain.github.io/dirigible-ui/)**
+
 An agent-first UI framework. Standalone HTML specs with live demos — designed to be read by AI coding assistants and browsed by humans.
 
 Every component is a single `.html` file containing CSS custom properties, live interactive demos with inline styles, spec tables, code examples, and usage rules. No build step. No dependencies. Point your AI at it and it builds UI that matches.
@@ -95,12 +97,6 @@ The AI doesn't interpret a design system — it reads one.
 - **Sparse color** — accent blue (`#3d8ad3`) means something happened. Most of the UI is foreground-on-background.
 - **2px interactive, 1px structural** — buttons and inputs get 2px borders. Dividers and rules get 1px.
 - **Information density** — show everything. No "more" menus, no collapsed columns.
-
-## Browse it
-
-Open any `.html` file in a browser. No server needed. The sidebar links everything together.
-
-Or visit the [live site](https://sosaysthecaptain.github.io/dirigible-ui/).
 
 ## License
 
