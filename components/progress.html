@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>image uploader — dirigible-ui</title>
+  <title>progress — dirigible-ui</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -197,6 +197,10 @@
       line-height: 20px;
     }
 
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .main { padding: 16px; }
@@ -228,13 +232,13 @@
           <a href="../components/color-swatch.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="5"/><circle cx="16" cy="16" r="5"/></svg> Color Swatch</a>
           <a href="../components/context-menu.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> Context Menu</a>
           <a href="../components/icon.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg> Icon</a>
-          <a href="../components/image-uploader.html" class="active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> Image Uploader</a>
+          <a href="../components/image-uploader.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> Image Uploader</a>
           <a href="../components/input.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 4H7M12 4v16M17 20H7"/></svg> Input</a>
           <a href="../components/loading.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v4m0 12v4m-8.49-14.49l2.83 2.83m11.32 5.32l2.83 2.83m-19.98.01l2.83-2.83m11.32-5.32l2.83-2.83M2 12h4m12 0h4"/></svg> Loading</a>
           <a href="../components/menu.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menu</a>
           <a href="../components/modal.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/></svg> Modal</a>
           <a href="../components/popover.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Popover</a>
-          <a href="../components/progress.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="10" width="20" height="4" rx="0" stroke-width="0" fill="currentColor" opacity="0.25"/><rect x="2" y="10" width="12" height="4" rx="0" stroke-width="0" fill="currentColor"/></svg> Progress</a>
+          <a href="../components/progress.html" class="active"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="10" width="20" height="4" rx="0" stroke-width="0" fill="currentColor" opacity="0.25"/><rect x="2" y="10" width="12" height="4" rx="0" stroke-width="0" fill="currentColor"/></svg> Progress</a>
           <a href="../components/radio-button.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg> Radio Button</a>
           <a href="../components/selection-list.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="18" r="1" fill="currentColor" stroke="none"/></svg> Selection List</a>
           <a href="../components/sidebar.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg> Sidebar</a>
@@ -255,139 +259,248 @@
           <a href="../patterns/sync-flow.html">Sync Flow</a>
           <a href="../patterns/theme-system.html">Theme System</a>
         </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Examples</div>
+          <a href="../examples/music-table.html">Music Table</a>
+          <a href="../examples/note-view.html">Note View</a>
+          <a href="../examples/publication-panel.html">Publication Panel</a>
+          <a href="../examples/sync-modal.html">Sync Modal</a>
+          <a href="../examples/themes-modal.html">Themes Modal</a>
+        </div>
   </nav>
   <main class="main">
     <div class="render-panel">
-  <div class="render-panel-header">
-    <span class="render-label"><span class="render-dot"></span> Live render</span>
-  </div>
-  <div class="render-panel-body">
-    
-    <div style="display:flex; flex-direction:column; gap:20px; max-width:400px;">
-      <div>
-        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Empty state (drop zone)</p>
-        <div style="border:2px dashed var(--border); border-radius:4px; padding:32px; text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='color-mix(in srgb, var(--accent) 4%, var(--bg))'" onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
-          <span style="color:var(--muted); display:flex;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg></span>
-          <span style="font-size:13px; color:var(--muted);">Drop image here or click to browse</span>
-          <span style="font-size:11px; color:var(--muted);">PNG, JPG, WebP · Max 5 MB</span>
-        </div>
+      <div class="render-panel-header">
+        <span class="render-label"><span class="render-dot"></span> Live render</span>
+        <button id="animate-btn" onclick="animateProgress()" style="background:var(--hover); border:1px solid var(--border); border-radius:var(--radius-sm); padding:2px 8px; font-size:11px; font-family:inherit; color:var(--fg); cursor:pointer;">Animate 0→100%</button>
       </div>
-      <div>
-        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">With preview (cover image)</p>
-        <div style="border:1px solid var(--border); border-radius:4px; overflow:hidden;">
-          <div style="height:120px; background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 20%, var(--bg)), color-mix(in srgb, var(--success) 20%, var(--bg))); display:flex; align-items:center; justify-content:center;">
-            <span style="color:var(--muted); display:flex;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg></span>
+      <div class="render-panel-body">
+
+        <!-- Progress Bar -->
+        <div style="margin-bottom:24px;">
+          <h4 style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; letter-spacing:0.5px;">Progress Bar</h4>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+            <span>Uploading notes...</span>
+            <span id="progress-pct">63%</span>
           </div>
-          <div style="padding:8px; display:flex; align-items:center; justify-content:space-between; font-size:12px;">
-            <span style="color:var(--muted);">cover-image.webp · 245 KB</span>
-            <div style="display:flex; gap:4px;">
-              <button style="font-family:inherit; font-size:11px; padding:2px 8px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Replace</button>
-              <button style="font-family:inherit; font-size:11px; padding:2px 8px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Remove</button>
+          <div style="height:6px; background:var(--hover); width:100%;">
+            <div id="progress-fill" style="height:100%; width:63%; background:var(--fg); transition:width 0.3s ease;"></div>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:12px;">
+            <div>
+              <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Small (4px)</div>
+              <div style="height:4px; background:var(--hover); width:120px;"><div style="height:100%; width:40%; background:var(--fg);"></div></div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Default (6px)</div>
+              <div style="height:6px; background:var(--hover); width:120px;"><div style="height:100%; width:60%; background:var(--fg);"></div></div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Large (10px)</div>
+              <div style="height:10px; background:var(--hover); width:120px;"><div style="height:100%; width:80%; background:var(--fg);"></div></div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <p style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Uploading state</p>
-        <div style="border:1px solid var(--border); border-radius:4px; padding:12px; display:flex; align-items:center; gap:8px;">
-          <span style="display:inline-block; width:14px; height:14px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:dg-spin 1s linear infinite;"></span>
-          <span style="font-size:12px; flex:1;">Uploading photo-001.jpg...</span>
-          <span style="font-size:11px; color:var(--muted);">72%</span>
+
+        <!-- Determinate Spinner -->
+        <div style="margin-bottom:24px;">
+          <h4 style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; letter-spacing:0.5px;">Determinate Spinner</h4>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <svg id="det-spinner" width="24" height="24" viewBox="0 0 24 24" style="transform:rotate(-90deg);">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="var(--border)" stroke-width="3"/>
+              <circle id="det-spinner-arc" cx="12" cy="12" r="10" fill="none" stroke="var(--fg)" stroke-width="3" stroke-dasharray="62.83" stroke-dashoffset="23.56" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size:13px; color:var(--muted);">63% complete</span>
+          </div>
         </div>
+
+        <!-- Indeterminate Spinner -->
+        <div>
+          <h4 style="font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; letter-spacing:0.5px;">Indeterminate Spinner</h4>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:14px; height:14px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></div>
+            <span style="font-size:11px; color:var(--muted);">14px</span>
+
+            <div style="width:24px; height:24px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></div>
+            <span style="font-size:11px; color:var(--muted);">24px</span>
+
+            <div style="width:32px; height:32px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></div>
+            <span style="font-size:11px; color:var(--muted);">32px</span>
+
+            <!-- SVG variant -->
+            <svg width="24" height="24" viewBox="0 0 24 24" style="animation:spin 1s linear infinite;">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="var(--border)" stroke-width="3"/>
+              <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <span style="font-size:11px; color:var(--muted);">SVG</span>
+          </div>
+        </div>
+
       </div>
     </div>
-    <style>@keyframes dg-spin { to { transform: rotate(360deg); } }</style>
-    <p style="margin-top:12px; font-size:11px; color:var(--muted);">Dashed 2px border on drop zone · Accent border on hover/dragover · Used for: cover images, moodboard photos, album art · Converts to WebP · Generates thumbnails via canvas</p>
-  
-  </div>
-</div>
-<h1>Image Uploader</h1>
-<h2>Description</h2>
-<p>A file upload component for images, used for cover photos, moodboard entries, and album art. Features a dashed-border drop zone that accepts drag-and-drop or click-to-browse, with preview, progress, and replace/remove actions.</p>
-<h2>When to Use</h2>
-<ul>
-<li><strong>Cover images</strong>: Blog post and wiki page cover photos</li>
-<li><strong>Moodboard entries</strong>: Adding photos to a moodboard</li>
-<li><strong>Album art</strong>: Editing metadata for music albums</li>
-<li><strong>Profile photos</strong>: User avatar upload</li>
-</ul>
-<p>Do not use for non-image files (documents, music). Use a standard file input for those.</p>
-<h2>Variants</h2>
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Empty</strong></td>
-<td>Dashed border drop zone with icon and helper text</td>
-</tr>
-<tr>
-<td><strong>Hover / Dragover</strong></td>
-<td>Border changes to accent color, subtle tinted background</td>
-</tr>
-<tr>
-<td><strong>Uploading</strong></td>
-<td>Spinner with filename and percentage</td>
-</tr>
-<tr>
-<td><strong>Preview</strong></td>
-<td>Thumbnail with filename, size, Replace and Remove buttons</td>
-</tr>
-</tbody></table>
-<h2>Anatomy</h2>
-<pre><code class="language-html">&lt;!-- Empty state --&gt;
-&lt;div class=&quot;image-uploader&quot;&gt;
-  &lt;svg class=&quot;image-uploader-icon&quot;&gt;&lt;!-- image icon --&gt;&lt;/svg&gt;
-  &lt;span class=&quot;image-uploader-text&quot;&gt;Drop image here or click to browse&lt;/span&gt;
-  &lt;span class=&quot;image-uploader-hint&quot;&gt;PNG, JPG, WebP · Max 5 MB&lt;/span&gt;
-  &lt;input type=&quot;file&quot; class=&quot;image-uploader-input&quot; accept=&quot;image/*&quot; /&gt;
-&lt;/div&gt;
 
-&lt;!-- Preview state --&gt;
-&lt;div class=&quot;image-uploader-preview&quot;&gt;
-  &lt;img class=&quot;image-uploader-thumb&quot; src=&quot;...&quot; /&gt;
-  &lt;div class=&quot;image-uploader-meta&quot;&gt;
-    &lt;span class=&quot;image-uploader-filename&quot;&gt;cover.webp · 245 KB&lt;/span&gt;
-    &lt;button class=&quot;image-uploader-replace&quot;&gt;Replace&lt;/button&gt;
-    &lt;button class=&quot;image-uploader-remove&quot;&gt;Remove&lt;/button&gt;
+    <h1>Progress Bar &amp; Spinners</h1>
+    <p>Three related loading indicators: a horizontal determinate progress bar, a circular determinate spinner, and a circular indeterminate spinner. All use <code>var(--fg)</code> as the primary fill color — spinners and progress bars are utilitarian, not accented.</p>
+
+    <h2>When to Use</h2>
+    <ul>
+      <li><strong>Progress bar:</strong> File uploads, sync operations, multi-step processes where percentage is known</li>
+      <li><strong>Determinate spinner:</strong> Compact circular progress where space is limited (e.g., inline in a table row)</li>
+      <li><strong>Indeterminate spinner:</strong> Any async operation where duration is unknown — API calls, loading data, processing</li>
+    </ul>
+
+    <h2>Variants</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Progress bar</strong></td><td>Determinate</td><td>Horizontal track + fill. Label above, percentage right-aligned.</td></tr>
+        <tr><td><strong>Determinate spinner</strong></td><td>Determinate</td><td>SVG circle with arc showing completion. 24px default.</td></tr>
+        <tr><td><strong>Indeterminate spinner</strong></td><td>Indeterminate</td><td>Border-based rotating circle. 14px / 24px / 32px sizes.</td></tr>
+        <tr><td><strong>SVG spinner</strong></td><td>Indeterminate</td><td>SVG-based rotating arc for smoother rendering.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Anatomy</h2>
+    <h3>Progress Bar</h3>
+    <pre><code>&lt;div class="progress"&gt;                          &lt;!-- container --&gt;
+  &lt;div class="progress-header"&gt;
+    &lt;span class="progress-label"&gt;Uploading...&lt;/span&gt;
+    &lt;span class="progress-pct"&gt;63%&lt;/span&gt;
   &lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-<h2>Token Usage</h2>
-<ul>
-<li><strong>Drop zone border</strong>: 2px dashed var(--border)</li>
-<li><strong>Drop zone border (hover)</strong>: 2px dashed var(--accent)</li>
-<li><strong>Drop zone background (hover)</strong>: color-mix(in srgb, var(--accent) 4%, var(--bg))</li>
-<li><strong>Drop zone padding</strong>: 32px vertical</li>
-<li><strong>Drop zone border-radius</strong>: 4px</li>
-<li><strong>Icon size</strong>: 24px, color var(--muted)</li>
-<li><strong>Helper text</strong>: 13px, color var(--muted)</li>
-<li><strong>Hint text</strong>: 11px, color var(--muted)</li>
-<li><strong>Preview border</strong>: 1px solid var(--border), border-radius 4px</li>
-<li><strong>Action buttons</strong>: 11px, 1px border, 3px border-radius</li>
-<li><strong>Remove button</strong>: color var(--danger)</li>
-</ul>
-<h2>Processing</h2>
-<ul>
-<li>Images are converted to WebP format on upload</li>
-<li>Thumbnails are generated client-side via canvas</li>
-<li>Uploaded to B2 (Backblaze) cloud storage</li>
-<li>Maximum file size: 5 MB</li>
-</ul>
-<h2>Rules Specific to Image Uploader</h2>
-<ol>
-<li><strong>Dashed border</strong>: Always 2px dashed, not solid</li>
-<li><strong>Accent on hover</strong>: Border and subtle bg tint change on hover/dragover</li>
-<li><strong>Hidden file input</strong>: Actual <code>&lt;input type=&quot;file&quot;&gt;</code> is visually hidden, triggered by click</li>
-<li><strong>Preview replaces drop zone</strong>: Once uploaded, drop zone is replaced by preview</li>
-<li><strong>Replace and Remove</strong>: Two actions below the preview thumbnail</li>
-<li><strong>WebP conversion</strong>: All uploads are converted to WebP automatically</li>
-<li><strong>Spinner during upload</strong>: Use the standard spinner (3px border, transparent top)</li>
-</ol>
+  &lt;div class="progress-track"&gt;                   &lt;!-- track --&gt;
+    &lt;div class="progress-fill" style="width:63%"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
 
+    <h3>Indeterminate Spinner</h3>
+    <pre><code>&lt;div class="spinner" /&gt;                          &lt;!-- border-based --&gt;
+&lt;div class="spinner spinner-sm" /&gt;              &lt;!-- 14px --&gt;
+&lt;div class="spinner spinner-lg" /&gt;              &lt;!-- 32px --&gt;</code></pre>
+
+    <h2>Token Usage</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Token / Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Progress track</td><td><code>var(--hover)</code> background, no border-radius</td></tr>
+        <tr><td>Progress fill</td><td><code>var(--fg)</code>, <code>transition: width 0.3s ease</code></td></tr>
+        <tr><td>Progress heights</td><td>4px (small), 6px (default), 10px (large)</td></tr>
+        <tr><td>Spinner border</td><td><code>3px solid var(--fg)</code>, top transparent</td></tr>
+        <tr><td>Spinner sizes</td><td>14px (small), 24px (default), 32px (large)</td></tr>
+        <tr><td>SVG spinner track</td><td><code>stroke: var(--border)</code>, <code>stroke-width: 3</code></td></tr>
+        <tr><td>SVG spinner arc</td><td><code>stroke: var(--fg)</code>, <code>stroke-width: 3</code></td></tr>
+        <tr><td>Animation</td><td><code>spin 1s linear infinite</code></td></tr>
+        <tr><td>Label text</td><td>13px, <code>var(--fg)</code></td></tr>
+        <tr><td>Percentage text</td><td>13px, <code>var(--fg)</code>, right-aligned</td></tr>
+      </tbody>
+    </table>
+
+    <h2>HTML Example</h2>
+    <h3>Progress Bar</h3>
+    <pre><code class="language-html">&lt;!-- Progress bar --&gt;
+&lt;div style="margin-bottom: 4px; display: flex; justify-content: space-between;"&gt;
+  &lt;span&gt;Uploading notes...&lt;/span&gt;
+  &lt;span&gt;63%&lt;/span&gt;
+&lt;/div&gt;
+&lt;div style="height: 6px; background: var(--hover);"&gt;
+  &lt;div style="height: 100%; width: 63%; background: var(--fg); transition: width 0.3s ease;"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>Indeterminate Spinner</h3>
+    <pre><code class="language-html">&lt;!-- Border-based spinner --&gt;
+&lt;div style="
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--fg);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+"&gt;&lt;/div&gt;
+
+&lt;!-- SVG spinner --&gt;
+&lt;svg width="24" height="24" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"&gt;
+  &lt;circle cx="12" cy="12" r="10" fill="none" stroke="var(--border)" stroke-width="3"/&gt;
+  &lt;path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="round"/&gt;
+&lt;/svg&gt;</code></pre>
+
+    <h2>CSS Example</h2>
+    <pre><code class="language-css">.progress-track {
+  height: 6px;
+  background: var(--hover);
+}
+
+.progress-track-sm { height: 4px; }
+.progress-track-lg { height: 10px; }
+
+.progress-fill {
+  height: 100%;
+  background: var(--fg);
+  transition: width 0.3s ease;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--fg);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-sm { width: 14px; height: 14px; }
+.spinner-lg { width: 32px; height: 32px; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}</code></pre>
+
+    <h2>JSX Example</h2>
+    <pre><code class="language-jsx">&lt;ProgressBar value={63} label="Uploading notes..." /&gt;
+&lt;ProgressBar value={63} size="sm" /&gt;
+&lt;ProgressBar value={63} size="lg" /&gt;
+
+&lt;Spinner /&gt;                    {/* 24px default */}
+&lt;Spinner size="sm" /&gt;           {/* 14px */}
+&lt;Spinner size="lg" /&gt;           {/* 32px */}
+&lt;Spinner determinate value={63} /&gt;</code></pre>
+
+    <h2>Do's and Don'ts</h2>
+    <h3>Do</h3>
+    <ul>
+      <li>Use <code>var(--fg)</code> for progress fill — keep it utilitarian</li>
+      <li>Show a label and percentage for progress bars when space allows</li>
+      <li>Use the 14px spinner inline with text (e.g., button loading state)</li>
+      <li>Animate progress bar transitions with <code>transition: width 0.3s ease</code></li>
+      <li>Use square ends (no border-radius) on progress bars per Dirigible style</li>
+    </ul>
+    <h3>Don't</h3>
+    <ul>
+      <li>Don't use accent color for standard progress — reserve for primary CTAs only</li>
+      <li>Don't add border-radius to progress bars — square ends are intentional</li>
+      <li>Don't show a determinate bar/spinner when you don't know the actual progress</li>
+      <li>Don't use spinners larger than 32px — use the <a href="loading.html">Loading</a> pattern for full-page states</li>
+    </ul>
+
+    <h2>Rules</h2>
+    <ol>
+      <li>Progress bars have <strong>no border-radius</strong> — square ends match Dirigible's structural aesthetic.</li>
+      <li>All indicators use <code>var(--fg)</code> as primary color by default.</li>
+      <li>Spinner animation is <code>spin 1s linear infinite</code> — consistent timing across all sizes.</li>
+      <li>Determinate spinners rotate the SVG -90deg so the arc starts from the 12 o'clock position.</li>
+      <li>Progress bar label sits above the track, percentage is right-aligned.</li>
+      <li>Three size tiers for each indicator: small, default, large.</li>
+    </ol>
   </main>
   <script>
     function toggleTheme() {
@@ -401,6 +514,25 @@
     if (saved === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    }
+
+    function animateProgress() {
+      const fill = document.getElementById('progress-fill');
+      const pct = document.getElementById('progress-pct');
+      const arc = document.getElementById('det-spinner-arc');
+      const circumference = 2 * Math.PI * 10; // 62.83
+      let value = 0;
+      fill.style.width = '0%';
+      pct.textContent = '0%';
+      arc.setAttribute('stroke-dashoffset', circumference);
+      const interval = setInterval(() => {
+        value += 1;
+        fill.style.width = value + '%';
+        pct.textContent = value + '%';
+        const offset = circumference - (circumference * value / 100);
+        arc.setAttribute('stroke-dashoffset', offset);
+        if (value >= 100) clearInterval(interval);
+      }, 30);
     }
   </script>
 </body>

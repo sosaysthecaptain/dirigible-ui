@@ -56,12 +56,16 @@ The AI doesn't interpret a design system — it reads one.
 | **Icon** | `components/icon.html` | 20x20 outline SVG system — content types, actions, status indicators, navigation. Full catalog with code |
 | **Image Uploader** | `components/image-uploader.html` | Drag-and-drop upload zone with preview thumbnail and progress feedback |
 | **Input** | `components/input.html` | Text fields, search, filter, slug, textarea. Consistent 2px borders, focus states, error states |
+| **Loading** | `components/loading.html` | Centered spinner + text loading state for full-page and section-level loading |
+| **Menu** | `components/menu.html` | Dropdown action menus with bold labels, icons, keyboard shortcuts, and dividers |
 | **Modal** | `components/modal.html` | Overlay dialogs — tabbed (publication settings), confirmation, sync. No separate footer; buttons live in content |
 | **Popover** | `components/popover.html` | Lightweight anchored dropdowns for secondary actions and quick settings |
+| **Progress** | `components/progress.html` | Determinate progress bars, determinate SVG spinners, and indeterminate spinners |
 | **Radio Button** | `components/radio-button.html` | Single-select groups for mutually exclusive choices in forms |
 | **Selection List** | `components/selection-list.html` | Vertical selectable list with icons, used for sidebar navigation panels |
 | **Sidebar** | `components/sidebar.html` | Collapsible left nav with search, file tree, nested sections, status indicators |
 | **Slider** | `components/slider.html` | Range input for numeric values with labels and tick marks |
+| **Tab Bar** | `components/tab-bar.html` | Vertical icon tab bar for collapsed sidebar navigation with inverted active state |
 | **Table** | `components/table.html` | Dense data grids with sortable headers, row selection, grouped sections |
 | **Tag Input** | `components/tag-input.html` | Interactive tag entry with pill-shaped removable chips |
 | **Theme Picker** | `components/theme-picker.html` | Popover for switching between 23 built-in color themes with live preview |

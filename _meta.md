@@ -40,12 +40,16 @@ dirigible-ui/
     icon.html                       ← Icon system and catalog
     image-uploader.html             ← Image upload component
     input.html                      ← Text inputs, textareas, search
+    loading.html                    ← Loading screen with spinner
+    menu.html                       ← Dropdown action menus
     modal.html                      ← Modal dialogs
     popover.html                    ← Popovers and dropdown panels
+    progress.html                   ← Progress bars and spinners
     radio-button.html               ← Radio button groups
     selection-list.html             ← Selection list component
     sidebar.html                    ← File tree sidebar
     slider.html                     ← Range sliders
+    tab-bar.html                    ← Vertical icon tab bar
     table.html                      ← Data tables (notes + music variants)
     tag-input.html                  ← Tag entry and display
     theme-picker.html               ← Theme selection UI
