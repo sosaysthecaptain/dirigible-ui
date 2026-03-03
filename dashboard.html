@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Dashboard — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe;
+      --fg: #1a1a1a;
+      --muted: #777777;
+      --border: #e8e6e3;
+      --sidebar-bg: #faf9f8;
+      --hover: #f5f4f2;
+      --accent: #3d8ad3;
+      --accent-muted: #2b6a9e;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --code-bg: #f5f5f5;
+      --code-fg: #1f2937;
+      --link: #0066cc;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #181716;
+      --fg: #f2f0ed;
+      --muted: #999795;
+      --border: #302e2b;
+      --sidebar-bg: #1e1d1b;
+      --hover: #232120;
+      --accent: #6ba3d6;
+      --accent-muted: #3d6a8a;
+      --success: #4ec9b0;
+      --warning: #ce9178;
+      --danger: #ef4444;
+      --code-bg: #1e1e1e;
+      --code-fg: #d4d4d4;
+      --link: #58a6ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--fg);
+      background: var(--bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar nav ── */
+    .sidebar {
+      width: 180px;
+      min-width: 180px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header h1 {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      color: var(--muted);
+      border-radius: var(--radius-sm);
+    }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+
+    .nav-section-title {
+      padding: 12px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 3px 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+
+    .back-link {
+      display: block;
+      padding: 4px 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .back-link:hover { color: var(--fg); }
+
+    /* ── Main content ── */
+    .main {
+      flex: 1;
+      max-width: 900px;
+      padding: 32px 40px 80px;
+    }
+
+    .main > h1 {
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .main > .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-intro {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── Recipe card ── */
+    .recipe {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .recipe-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .recipe-demo {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .recipe-demo.col {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .recipe-prompt {
+      position: relative;
+      background: var(--code-bg);
+      padding: 12px 16px;
+      padding-right: 70px;
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--code-fg);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 2px 8px;
+      background: var(--bg);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* ── Token display ── */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .token-swatch {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      font-size: 11px;
+    }
+
+    .token-swatch-color {
+      height: 32px;
+    }
+
+    .token-swatch-label {
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+    }
+
+    /* ── Toast-specific demo ── */
+    .recipe-demo.toast-demo {
+      max-width: 360px;
+    }
+
+    /* Preamble block */
+    .preamble {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      padding-right: 70px;
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--code-fg);
+      white-space: pre;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>Recipes</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">◐</button>
+    </div>
+
+    <div class="nav-section-title">Foundation</div>
+    <a href="#tokens">Tokens</a>
+
+    <div class="nav-section-title">Atoms</div>
+    <a href="#button">Button</a>
+    <a href="#input">Input</a>
+    <a href="#toggle">Toggle</a>
+    <a href="#badge">Badge</a>
+    <a href="#toast">Toast</a>
+
+    <a href="index.html" class="back-link">← Full docs</a>
+  </nav>
+
+  <main class="main">
+    <h1>Recipe Dashboard</h1>
+    <p class="subtitle">Browse components, copy prompt recipes. Paste into Claude Code for pixel-accurate results.</p>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- TOKENS -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="tokens" class="section-title">Tokens</h2>
+    <p class="section-intro">Copy this preamble once at the start of a session. It defines every token your components need.</p>
+
+    <h3 style="font-size:13px; font-weight:600; margin-bottom:8px;">Color palette</h3>
+    <div class="token-grid">
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--fg);"></div><div class="token-swatch-label"><span>--fg</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--bg); border-bottom:1px solid var(--border);"></div><div class="token-swatch-label"><span>--bg</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--muted);"></div><div class="token-swatch-label"><span>--muted</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--border);"></div><div class="token-swatch-label"><span>--border</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--sidebar-bg); border-bottom:1px solid var(--border);"></div><div class="token-swatch-label"><span>--sidebar-bg</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--hover); border-bottom:1px solid var(--border);"></div><div class="token-swatch-label"><span>--hover</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--accent);"></div><div class="token-swatch-label"><span>--accent</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--success);"></div><div class="token-swatch-label"><span>--success</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--warning);"></div><div class="token-swatch-label"><span>--warning</span></div></div>
+      <div class="token-swatch"><div class="token-swatch-color" style="background:var(--danger);"></div><div class="token-swatch-label"><span>--danger</span></div></div>
+    </div>
+
+    <div class="preamble" id="preamble-block">Use these design tokens for all UI work in this project.
+
+COLORS (light / default):
+  --bg: #fefefe          --fg: #1a1a1a
+  --muted: #777          --border: #e8e6e3
+  --sidebar-bg: #faf9f8  --hover: #f5f4f2
+  --accent: #3d8ad3      --danger: #dc2626
+  --success: #22c55e     --warning: #f59e0b
+
+COLORS (dark, via [data-theme="dark"]):
+  --bg: #181716          --fg: #f2f0ed
+  --muted: #999795       --border: #302e2b
+  --sidebar-bg: #1e1d1b  --hover: #232120
+  --accent: #6ba3d6      --danger: #ef4444
+  --success: #4ec9b0     --warning: #ce9178
+
+FONT: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace
+SIZES: 11px (xs/badges) · 13px (sm/default UI) · 14px (base/body) · 16px (md)
+WEIGHTS: 400 (body) · 500 (medium) · 600 (headings/bold labels)
+
+SPACING: 4px base grid → 4, 8, 12, 16, 24, 32
+RADIUS: 4px (sm/buttons) · 6px (md/cards) · 8px (lg/modals) · 9999px (pill)
+BORDERS: 2px for interactive elements (buttons, inputs) · 1px for structure (dividers, panels)
+SHADOW: sm 0 1px 2px rgba(0,0,0,0.05) · md 0 4px 12px rgba(0,0,0,0.1)<button class="copy-btn" onclick="copyBlock('preamble-block', this)">Copy</button></div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- BUTTON -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="button" class="section-title">Button</h2>
+
+    <!-- Button: Primary -->
+    <div class="recipe">
+      <div class="recipe-header">button-primary</div>
+      <div class="recipe-demo">
+        <button style="font-family:inherit; font-size:13px; font-weight:600; padding:2px 12px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); border-radius:4px; cursor:pointer;">Save</button>
+        <button style="font-family:inherit; font-size:13px; font-weight:600; padding:2px 12px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); border-radius:4px; cursor:pointer;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Hover me</button>
+      </div>
+      <div class="recipe-prompt" id="r-btn-primary">button-primary
+  font: 600 13px/20px inherit
+  padding: 2px 12px
+  background: var(--fg)
+  color: var(--bg)
+  border: 3px solid var(--fg)
+  border-radius: 4px
+  cursor: pointer
+  :hover → opacity: 0.85
+  :active → background: var(--bg); color: var(--fg)<button class="copy-btn" onclick="copyBlock('r-btn-primary', this)">Copy</button></div>
+    </div>
+
+    <!-- Button: Secondary -->
+    <div class="recipe">
+      <div class="recipe-header">button-secondary</div>
+      <div class="recipe-demo">
+        <button style="font-family:inherit; font-size:13px; font-weight:600; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'">Cancel</button>
+      </div>
+      <div class="recipe-prompt" id="r-btn-secondary">button-secondary
+  font: 600 13px/20px inherit
+  padding: 4px 14px
+  background: transparent
+  color: var(--fg)
+  border: 1px solid var(--border)
+  border-radius: 4px
+  cursor: pointer
+  :hover → background: var(--hover)
+  :active → background: var(--fg); color: var(--bg)<button class="copy-btn" onclick="copyBlock('r-btn-secondary', this)">Copy</button></div>
+    </div>
+
+    <!-- Button: Danger -->
+    <div class="recipe">
+      <div class="recipe-header">button-danger</div>
+      <div class="recipe-demo">
+        <button style="font-family:inherit; font-size:13px; font-weight:600; padding:4px 14px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'">Delete</button>
+      </div>
+      <div class="recipe-prompt" id="r-btn-danger">button-danger
+  font: 600 13px/20px inherit
+  padding: 4px 14px
+  background: transparent
+  color: var(--danger)
+  border: 1px solid var(--border)
+  border-radius: 4px
+  cursor: pointer
+  :hover → background: rgba(220,38,38,0.08)
+  :active → background: var(--danger); color: #fff<button class="copy-btn" onclick="copyBlock('r-btn-danger', this)">Copy</button></div>
+    </div>
+
+    <!-- Button: Text -->
+    <div class="recipe">
+      <div class="recipe-header">button-text</div>
+      <div class="recipe-demo">
+        <button style="font-family:inherit; font-size:13px; font-weight:400; background:none; border:none; color:var(--fg); text-decoration:underline; text-decoration-color:var(--border); cursor:pointer; border-radius:4px; padding:2px 4px;">Learn more</button>
+      </div>
+      <div class="recipe-prompt" id="r-btn-text">button-text
+  font: 400 13px/20px inherit
+  background: none
+  border: none
+  color: var(--fg)
+  text-decoration: underline
+  text-decoration-color: var(--border)
+  border-radius: 4px
+  padding: 2px 4px
+  :hover → text-decoration-color: var(--fg)<button class="copy-btn" onclick="copyBlock('r-btn-text', this)">Copy</button></div>
+    </div>
+
+    <!-- Button: Small Primary -->
+    <div class="recipe">
+      <div class="recipe-header">button-primary-sm</div>
+      <div class="recipe-demo">
+        <button style="font-family:inherit; font-size:11px; font-weight:400; padding:2px 8px; background:var(--fg); color:var(--bg); border:1px solid var(--fg); border-radius:3px; cursor:pointer;">Add</button>
+        <button style="font-family:inherit; font-size:11px; font-weight:400; padding:2px 8px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Edit</button>
+        <button style="font-family:inherit; font-size:11px; font-weight:400; padding:2px 8px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:3px; cursor:pointer;">Remove</button>
+      </div>
+      <div class="recipe-prompt" id="r-btn-sm">button-primary-sm / button-secondary-sm / button-danger-sm
+  font: 400 11px/16px inherit
+  padding: 2px 8px
+  border: 1px solid var(--fg|--border|--border)
+  border-radius: 3px
+  cursor: pointer
+  (primary-sm: bg var(--fg), color var(--bg))
+  (secondary-sm: bg transparent, color var(--fg))
+  (danger-sm: bg transparent, color var(--danger))<button class="copy-btn" onclick="copyBlock('r-btn-sm', this)">Copy</button></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- INPUT -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="input" class="section-title">Input</h2>
+
+    <!-- Input: Text -->
+    <div class="recipe">
+      <div class="recipe-header">input-text</div>
+      <div class="recipe-demo col" style="max-width:360px; width:100%;">
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; font-weight:600;">Label</label>
+        <input type="text" placeholder="Placeholder text" style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div class="recipe-prompt" id="r-input-text">input-text
+  font: 400 14px/22px inherit
+  padding: 6px 8px
+  width: 100%
+  background: var(--bg)
+  color: var(--fg)
+  border: 2px solid var(--border)
+  border-radius: 4px
+  outline: none
+  :focus → border-color: var(--accent)
+
+input-label
+  font: 600 11px/16px inherit
+  text-transform: uppercase
+  color: var(--muted)
+  margin-bottom: 4px<button class="copy-btn" onclick="copyBlock('r-input-text', this)">Copy</button></div>
+    </div>
+
+    <!-- Input: Error -->
+    <div class="recipe">
+      <div class="recipe-header">input-error</div>
+      <div class="recipe-demo col" style="max-width:360px; width:100%;">
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; font-weight:600;">Email</label>
+        <input type="text" value="not-an-email" style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--danger); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none;">
+        <span style="font-size:11px; color:var(--danger); margin-top:2px;">Please enter a valid email address</span>
+      </div>
+      <div class="recipe-prompt" id="r-input-error">input-error (modifier on input-text)
+  border: 2px solid var(--danger)
+
+error-message
+  font: 400 11px/16px inherit
+  color: var(--danger)
+  margin-top: 2px<button class="copy-btn" onclick="copyBlock('r-input-error', this)">Copy</button></div>
+    </div>
+
+    <!-- Input: Textarea -->
+    <div class="recipe">
+      <div class="recipe-header">textarea</div>
+      <div class="recipe-demo col" style="max-width:360px; width:100%;">
+        <label style="display:block; font-size:11px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; font-weight:600;">Description</label>
+        <textarea placeholder="Enter description..." rows="3" style="font-family:inherit; font-size:14px; padding:6px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:100%; outline:none; resize:vertical;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+      <div class="recipe-prompt" id="r-textarea">textarea
+  Same as input-text, plus:
+  resize: vertical
+  Use &lt;textarea&gt; element, not &lt;input&gt;<button class="copy-btn" onclick="copyBlock('r-textarea', this)">Copy</button></div>
+    </div>
+
+    <!-- Input: Search compound -->
+    <div class="recipe">
+      <div class="recipe-header">input-search</div>
+      <div class="recipe-demo col" style="max-width:360px; width:100%;">
+        <div style="display:flex; align-items:center; border:2px solid var(--border); border-radius:4px; overflow:hidden; width:100%;">
+          <span style="padding:6px 8px; color:var(--muted); display:flex;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="text" placeholder="Search..." style="font-family:inherit; font-size:14px; padding:6px 8px 6px 0; border:none; background:var(--bg); color:var(--fg); flex:1; outline:none;">
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-input-search">input-search (compound)
+  Wrapper: display:flex; align-items:center;
+           border: 2px solid var(--border);
+           border-radius: 4px; overflow: hidden
+  Icon: padding 6px 8px, color var(--muted), 14x14 search SVG
+  Input: border:none; background:var(--bg); flex:1
+         font: 400 14px/22px inherit; padding: 6px 8px 6px 0
+  Wrapper:focus-within → border-color: var(--accent)<button class="copy-btn" onclick="copyBlock('r-input-search', this)">Copy</button></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- TOGGLE -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="toggle" class="section-title">Toggle</h2>
+
+    <div class="recipe">
+      <div class="recipe-header">toggle</div>
+      <div class="recipe-demo">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div id="toggle-demo-off" onclick="document.getElementById('toggle-demo-off').style.display='none'; document.getElementById('toggle-demo-on').style.display='flex';" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <div style="width:40px; height:22px; border-radius:9999px; background:#d1d5db; position:relative;">
+              <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; left:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+            </div>
+            <span style="font-size:13px; color:var(--muted);">Dark mode</span>
+          </div>
+          <div id="toggle-demo-on" onclick="document.getElementById('toggle-demo-on').style.display='none'; document.getElementById('toggle-demo-off').style.display='flex';" style="display:none; align-items:center; gap:8px; cursor:pointer;">
+            <div style="width:40px; height:22px; border-radius:9999px; background:#3b82f6; position:relative;">
+              <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; right:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+            </div>
+            <span style="font-size:13px; color:var(--fg);">Dark mode</span>
+          </div>
+        </div>
+        <div style="margin-left:24px; display:flex; align-items:center; gap:8px; opacity:0.4; cursor:not-allowed;">
+          <div style="width:40px; height:22px; border-radius:9999px; background:#d1d5db; position:relative;">
+            <div style="width:16px; height:16px; border-radius:9999px; background:#fff; position:absolute; top:3px; left:3px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+          </div>
+          <span style="font-size:13px; color:var(--muted);">Disabled</span>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-toggle">toggle
+  Track: 40×22px, border-radius: 9999px, cursor: pointer
+    off → background: #d1d5db
+    on  → background: #3b82f6
+  Circle: 16×16px, border-radius: 9999px, background: #fff
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2)
+    off → position: absolute; top: 3px; left: 3px
+    on  → position: absolute; top: 3px; right: 3px
+  Label: 13px, color var(--fg) when on, var(--muted) when off
+  Disabled: opacity 0.4, cursor not-allowed<button class="copy-btn" onclick="copyBlock('r-toggle', this)">Copy</button></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- BADGE -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="badge" class="section-title">Badge</h2>
+
+    <!-- Badge: Pill -->
+    <div class="recipe">
+      <div class="recipe-header">badge-pill</div>
+      <div class="recipe-demo">
+        <span style="display:inline-flex; align-items:center; gap:4px; background:#22c55e; color:#fff; font-size:11px; padding:2px 10px; border-radius:9999px;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Published
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:4px; background:var(--danger); color:#fff; font-size:11px; padding:2px 10px; border-radius:9999px;">Error</span>
+        <span style="display:inline-flex; align-items:center; gap:4px; background:var(--warning); color:#fff; font-size:11px; padding:2px 10px; border-radius:9999px;">Draft</span>
+        <span style="display:inline-flex; align-items:center; gap:4px; background:var(--muted); color:#fff; font-size:11px; padding:2px 10px; border-radius:9999px;">Archived</span>
+      </div>
+      <div class="recipe-prompt" id="r-badge-pill">badge-pill
+  display: inline-flex; align-items: center; gap: 4px
+  font: 400 11px/16px inherit
+  padding: 2px 10px
+  border-radius: 9999px
+  color: #fff
+  Variants by background:
+    success → #22c55e
+    danger  → var(--danger)
+    warning → var(--warning)
+    neutral → var(--muted)
+  Optional: 10x10 icon SVG before text<button class="copy-btn" onclick="copyBlock('r-badge-pill', this)">Copy</button></div>
+    </div>
+
+    <!-- Badge: Status dot -->
+    <div class="recipe">
+      <div class="recipe-header">status-dot</div>
+      <div class="recipe-demo">
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e;"></span> Published</span>
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; margin-left:12px;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b;"></span> Modified</span>
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:13px; margin-left:12px;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#dc2626;"></span> Error</span>
+      </div>
+      <div class="recipe-prompt" id="r-status-dot">status-dot
+  Dot: 8×8px, border-radius: 50%
+  Layout: inline-flex, align-items center, gap 6px
+  Label: 13px, color var(--fg)
+  Dot colors:
+    published → #22c55e
+    modified  → #f59e0b (warning)
+    error     → #dc2626 (danger)
+    active    → var(--link)
+    default   → var(--fg)<button class="copy-btn" onclick="copyBlock('r-status-dot', this)">Copy</button></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- TOAST -->
+    <!-- ════════════════════════════════════════════ -->
+    <h2 id="toast" class="section-title">Toast</h2>
+
+    <!-- Toast: Success -->
+    <div class="recipe">
+      <div class="recipe-header">toast-success</div>
+      <div class="recipe-demo">
+        <div style="background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; padding:12px 16px; display:flex; align-items:center; gap:8px; font-size:13px; min-width:260px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="16 8 10 16 7 13"/></svg>
+          Note saved successfully
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-toast-success">toast-success
+  background: var(--sidebar-bg)
+  border: 1px solid var(--border)
+  border-radius: 4px
+  padding: 12px 16px
+  display: flex; align-items: center; gap: 8px
+  font: 400 13px/20px inherit
+  Icon: 16x16 check-circle SVG, stroke #22c55e<button class="copy-btn" onclick="copyBlock('r-toast-success', this)">Copy</button></div>
+    </div>
+
+    <!-- Toast: Error -->
+    <div class="recipe">
+      <div class="recipe-header">toast-error</div>
+      <div class="recipe-demo">
+        <div style="background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; padding:12px 16px; display:flex; align-items:center; gap:8px; font-size:13px; min-width:260px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Failed to save — check connection
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-toast-error">toast-error
+  background: var(--sidebar-bg)
+  border: 1px solid var(--border)
+  border-radius: 4px
+  padding: 12px 16px
+  display: flex; align-items: center; gap: 8px
+  font: 400 13px/20px inherit
+  Icon: 16x16 x-circle SVG, stroke var(--danger)<button class="copy-btn" onclick="copyBlock('r-toast-error', this)">Copy</button></div>
+    </div>
+
+    <!-- Toast: Progress -->
+    <div class="recipe">
+      <div class="recipe-header">toast-progress</div>
+      <div class="recipe-demo">
+        <div style="background:var(--sidebar-bg); border:1px solid var(--border); border-radius:4px; padding:12px 16px; display:flex; flex-direction:column; gap:8px; min-width:280px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:13px;">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:14px; height:14px; border:3px solid var(--fg); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite;"></span>
+              Uploading…
+            </span>
+            <span style="color:var(--muted);">65%</span>
+          </div>
+          <div style="height:4px; background:var(--border); overflow:hidden;">
+            <div style="width:65%; height:100%; background:var(--fg);"></div>
+          </div>
+          <div style="font-size:11px; color:var(--muted);">3 of 5 files</div>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-toast-progress">toast-progress
+  Container: same as toast-success, but flex-direction: column
+  Header row: flex, space-between, 13px
+    Left: spinner (14px) + label
+    Right: percentage, color var(--muted)
+  Progress bar: height 4px, background var(--border)
+    Fill: background var(--fg), width N%
+  Footer: 11px, color var(--muted)
+  Spinner: 14px, border 3px solid var(--fg),
+    border-top-color transparent, border-radius 50%,
+    animation: spin 1s linear infinite<button class="copy-btn" onclick="copyBlock('r-toast-progress', this)">Copy</button></div>
+    </div>
+
+    <style>
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </main>
+
+  <script>
+    // Theme
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() {
+      const saved = localStorage.getItem('dirigible-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+
+    // Copy
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      // Get text content, stripping the "Copy" button text
+      let text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

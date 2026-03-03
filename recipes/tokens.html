@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokens — dirigible-ui recipes</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
+    }
+    [data-theme="dark"] {
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
+
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
+    .main > h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 4px; }
+    .main > .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Recipe cards ── */
+    .recipe { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
+    .recipe-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .recipe-demo { padding: 20px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+    .recipe-demo.col { flex-direction: column; align-items: flex-start; }
+    .recipe-prompt { position: relative; background: var(--code-bg); padding: 12px 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; font-family: inherit; font-size: 11px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* ── Token-specific ── */
+    .token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 16px; }
+    .token-swatch { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; font-size: 11px; }
+    .token-swatch-color { height: 32px; }
+    .token-swatch-label { padding: 4px 8px; color: var(--muted); }
+    .preamble { position: relative; background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; margin-bottom: 16px; }
+    .section-heading { font-size: 18px; line-height: 28px; font-weight: 600; margin: 32px 0 16px; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>Recipes</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9684;</button>
+    </div>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html" class="active">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="context-menu.html">Context Menu</a>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html">Icons</a>
+    <a href="../index.html" class="back-link">&larr; Full docs</a>
+  </nav>
+
+  <main class="main">
+    <h1>Tokens</h1>
+    <p class="subtitle">Copy this preamble once at the start of a session. Defines every design token.</p>
+
+    <div class="token-grid">
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--fg);"></div>
+        <div class="token-swatch-label">--fg</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--bg); border-bottom: 1px solid var(--border);"></div>
+        <div class="token-swatch-label">--bg</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--muted);"></div>
+        <div class="token-swatch-label">--muted</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--border);"></div>
+        <div class="token-swatch-label">--border</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--sidebar-bg);"></div>
+        <div class="token-swatch-label">--sidebar-bg</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--hover);"></div>
+        <div class="token-swatch-label">--hover</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--accent);"></div>
+        <div class="token-swatch-label">--accent</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--success);"></div>
+        <div class="token-swatch-label">--success</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--warning);"></div>
+        <div class="token-swatch-label">--warning</div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-swatch-color" style="background: var(--danger);"></div>
+        <div class="token-swatch-label">--danger</div>
+      </div>
+    </div>
+
+    <div class="preamble" id="preamble-block">Use these design tokens for all UI work in this project.
+
+COLORS (light / default):
+  --bg: #fefefe          --fg: #1a1a1a
+  --muted: #777          --border: #e8e6e3
+  --sidebar-bg: #faf9f8  --hover: #f5f4f2
+  --accent: #3d8ad3      --danger: #dc2626
+  --success: #22c55e     --warning: #f59e0b
+
+COLORS (dark, via [data-theme="dark"]):
+  --bg: #181716          --fg: #f2f0ed
+  --muted: #999795       --border: #302e2b
+  --sidebar-bg: #1e1d1b  --hover: #232120
+  --accent: #6ba3d6      --danger: #ef4444
+  --success: #4ec9b0     --warning: #ce9178
+
+FONT: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace
+SIZES: 11px (xs/badges) &middot; 13px (sm/default UI) &middot; 14px (base/body) &middot; 16px (md)
+WEIGHTS: 400 (body) &middot; 500 (medium) &middot; 600 (headings/bold labels)
+
+SPACING: 4px base grid &rarr; 4, 8, 12, 16, 24, 32
+RADIUS: 4px (sm/buttons) &middot; 6px (md/cards) &middot; 8px (lg/modals) &middot; 9999px (pill)
+BORDERS: 2px for interactive elements (buttons, inputs) &middot; 1px for structure (dividers, panels)
+SHADOW: sm 0 1px 2px rgba(0,0,0,0.05) &middot; md 0 4px 12px rgba(0,0,0,0.1)<button class="copy-btn" onclick="copyBlock('preamble-block', this)">Copy</button></div>
+
+    <h2 class="section-heading">Typography</h2>
+
+    <div class="recipe">
+      <div class="recipe-header">type-scale</div>
+      <div class="recipe-demo" style="flex-direction:column; align-items:flex-start; gap:8px;">
+        <span style="font-size:24px; line-height:32px; font-weight:600;">24px &mdash; Page title</span>
+        <span style="font-size:18px; line-height:28px; font-weight:600;">18px &mdash; Section header</span>
+        <span style="font-size:14px; line-height:22px; font-weight:400;">14px &mdash; Body text</span>
+        <span style="font-size:13px; line-height:20px; font-weight:400;">13px &mdash; UI default</span>
+        <span style="font-size:11px; line-height:16px; font-weight:400;">11px &mdash; Caption / badge</span>
+      </div>
+      <div class="recipe-prompt" id="r-type-scale">type-scale
+  24px/32px 600 &mdash; page titles, modal headers
+  18px/28px 600 &mdash; section headers
+  14px/22px 400 &mdash; body text, note content
+  13px/20px 400 &mdash; default UI text, sidebar, forms
+  11px/16px 400 &mdash; captions, badges, metadata, small labels<button class="copy-btn" onclick="copyBlock('r-type-scale', this)">Copy</button></div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-header">font-stacks</div>
+      <div class="recipe-demo" style="flex-direction:column; align-items:flex-start; gap:4px;">
+        <span style="font-size:14px; font-family:'SF Mono','Cascadia Code','Fira Code','JetBrains Mono',monospace;">SF Mono &mdash; UI and code (primary)</span>
+        <span style="font-size:14px; font-family:'IBM Plex Sans',system-ui,sans-serif;">IBM Plex Sans &mdash; published content</span>
+        <span style="font-size:14px; font-family:'Crimson Pro',Georgia,serif;">Crimson Pro &mdash; serif option</span>
+      </div>
+      <div class="recipe-prompt" id="r-font-stacks">font-stacks
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif
+  --font-serif: 'Crimson Pro', Georgia, serif
+  Primary (all UI): --font-mono
+  Published content: --font-sans or --font-serif<button class="copy-btn" onclick="copyBlock('r-font-stacks', this)">Copy</button></div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-header">spacing + radius</div>
+      <div class="recipe-demo" style="display:flex; gap:12px; align-items:flex-end;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:4px;"></div>
+          <span style="font-size:11px; color:var(--muted);">4px</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:8px;"></div>
+          <span style="font-size:11px; color:var(--muted);">8px</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:12px;"></div>
+          <span style="font-size:11px; color:var(--muted);">12px</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:16px;"></div>
+          <span style="font-size:11px; color:var(--muted);">16px</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:24px;"></div>
+          <span style="font-size:11px; color:var(--muted);">24px</span>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent); opacity:0.3; width:40px; height:32px;"></div>
+          <span style="font-size:11px; color:var(--muted);">32px</span>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-spacing-radius">spacing (4px base grid)
+  4px &mdash; icon-to-label, tight gaps
+  8px &mdash; between list items, field padding
+  12px &mdash; card padding, section spacing
+  16px &mdash; major gaps, modal padding
+  24px &mdash; page padding, large gaps
+  32px &mdash; max spacing, hero areas
+
+radius
+  4px (sm) &mdash; buttons, inputs, badges
+  6px (md) &mdash; cards, dropdowns, panels
+  8px (lg) &mdash; modals, dialogs
+  9999px (pill) &mdash; tags, avatars
+
+borders
+  2px &mdash; interactive (buttons, inputs, toggles)
+  1px &mdash; structural (dividers, panels, separators)<button class="copy-btn" onclick="copyBlock('r-spacing-radius', this)">Copy</button></div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
