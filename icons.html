@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icons — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
+    }
+    [data-theme="dark"] {
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
+
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
+    .main > h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 4px; }
+    .main > .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Recipe cards ── */
+    .recipe { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
+    .recipe-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .recipe-demo { padding: 20px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+    .recipe-demo.col { flex-direction: column; align-items: flex-start; }
+    .recipe-prompt { position: relative; background: var(--code-bg); padding: 12px 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; font-family: inherit; font-size: 11px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* ── Icon grid ── */
+    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 16px; }
+    .icon-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+    .icon-card:hover { background: var(--hover); }
+    .icon-card svg { color: var(--fg); }
+    .icon-card span { font-size: 10px; color: var(--muted); text-align: center; }
+    .icon-card.copied-card { border-color: var(--success); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .theme-toggle { display: flex; align-items: center; }
+    .sun-icon { display: none; }
+    [data-theme="dark"] .sun-icon { display: block; }
+    [data-theme="dark"] .moon-icon { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
+    </div>
+    <a href="index.html">Overview</a>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="color-swatch.html">Color Swatch</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="select.html">Select</a>
+    <a href="tag-input.html">Tag Input</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <a href="table.html">Table</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html" class="active">Icons</a>
+    <a href="recipe-reference.html">Recipe Reference</a>
+  </nav>
+
+  <main class="main">
+    <h1>Icons</h1>
+    <p class="subtitle">SVG icon catalog. Click to copy. All stroke-based, currentColor, 1.5 stroke-width.</p>
+
+    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Click any icon to copy its SVG. All icons use viewBox="0 0 24 24", stroke="currentColor", stroke-width="1.5". Default display size: 20×20px.</p>
+
+    <div class="icon-grid">
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+        <span>folder</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>note</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V4.5l-10.5 3v8.553m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"/></svg>
+        <span>music</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="8" height="5" rx="1"/><rect x="13.5" y="2.5" width="8" height="8" rx="1"/><rect x="2.5" y="10.5" width="8" height="11" rx="1"/><rect x="13.5" y="13.5" width="8" height="8" rx="1"/></svg>
+        <span>moodboard</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+        <span>document</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M14 2v5h5"/><rect x="7" y="14" width="10" height="6" rx="1" fill="currentColor" opacity="0.2" stroke="none"/></svg>
+        <span>pdf</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span>search</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <span>plus</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        <span>x-close</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
+        <span>check</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <span>chevron-right</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        <span>chevron-down</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>
+        <span>bookmark</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>download</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <span>upload</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="1"/><path d="M7 2v7h10V2"/><line x1="14" y1="4" x2="14" y2="7"/><rect x="6" y="13" width="12" height="6" rx="0.5" fill="none"/></svg>
+        <span>save</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/></svg>
+        <span>print</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>clock</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v6m0 0l3-3m-3 3l-3-3M6.75 19.25a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.5 3.5 0 0118 19.25H6.75z"/></svg>
+        <span>cloud-sync</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span>sync</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        <span>external-link</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+        <span>link</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+        <span>trash</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+        <span>edit</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        <span>copy</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-width="2"/></svg>
+        <span>more-vert</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <span>sun</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+        <span>moon</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        <span>user</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/></svg>
+        <span>themes</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>settings</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+        <span>sign-out</span>
+      </div>
+      <div class="icon-card" onclick="copyIcon(this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM10.5 8.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+        <span>image</span>
+      </div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-header">icon</div>
+      <div class="recipe-demo">
+        <div style="display:flex; align-items:flex-end; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span style="font-size:10px; color:var(--muted);">14px</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span style="font-size:10px; color:var(--muted);">20px</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span style="font-size:10px; color:var(--muted);">24px</span>
+          </div>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-icon">icon
+  Element: <svg> inline, NOT <img>
+  viewBox: 0 0 24 24
+  fill: none
+  stroke: currentColor (inherits container color)
+  stroke-width: 1.5
+  stroke-linecap: round
+  stroke-linejoin: round
+  Sizes: 14px (inline/small), 20px (default), 24px (large)
+  Color: currentColor — set via parent's CSS color property
+    default: var(--fg)
+    muted: var(--muted)
+    danger: var(--danger) (trash/delete only)
+    accent: var(--accent) (active/highlighted)<button class="copy-btn" onclick="copyBlock('r-icon', this)">Copy</button></div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+    function copyIcon(el) {
+      const svg = el.querySelector('svg').outerHTML;
+      navigator.clipboard.writeText(svg).then(() => {
+        el.classList.add('copied-card');
+        const span = el.querySelector('span');
+        const orig = span.textContent;
+        span.textContent = 'Copied!';
+        setTimeout(() => { el.classList.remove('copied-card'); span.textContent = orig; }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popover — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
+    }
+    [data-theme="dark"] {
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
+
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
+    .main > h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 4px; }
+    .main > .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Recipe cards ── */
+    .recipe { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
+    .recipe-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .recipe-demo { padding: 20px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+    .recipe-demo.col { flex-direction: column; align-items: flex-start; }
+    .recipe-prompt { position: relative; background: var(--code-bg); padding: 12px 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; font-family: inherit; font-size: 11px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  
+    .theme-toggle { display: flex; align-items: center; }
+    .sun-icon { display: none; }
+    [data-theme="dark"] .sun-icon { display: block; }
+    [data-theme="dark"] .moon-icon { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
+    </div>
+    <a href="index.html">Overview</a>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="color-swatch.html">Color Swatch</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html" class="active">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="select.html">Select</a>
+    <a href="tag-input.html">Tag Input</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <a href="table.html">Table</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html">Icons</a>
+    <a href="recipe-reference.html">Recipe Reference</a>
+  </nav>
+
+  <main class="main">
+    <h1>Popover</h1>
+    <p class="subtitle">Floating panel anchored to trigger. For rich settings and status displays.</p>
+
+    <div class="recipe">
+      <div class="recipe-header">popover</div>
+      <div class="recipe-demo col">
+        <div style="position:relative; display:inline-block;">
+          <span style="display:inline-flex; align-items:center; gap:4px; background:#22c55e; color:#fff; font-size:11px; padding:2px 10px; border-radius:9999px; cursor:pointer;">Published</span>
+          <div style="margin-top:8px; background:var(--bg); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:12px; max-width:300px; width:100%;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:13px;">Include in site</span>
+              <div style="width:32px; height:18px; background:var(--accent); border-radius:9px; position:relative; cursor:pointer;">
+                <div style="width:14px; height:14px; background:var(--bg); border-radius:50%; position:absolute; top:2px; left:16px;"></div>
+              </div>
+            </div>
+            <div style="height:10px;"></div>
+            <label style="display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">URL Slug</label>
+            <div style="display:flex; align-items:center; border:1px solid var(--border); border-radius:4px; overflow:hidden;">
+              <span style="padding:4px 0 4px 8px; font-size:13px; color:var(--muted); white-space:nowrap;">site.com/</span>
+              <input type="text" value="my-note" style="font-family:inherit; font-size:13px; padding:4px 8px 4px 0; background:var(--bg); color:var(--fg); border:none; outline:none; flex:1; min-width:0;">
+            </div>
+            <div style="height:10px;"></div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button style="width:100%; font-family:inherit; font-size:13px; font-weight:600; padding:4px 14px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--fg)'; this.style.color='var(--bg)'" onmouseup="this.style.background='transparent'; this.style.color='var(--fg)'">Copy URL</button>
+              <button style="width:100%; font-family:inherit; font-size:13px; font-weight:600; padding:2px 12px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); border-radius:4px; cursor:pointer;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" onmousedown="this.style.background='var(--bg)'; this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)'; this.style.color='var(--bg)'">Deploy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-popover">popover
+  Container: background var(--bg)
+    border: 1px solid var(--border)
+    border-radius: 6px
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15)
+    padding: 12px; max-width: 300px
+  Positioning: position:absolute; top:calc(100% + 8px)
+  Animation: opacity + translateY, 0.15s ease
+  Dismiss: click outside or Escape key
+  Content: any combination of recipes (toggles, inputs, buttons)
+  Buttons: use standard button recipes, full-width inside popover<button class="copy-btn" onclick="copyBlock('r-popover', this)">Copy</button></div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

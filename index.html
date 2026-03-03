@@ -3,360 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overview — Dirigible UI</title>
+  <title>dirigible-ui</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #fefefe;
-      --fg: #1a1a1a;
-      --muted: #777777;
-      --border: #e8e6e3;
-      --sidebar-bg: #faf9f8;
-      --hover: #f5f4f2;
-      --accent: #3d8ad3;
-      --accent-muted: #2b6a9e;
-      --success: #22c55e;
-      --warning: #f59e0b;
-      --danger: #dc2626;
-      --code-bg: #f5f5f5;
-      --code-fg: #1f2937;
-      --link: #0066cc;
-      --radius-sm: 4px;
-      --radius-md: 6px;
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
     }
-
     [data-theme="dark"] {
-      --bg: #181716;
-      --fg: #f2f0ed;
-      --muted: #999795;
-      --border: #302e2b;
-      --sidebar-bg: #1e1d1b;
-      --hover: #232120;
-      --accent: #6ba3d6;
-      --accent-muted: #3d6a8a;
-      --success: #4ec9b0;
-      --warning: #ce9178;
-      --danger: #ef4444;
-      --code-bg: #1e1e1e;
-      --code-fg: #d4d4d4;
-      --link: #58a6ff;
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 20px;
-      color: var(--fg);
-      background: var(--bg);
-      display: flex;
-      min-height: 100vh;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
     }
 
-    .sidebar {
-      width: 220px;
-      min-width: 220px;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border);
-      padding: 16px 0;
-      overflow-y: auto;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
-
-    .sidebar-header {
-      padding: 0 16px 16px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .sidebar-header h1 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .theme-toggle {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      color: var(--muted);
-      border-radius: var(--radius-sm);
-    }
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
     .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
 
-    .nav-section { margin-bottom: 4px; }
+    .sun-icon { display: none; }
+    [data-theme="dark"] .sun-icon { display: block; }
+    [data-theme="dark"] .moon-icon { display: none; }
 
-    .nav-section-title {
-      padding: 8px 16px 4px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 16px;
-      color: var(--fg);
-      text-decoration: none;
-      font-size: 13px;
-    }
-
-    .sidebar a:hover { background: var(--hover); }
-    .sidebar a.active {
-      background: color-mix(in srgb, var(--accent) 15%, transparent);
-      color: var(--accent);
-    }
-
-    .tag {
-      font-size: 9px;
-      padding: 1px 4px;
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      color: var(--muted);
-      margin-left: auto;
-    }
-
-    .main {
-      flex: 1;
-      max-width: 800px;
-      padding: 32px 40px;
-      min-width: 0;
-    }
-
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
     .main h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 8px; }
     .main h2 { font-size: 18px; line-height: 28px; font-weight: 600; margin-top: 32px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
     .main h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
-    .main h4 { font-size: 13px; line-height: 20px; font-weight: 600; margin-top: 16px; margin-bottom: 4px; }
     .main p { margin-bottom: 12px; font-size: 14px; line-height: 22px; }
     .main ul, .main ol { margin-bottom: 12px; padding-left: 24px; }
     .main li { margin-bottom: 4px; font-size: 14px; line-height: 22px; }
     .main a { color: var(--link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 40%, transparent); }
     .main a:hover { text-decoration-color: var(--link); }
     .main strong { font-weight: 600; }
-    .main em { font-style: italic; }
-    .main blockquote { border-left: 3px solid var(--border); padding: 4px 16px; margin: 12px 0; color: var(--muted); }
-    .main code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
+    .main code { font-family: inherit; font-size: 12px; background: var(--code-bg); color: var(--code-fg); padding: 2px 6px; border-radius: 3px; }
     .main pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; margin: 12px 0; overflow-x: auto; }
     .main pre code { background: none; padding: 0; font-size: 12px; line-height: 18px; }
-    .main table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-    .main th { text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid var(--border); }
-    .main td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
-    .main tr:hover td { background: var(--hover); }
-    .main hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-    .main img { max-width: 100%; border-radius: var(--radius-md); }
 
-    .render-panel {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      margin-bottom: 32px;
-      overflow: hidden;
-    }
+    /* ── Showcase ── */
+    .showcase { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin: 16px 0 24px; background: var(--bg); display: flex; gap: 16px; flex-wrap: wrap; }
+    .showcase-col { display: flex; flex-direction: column; gap: 10px; }
+    .showcase-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 2px; }
 
-    .render-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 12px;
-      background: var(--sidebar-bg);
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
+    /* ── Layer model ── */
+    .layer-model { display: flex; flex-direction: column; gap: 2px; margin: 16px 0 20px; }
+    .layer-bar { display: flex; align-items: center; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+    .layer-bar .layer-num { min-width: 20px; opacity: 0.7; }
+    .layer-bar .layer-name { flex: 1; }
+    .layer-bar .layer-desc { font-weight: 400; font-size: 11px; opacity: 0.7; }
 
-    .render-panel-header .render-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    /* ── Menu item hover (full invert including icons + shortcuts) ── */
+    .sc-menu-item { transition: none; }
+    .sc-menu-item:hover { background: var(--fg); color: var(--bg) !important; }
+    .sc-menu-item:hover span { color: inherit !important; opacity: 1 !important; }
+    .sc-menu-danger:hover { background: var(--danger); color: #fff !important; }
+    .sc-select-opt:hover { background: var(--hover); }
 
-    .render-panel-header .render-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-    }
-
-    .render-panel-body {
-      padding: 24px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main { padding: 16px; }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
   <nav class="sidebar">
     <div class="sidebar-header">
-      <h1><svg width="30" height="16" viewBox="0 0 728 387" fill="currentColor" style="vertical-align:-2px"><path d="M148.677 123.244C173.807 115.461 198.003 109.086 216.472 105.725C271.902 95.6382 308.571 92.5347 405.787 90.2071C503.003 87.8794 593.823 109.604 607.893 115.811C621.964 122.018 659.486 145.295 669.719 157.709C673.841 164.175 682.852 178.968 685.922 186.417C688.992 193.865 689.191 195.727 688.907 195.727C687.485 200.124 683.875 210.314 680.805 215.9C677.735 221.487 670.146 233.746 666.735 239.177C657.78 249.263 632.963 269.71 591.264 281.85C548.626 294.264 503.856 298.144 393.422 298.92C282.988 299.696 206.665 284.954 140.576 267.884C104.189 258.487 67.87 239.975 42.3196 224.54C30.7439 217.547 21.3785 211.186 15.2188 206.59C8.82298 202.71 1.83031 190.762 25.0256 174.003C29.2604 170.943 35.1597 167.536 42.3196 163.916L42.9338 159.261C44.7814 138.312 48.6473 95.1727 49.3295 90.2071C50.0117 85.2414 53.0249 84 54.4462 84C72.2122 84.5173 108.256 85.5518 110.303 85.5518C112.861 85.5518 119.683 87.1035 121.389 87.8794C123.094 88.6553 131.195 94.0865 138.87 103.397C145.01 110.846 147.967 119.732 148.677 123.244ZM42.3196 224.54C44.0878 244.678 47.7092 285.575 48.0504 288.057C48.3915 290.54 62.9739 295.816 70.2224 298.144C82.1612 300.73 107.83 305.437 114.993 303.575C123.947 301.247 133.754 295.04 137.165 290.385C140.576 285.73 145.692 277.195 147.824 270.988L140.576 267.884C67.87 239.975 42.3196 224.54 42.3196 224.54Z"/></svg> dirigible-ui</h1>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">&#9790;</button>
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
     </div>
     <a href="index.html" class="active">Overview</a>
-    <a href="how-to-use.html">How to Use</a>
-    <a href="how-to-update.html">How to Update</a>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Tokens</div>
-          <a href="tokens/colors.html">Colors</a>
-          <a href="tokens/spacing.html">Spacing</a>
-          <a href="tokens/typography.html">Typography</a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Components</div>
-          <a href="components/badge.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="5"/></svg> Badge</a>
-          <a href="components/breadcrumb.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg> Breadcrumb</a>
-          <a href="components/button.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/></svg> Button</a>
-          <a href="components/color-swatch.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="5"/><circle cx="16" cy="16" r="5"/></svg> Color Swatch</a>
-          <a href="components/context-menu.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> Context Menu</a>
-          <a href="components/icon.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg> Icon</a>
-          <a href="components/image-uploader.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> Image Uploader</a>
-          <a href="components/input.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 4H7M12 4v16M17 20H7"/></svg> Input</a>
-          <a href="components/loading.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v4m0 12v4m-8.49-14.49l2.83 2.83m11.32 5.32l2.83 2.83m-19.98.01l2.83-2.83m11.32-5.32l2.83-2.83M2 12h4m12 0h4"/></svg> Loading</a>
-          <a href="components/menu.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menu</a>
-          <a href="components/modal.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/></svg> Modal</a>
-          <a href="components/popover.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Popover</a>
-          <a href="components/progress.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="10" width="20" height="4" rx="0" stroke-width="0" fill="currentColor" opacity="0.25"/><rect x="2" y="10" width="12" height="4" rx="0" stroke-width="0" fill="currentColor"/></svg> Progress</a>
-          <a href="components/radio-button.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg> Radio Button</a>
-          <a href="components/selection-list.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="18" r="1" fill="currentColor" stroke="none"/></svg> Selection List</a>
-          <a href="components/sidebar.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg> Sidebar</a>
-          <a href="components/slider.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h20"/><circle cx="14" cy="12" r="3"/></svg> Slider</a>
-          <a href="components/tab-bar.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h5V3"/></svg> Tab Bar</a>
-          <a href="components/table.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg> Table</a>
-          <a href="components/tag-input.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h.01M2 12l8.17-8.17a2 2 0 011.42-.59h6.83a2 2 0 012 2v6.83a2 2 0 01-.59 1.42L11.58 22z"/></svg> Tag Input</a>
-          <a href="components/theme-picker.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.75 1.5-1.5 0-.39-.15-.74-.39-1.01-.24-.26-.37-.61-.37-1 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-9-10-9z"/></svg> Theme Picker</a>
-          <a href="components/toast.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg> Toast</a>
-          <a href="components/toggle.html"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="22" height="12" rx="6"/><circle cx="16" cy="12" r="4" fill="currentColor" stroke="none"/></svg> Toggle</a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Patterns</div>
-          <a href="patterns/forms.html">Forms</a>
-          <a href="patterns/navigation.html">Navigation</a>
-          <a href="patterns/publish-flow.html">Publish Flow</a>
-          <a href="patterns/sync-flow.html">Sync Flow</a>
-          <a href="patterns/theme-system.html">Theme System</a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Examples</div>
-          <a href="examples/music-table.html">Music Table</a>
-          <a href="examples/note-view.html">Note View</a>
-          <a href="examples/publication-panel.html">Publication Panel</a>
-          <a href="examples/sync-modal.html">Sync Modal</a>
-          <a href="examples/themes-modal.html">Themes Modal</a>
-        </div>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="color-swatch.html">Color Swatch</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="select.html">Select</a>
+    <a href="tag-input.html">Tag Input</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <a href="table.html">Table</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html">Icons</a>
+    <a href="recipe-reference.html">Recipe Reference</a>
   </nav>
+
   <main class="main">
     <h1>dirigible-ui</h1>
-<blockquote>
-<p>An agent-first UI framework. Standalone HTML specs with live demos, designed to be read by AI coding assistants and browsed by humans. Born from <a href="https://dirigible.app">Dirigible</a>.</p>
-</blockquote>
-<h2>Philosophy</h2>
-<p>The UI is <strong>quiet, monospaced, and warm</strong>. It looks like a tool a thoughtful person built for themselves. Every element earns its place — no decorative flourishes, no gratuitous color, no rounded-everything friendliness. The aesthetic sits somewhere between a terminal and a well-typeset book.</p>
-<h3>Core Principles</h3>
-<ol>
-<li><p><strong>Monospace-first.</strong> JetBrains Mono is the default for everything — sidebar, buttons, table cells, form labels. Serif and sans options exist for content, but the app itself speaks in monospace.</p>
-</li>
-<li><p><strong>Warm neutrals.</strong> The light theme is cream, not white. The dark theme is brown, not gray. Borders are soft (<code>#e0ddd8</code>), not clinical (<code>#e0e0e0</code>). This warmth is the single most distinctive visual quality.</p>
-</li>
-<li><p><strong>Sparse color.</strong> Accent color (<code>#3d8ad3</code>, a muted blue) is used sparingly — active tabs, primary actions, status dots. Most of the UI is foreground-on-background with muted secondary text. Color means something happened.</p>
-</li>
-<li><p><strong>2px borders on interactive elements.</strong> Buttons, inputs, toggles, cards — anything you can click gets a 2px solid border. Dividers and table rules get 1px. This creates a clear visual distinction between &quot;things&quot; and &quot;structure.&quot;</p>
-</li>
-<li><p><strong>Information density.</strong> Tables show everything. Columns for title, artist, album, year, duration, file size — all visible, no hiding behind &quot;more&quot; menus. Density is a feature.</p>
-</li>
-<li><p><strong>Semantic headings only.</strong> Headings use weight (semibold) and size. No text-transform, no letter-spacing tricks, no uppercase labels.</p>
-</li>
-</ol>
-<h2>File Structure</h2>
-<pre><code>dirigible-ui/
-  index.html                        ← You are here
-  how-to-use.html                   ← Including in a project, pointing Claude at it
-  how-to-update.html                ← Tweaking, adding, maintaining the system
-  tokens/
-    colors.html                     ← Color tokens, themes, semantic usage
-    typography.html                 ← Font stacks, type scale, rules
-    spacing.html                    ← Spacing scale, borders, radius, shadows
-  components/
-    badge.html                      ← Status badges and pills
-    breadcrumb.html                 ← Navigation breadcrumbs
-    button.html                     ← Button variants and states
-    color-swatch.html               ← Color swatch pickers
-    context-menu.html               ← Right-click and kebab menus
-    icon.html                       ← Icon system and catalog
-    image-uploader.html             ← Image upload component
-    input.html                      ← Text inputs, textareas, search
-    loading.html                    ← Loading screen with spinner
-    menu.html                       ← Dropdown action menus
-    modal.html                      ← Modal dialogs
-    popover.html                    ← Popovers and dropdown panels
-    progress.html                   ← Progress bars and spinners
-    radio-button.html               ← Radio button groups
-    selection-list.html             ← Selection list component
-    sidebar.html                    ← File tree sidebar
-    slider.html                     ← Range sliders
-    tab-bar.html                    ← Vertical icon tab bar
-    table.html                      ← Data tables (notes + music variants)
-    tag-input.html                  ← Tag entry and display
-    theme-picker.html               ← Theme selection UI
-    toast.html                      ← Toast notifications and progress
-    toggle.html                     ← Toggle switches
-  patterns/
-    forms.html                      ← Form layout and validation
-    navigation.html                 ← App navigation patterns
-    publish-flow.html               ← Publication workflow
-    sync-flow.html                  ← Local folder sync workflow
-    theme-system.html               ← Theme switching architecture
-  examples/
-    music-table.html                ← Full music library table
-    note-view.html                  ← Note editing view
-    publication-panel.html          ← Publication management panel
-    sync-modal.html                 ← Folder sync modal
-    themes-modal.html               ← Theme configuration modal
-</code></pre>
-<h2>Usage with Claude Code</h2>
-<p>Each page is a standalone HTML file with inline styles and live interactive demos. No build step required — open any <code>.html</code> file directly in a browser.</p>
-<p>To use this as a design reference in your project, add to your <code>CLAUDE.md</code>:</p>
-<pre><code class="language-markdown">## Design System
-Follow the design system in ./dirigible-ui/
-Before creating or modifying any UI component, read the relevant
-component and token files in ./dirigible-ui/tokens/ and ./dirigible-ui/components/.
-Use CSS custom properties — never raw hex values.
-</code></pre>
 
+    <p>dirigible-ui is a recipe-based, agent-first web design framework. Copyable prompt snippets with live demos, designed to be pasted into AI coding assistants and browsed by humans. Born from <a href="https://dirigible.app">Dirigible</a>.</p>
+
+    <!-- ── Visual showcase ── -->
+    <div class="showcase">
+      <!-- Column 1: Modal + buttons + badges -->
+      <div class="showcase-col" style="flex:1; min-width:240px;">
+        <div class="showcase-label">Modal</div>
+        <div style="background:var(--bg); border-radius:6px; box-shadow:0 4px 24px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.1); padding:0; width:100%; max-width:280px;">
+          <div style="padding:10px 12px 8px; font-weight:700; font-size:13px;">Delete note?</div>
+          <div style="padding:0 12px 12px; font-size:12px; color:var(--muted);">This action cannot be undone.</div>
+          <div style="padding:8px 12px; display:flex; gap:6px; justify-content:flex-end;">
+            <button style="font-family:inherit; font-size:12px; font-weight:600; padding:2px 10px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--fg)'; this.style.color='var(--bg)'" onmouseup="this.style.background='transparent'; this.style.color='var(--fg)'">Cancel</button>
+            <button style="font-family:inherit; font-size:12px; font-weight:600; padding:2px 10px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--danger)'; this.style.color='#fff'" onmouseup="this.style.background='transparent'; this.style.color='var(--danger)'">Delete</button>
+          </div>
+        </div>
+        <div class="showcase-label" style="margin-top:6px;">Buttons</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button style="font-family:inherit; font-size:12px; font-weight:600; padding:2px 10px; background:var(--fg); color:var(--bg); border:3px solid var(--fg); border-radius:4px; cursor:pointer;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" onmousedown="this.style.background='var(--bg)'; this.style.color='var(--fg)'" onmouseup="this.style.background='var(--fg)'; this.style.color='var(--bg)'">Save</button>
+          <button style="font-family:inherit; font-size:12px; font-weight:600; padding:2px 10px; background:transparent; color:var(--fg); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--fg)'; this.style.color='var(--bg)'" onmouseup="this.style.background='transparent'; this.style.color='var(--fg)'">Cancel</button>
+          <button style="font-family:inherit; font-size:12px; font-weight:600; padding:2px 10px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:4px; cursor:pointer;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.background='var(--danger)'; this.style.color='#fff'" onmouseup="this.style.background='transparent'; this.style.color='var(--danger)'">Delete</button>
+        </div>
+        <div class="showcase-label" style="margin-top:6px;">Badges</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span style="display:inline-flex; align-items:center; gap:3px; font-size:11px; padding:1px 6px; border-radius:4px; border:1px solid #16a34a; background:rgba(34,197,94,0.1); color:#16a34a;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 12.75l6 6 9-13.5"/></svg>Published</span>
+          <span style="font-size:11px; padding:1px 6px; border-radius:4px; border:1px solid #ca8a04; background:rgba(234,179,8,0.1); color:#ca8a04;">Pending</span>
+          <span style="font-size:11px; padding:1px 6px; border-radius:4px; border:1px dashed var(--border); color:var(--muted);">Draft</span>
+        </div>
+      </div>
+
+      <!-- Column 2: Menu -->
+      <div class="showcase-col" style="flex:1; min-width:200px;">
+        <div class="showcase-label">Menu</div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:4px 0; font-size:13px; font-weight:600; width:200px;">
+          <div style="padding:4px 12px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase;">File</div>
+          <div class="sc-menu-item" style="padding:4px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--fg);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 4.5v15m7.5-7.5h-15"/></svg>New note<span style="margin-left:auto; font-weight:400; font-size:11px; color:inherit; opacity:0.5;">&#8984;N</span></div>
+          <div class="sc-menu-item" style="padding:4px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--fg);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>Duplicate<span style="margin-left:auto; font-weight:400; font-size:11px; color:inherit; opacity:0.5;">&#8984;D</span></div>
+          <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
+          <div style="padding:4px 12px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase;">View</div>
+          <div class="sc-menu-item" style="padding:4px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--fg);">Sidebar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:auto;"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div>
+          <div class="sc-menu-item" style="padding:4px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; color:var(--fg);">Word count</div>
+          <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
+          <div class="sc-menu-danger" style="padding:4px 12px; cursor:pointer; color:var(--danger);">Delete note</div>
+        </div>
+      </div>
+
+      <!-- Column 3: Table + toast-progress + input + toggle + tags -->
+      <div class="showcase-col" style="flex:1; min-width:240px;">
+        <div class="showcase-label">Table</div>
+        <div style="width:100%; border:1px solid var(--border); border-radius:4px; overflow:hidden; font-family:'Lucida Grande','Lucida Sans Unicode','Helvetica Neue',sans-serif;">
+          <div style="display:flex; height:24px; align-items:center; background:var(--bg); border-bottom:1px solid var(--border); color:var(--muted); font-weight:500; font-size:10px; white-space:nowrap;">
+            <span style="flex:1.5; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Title</span><span style="flex:1; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Artist</span><span style="width:48px; padding:0 6px; flex-shrink:0;">Time</span>
+          </div>
+          <div style="display:flex; height:18px; align-items:center; background:var(--bg); font-size:11px; white-space:nowrap;">
+            <span style="flex:1.5; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Take Five</span><span style="flex:1; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Dave Brubeck</span><span style="width:48px; padding:0 6px; flex-shrink:0;">5:24</span>
+          </div>
+          <div style="display:flex; height:18px; align-items:center; background:var(--sidebar-bg); font-size:11px; white-space:nowrap;">
+            <span style="flex:1.5; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Footprints</span><span style="flex:1; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Wayne Shorter</span><span style="width:48px; padding:0 6px; flex-shrink:0;">5:52</span>
+          </div>
+          <div style="display:flex; height:18px; align-items:center; background:color-mix(in srgb, var(--accent) 15%, var(--bg)); font-size:11px; white-space:nowrap;">
+            <span style="flex:1.5; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Birdland</span><span style="flex:1; padding:0 6px; overflow:hidden; text-overflow:ellipsis;">Weather Report</span><span style="width:48px; padding:0 6px; flex-shrink:0;">5:57</span>
+          </div>
+        </div>
+        <div class="showcase-label" style="margin-top:6px;">Toast (progress)</div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:10px 14px; display:flex; flex-direction:column; gap:6px; width:360px; max-width:100%;">
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:13px;">
+            <span style="display:flex; align-items:center; gap:6px; overflow:hidden; min-width:0;">
+              <svg width="14" height="14" viewBox="0 0 20 20" style="flex-shrink:0; transform:rotate(-90deg);">
+                <circle cx="10" cy="10" r="8" fill="none" stroke="var(--border)" stroke-width="3"/>
+                <circle cx="10" cy="10" r="8" fill="none" stroke="var(--fg)" stroke-width="3" stroke-dasharray="50.27" stroke-dashoffset="17.59" stroke-linecap="round"/>
+              </svg>
+              <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Uploading&hellip;</span>
+            </span>
+            <span style="color:var(--muted); flex-shrink:0;">65%</span>
+          </div>
+          <div style="height:4px; background:var(--border); overflow:hidden;">
+            <div style="width:65%; height:100%; background:var(--fg);"></div>
+          </div>
+          <div style="font-size:11px; color:var(--muted);">3 of 5 files</div>
+        </div>
+        <div class="showcase-label" style="margin-top:6px;">Input + Toggle + Tags</div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="text" value="My document" style="font-family:inherit; font-size:12px; padding:3px 8px; border:2px solid var(--border); border-radius:4px; background:var(--bg); color:var(--fg); width:120px; outline:none;">
+          <div style="position:relative; width:36px; height:20px; background:#3b82f6; border-radius:9999px; cursor:pointer; flex-shrink:0;">
+            <div style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+          </div>
+          <span style="font-size:11px; font-weight:500; padding:1px 6px; border-radius:4px; background:#fef3c7; color:#92400e;">fiction</span>
+          <span style="font-size:11px; font-weight:500; padding:1px 6px; border-radius:4px; background:#e0f2fe; color:#075985;">notes</span>
+          <span style="font-size:11px; font-weight:500; padding:1px 6px; border-radius:4px; background:#ede9fe; color:#5b21b6;">draft</span>
+        </div>
+        <div class="showcase-label" style="margin-top:6px;">Select</div>
+        <div style="position:relative; display:inline-block;">
+          <button id="sc-select-trigger" style="font-family:inherit; font-size:13px; padding:4px 10px; border:2px solid var(--border); border-radius:6px; background:var(--bg); color:var(--fg); cursor:pointer; display:flex; align-items:center; gap:8px; min-width:160px;" onclick="var dd=document.getElementById('sc-select-dd'); dd.style.display=dd.style.display==='block'?'none':'block'">
+            <span id="sc-select-label">Sans-serif</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left:auto;"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="sc-select-dd" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:160px; background:var(--bg); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:4px 0; z-index:10;">
+            <div class="sc-select-opt" style="padding:4px 10px; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="scSelect(this,'Monospace')">Monospace</div>
+            <div class="sc-select-opt" style="padding:4px 10px; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="scSelect(this,'Sans-serif')">Sans-serif<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div>
+            <div class="sc-select-opt" style="padding:4px 10px; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="scSelect(this,'Serif')">Serif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>How to Use</h2>
+
+    <ol>
+      <li>Start with the <strong>token preamble</strong> from the <a href="tokens.html">Tokens</a> page &mdash; copy the <code>:root</code> block into your prompt once per session</li>
+      <li>Find the component you need in the sidebar</li>
+      <li>Copy the recipe text for the variant you want</li>
+      <li>Paste into Claude Code alongside your layout requirements</li>
+      <li>Combine recipes freely: <em>"Use modal-confirm with button-danger and input-text"</em></li>
+      <li>Reference token names (<code>var(--fg)</code>), not hex values, for automatic theme support</li>
+    </ol>
+
+    <h3>Recipes</h3>
+
+    <p>Recipes are terse CSS property specifications. Each one describes a single component variant with exact values for font, padding, border, color, and interactive states. No ambiguity &mdash; every property is explicit. Copy a recipe, paste it into your prompt, and get the exact component. For example:</p>
+
+    <pre><code>button-primary
+  font: 600 13px/20px inherit
+  padding: 2px 12px
+  background: var(--fg); color: var(--bg)
+  border: 3px solid var(--fg); border-radius: 4px
+  :hover -> opacity: 0.85
+  :active -> background: var(--bg); color: var(--fg)</code></pre>
+
+    <h3>Layer Model</h3>
+
+    <div class="layer-model">
+      <div class="layer-bar" style="background: color-mix(in srgb, var(--fg) 8%, var(--bg)); color: var(--fg);">
+        <span class="layer-num">0</span>
+        <span class="layer-name">Tokens</span>
+        <span class="layer-desc">CSS custom properties &mdash; --bg, --fg, --border, --accent, --radius-*</span>
+      </div>
+      <div class="layer-bar" style="background: color-mix(in srgb, var(--warning) 12%, var(--bg)); color: var(--warning);">
+        <span class="layer-num">1</span>
+        <span class="layer-name">Atoms</span>
+        <span class="layer-desc">Single-element components &mdash; button, input, toggle, badge, slider, toast</span>
+      </div>
+      <div class="layer-bar" style="background: color-mix(in srgb, var(--success) 12%, var(--bg)); color: var(--success);">
+        <span class="layer-num">2</span>
+        <span class="layer-name">Composites</span>
+        <span class="layer-desc">Multi-element assemblies &mdash; modal, menu, table, popover, select</span>
+      </div>
+      <div class="layer-bar" style="background: color-mix(in srgb, var(--accent) 15%, var(--bg)); color: var(--accent);">
+        <span class="layer-num">3</span>
+        <span class="layer-name">Catalog</span>
+        <span class="layer-desc">Reference lookups &mdash; icons, theme colors</span>
+      </div>
+    </div>
+
+    <p>Always include the token preamble (Layer 0). Atoms are self-contained. Composites compose atoms &mdash; a modal uses button recipes, a popover uses input recipes.</p>
+
+    <h2>Philosophy</h2>
+
+    <p>The UI is <strong>quiet, monospaced, and warm</strong>. It looks like a tool a thoughtful person built for themselves. Every element earns its place &mdash; no decorative flourishes, no gratuitous color, no rounded-everything friendliness. The aesthetic sits somewhere between a terminal and a well-typeset book.</p>
+
+    <h3>Core Principles</h3>
+
+    <ol>
+      <li><strong>Monospace-first.</strong> SF Mono is the default for everything &mdash; sidebar, buttons, table cells, form labels. Serif and sans options exist for content, but the app itself speaks in monospace.</li>
+      <li><strong>Warm neutrals.</strong> The light theme is cream, not white. The dark theme is brown, not gray. Borders are soft (<code>#e8e6e3</code>), not clinical (<code>#e0e0e0</code>). This warmth is the single most distinctive visual quality.</li>
+      <li><strong>Sparse color.</strong> Accent color (<code>#3d8ad3</code>, a muted blue) is used sparingly &mdash; active tabs, primary actions, status dots. Most of the UI is foreground-on-background with muted secondary text. Color means something happened.</li>
+      <li><strong>2px borders on interactive elements.</strong> Buttons, inputs, toggles &mdash; anything you can click gets a 2px solid border. Dividers and table rules get 1px. This creates a clear visual distinction between "things" and "structure."</li>
+      <li><strong>Information density.</strong> Tables show everything. Density is a feature, not a bug.</li>
+      <li><strong>Semantic headings only.</strong> Headings use weight (semibold) and size. No text-transform, no letter-spacing tricks, no uppercase labels.</li>
+    </ol>
+
+    <h2>Typography</h2>
+
+    <p>Dirigible uses four font stacks, each with a specific role:</p>
+
+    <ul>
+      <li><strong>Monospace</strong> &mdash; <code>'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace</code> &mdash; The default for everything. UI chrome, buttons, labels, form inputs, navigation, code. All headings use semibold monospace. This is the voice of the application.</li>
+      <li><strong>Sans-serif</strong> &mdash; <code>'IBM Plex Sans', -apple-system, sans-serif</code> &mdash; Body text in documents and notes when the user selects sans mode. Never used for UI chrome.</li>
+      <li><strong>Serif</strong> &mdash; <code>'Crimson Pro', Georgia, serif</code> &mdash; Body text in documents and notes when the user selects serif mode. Gives a literary quality to long-form writing.</li>
+      <li><strong>System</strong> &mdash; <code>'Lucida Grande', 'Lucida Sans Unicode', 'Helvetica Neue', sans-serif</code> &mdash; Used exclusively for data tables. Maximum density and legibility at 10&ndash;11px.</li>
+    </ul>
   </main>
+
   <script>
     function toggleTheme() {
       const html = document.documentElement;
       const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
-      document.querySelector('.theme-toggle').innerHTML = next === 'dark' ? '&#9788;' : '&#9790;';
-      localStorage.setItem('dirigible-ui-theme', next);
+      localStorage.setItem('dirigible-theme', next);
     }
-    const saved = localStorage.getItem('dirigible-ui-theme');
-    if (saved === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.querySelector('.theme-toggle').innerHTML = '&#9788;';
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function scSelect(el, val) {
+      document.getElementById('sc-select-label').textContent = val;
+      el.parentElement.querySelectorAll('.sc-select-opt svg').forEach(function(s) { s.remove(); });
+      var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('width','14'); svg.setAttribute('height','14');
+      svg.setAttribute('viewBox','0 0 24 24'); svg.setAttribute('fill','none');
+      svg.setAttribute('stroke','currentColor'); svg.setAttribute('stroke-width','2');
+      svg.setAttribute('stroke-linecap','round');
+      var p = document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d','M4.5 12.75l6 6 9-13.5');
+      svg.appendChild(p); el.appendChild(svg);
+      document.getElementById('sc-select-dd').style.display = 'none';
     }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#sc-select-trigger') && !e.target.closest('#sc-select-dd')) {
+        var dd = document.getElementById('sc-select-dd');
+        if (dd) dd.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>

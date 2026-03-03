@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tag Input — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
+    }
+    [data-theme="dark"] {
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
+
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
+    .main > h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 4px; }
+    .main > .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Recipe cards ── */
+    .recipe { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
+    .recipe-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .recipe-demo { padding: 20px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+    .recipe-demo.col { flex-direction: column; align-items: flex-start; }
+    .recipe-prompt { position: relative; background: var(--code-bg); padding: 12px 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; font-family: inherit; font-size: 11px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .theme-toggle { display: flex; align-items: center; }
+    .sun-icon { display: none; }
+    [data-theme="dark"] .sun-icon { display: block; }
+    [data-theme="dark"] .moon-icon { display: none; }
+
+    .ti-item:hover { background: var(--hover); }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
+    </div>
+    <a href="index.html">Overview</a>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="color-swatch.html">Color Swatch</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="select.html">Select</a>
+    <a href="tag-input.html" class="active">Tag Input</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <a href="table.html">Table</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html">Icons</a>
+    <a href="recipe-reference.html">Recipe Reference</a>
+  </nav>
+
+  <main class="main">
+    <h1>Tag Input</h1>
+    <p class="subtitle">Typeahead multi-select. Pill tags with inline search, dropdown suggestions.</p>
+
+    <!-- Recipe 1: tag-input -->
+    <div class="recipe">
+      <div class="recipe-header">tag-input</div>
+      <div class="recipe-demo col">
+        <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center; padding:6px 8px; min-height:36px; border:2px solid var(--border); border-radius:4px; background:var(--bg);">
+          <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; background:#fef3c7; color:#92400e;"><span>Botany</span><span style="cursor:pointer; opacity:0.6; font-size:10px;">&#10005;</span></span>
+          <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; background:#d1fae5; color:#065f46;"><span>Medicinal</span><span style="cursor:pointer; opacity:0.6; font-size:10px;">&#10005;</span></span>
+          <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; background:#ede9fe; color:#5b21b6;"><span>Perennial</span><span style="cursor:pointer; opacity:0.6; font-size:10px;">&#10005;</span></span>
+          <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; background:#e0f2fe; color:#075985;"><span>European</span><span style="cursor:pointer; opacity:0.6; font-size:10px;">&#10005;</span></span>
+          <input type="text" placeholder="Add tag..." style="border:none; outline:none; background:transparent; font-family:inherit; font-size:13px; color:var(--fg); flex:1; min-width:60px;">
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:4px 0; max-height:160px; overflow-y:auto; margin-top:4px; width:100%;">
+          <div class="ti-item" style="display:flex; align-items:center; gap:6px; padding:4px 12px; font-size:13px; cursor:pointer;"><span style="width:6px; height:6px; border-radius:50%; background:#9f1239;"></span>Poisonous</div>
+          <div class="ti-item" style="display:flex; align-items:center; gap:6px; padding:4px 12px; font-size:13px; cursor:pointer;"><span style="width:6px; height:6px; border-radius:50%; background:#9a3412;"></span>Tropical</div>
+          <div class="ti-item" style="padding:4px 12px; font-size:13px; cursor:pointer; color:var(--accent); font-weight:500;">Create "herb"</div>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-tag-input">tag-input
+  Container: display:flex; flex-wrap:wrap; gap:4px; align-items:center
+    padding: 6px 8px; min-height: 36px
+    border: 2px solid var(--border); border-radius: 4px
+    background: var(--bg)
+  Tag pill: display:inline-flex; align-items:center; gap:4px
+    padding: 2px 8px; border-radius: 4px
+    font: 500 12px inherit
+    background: pastel bg color; color: darker text color
+    Remove button: "&#10005;" 10px, opacity 0.6, cursor pointer
+    Hover: show ellipsis (&#8226;&#8226;&#8226;) for edit actions
+  Inline input: border:none; outline:none; background:transparent
+    font: 400 13px inherit; flex:1; min-width:60px
+  Suggestion dropdown: same as select dropdown
+    "Create ..." item: color var(--accent); font-weight 500
+  Tag colors (12 pastels, assigned by hash):
+    amber   &#x2192; bg #fef3c7, text #92400e
+    emerald &#x2192; bg #d1fae5, text #065f46
+    sky     &#x2192; bg #e0f2fe, text #075985
+    violet  &#x2192; bg #ede9fe, text #5b21b6
+    rose    &#x2192; bg #ffe4e6, text #9f1239
+    teal    &#x2192; bg #ccfbf1, text #115e59
+    orange  &#x2192; bg #ffedd5, text #9a3412
+    indigo  &#x2192; bg #e0e7ff, text #3730a3
+    pink    &#x2192; bg #fce7f3, text #9d174d
+    cyan    &#x2192; bg #cffafe, text #155e75
+    lime    &#x2192; bg #ecfccb, text #3f6212
+    gray    &#x2192; bg #f3f4f6, text #374151
+  Add on Enter or comma, backspace to remove last<button class="copy-btn" onclick="copyBlock('r-tag-input', this)">Copy</button></div>
+    </div>
+
+    <!-- Recipe 2: tag-edit -->
+    <div class="recipe">
+      <div class="recipe-header">tag-edit</div>
+      <div class="recipe-demo col">
+        <!-- Tag pill with ellipsis -->
+        <div style="display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; background:#d1fae5; color:#065f46; position:relative;">
+          <span>Medicinal</span>
+          <span style="cursor:pointer; opacity:0.6; font-size:11px; letter-spacing:1px;">&#8226;&#8226;&#8226;</span>
+        </div>
+        <!-- Edit popover -->
+        <div style="margin-top:8px; background:var(--bg); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:12px; max-width:220px; width:100%;">
+          <!-- Rename input -->
+          <label style="display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">Rename</label>
+          <input type="text" value="Medicinal" style="font-family:inherit; font-size:13px; padding:4px 8px; background:var(--bg); color:var(--fg); border:1px solid var(--border); border-radius:4px; outline:none; width:100%; margin-bottom:10px;">
+          <!-- Color picker -->
+          <label style="display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">Color</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+            <span style="width:18px; height:18px; border-radius:50%; background:#fef3c7; cursor:pointer; border:1px solid transparent;" title="Amber"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#d1fae5; cursor:pointer; border:2px solid #065f46;" title="Emerald"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#e0f2fe; cursor:pointer; border:1px solid transparent;" title="Sky"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#ede9fe; cursor:pointer; border:1px solid transparent;" title="Violet"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#ffe4e6; cursor:pointer; border:1px solid transparent;" title="Rose"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#ccfbf1; cursor:pointer; border:1px solid transparent;" title="Teal"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#ffedd5; cursor:pointer; border:1px solid transparent;" title="Orange"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#e0e7ff; cursor:pointer; border:1px solid transparent;" title="Indigo"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#fce7f3; cursor:pointer; border:1px solid transparent;" title="Pink"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#cffafe; cursor:pointer; border:1px solid transparent;" title="Cyan"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#ecfccb; cursor:pointer; border:1px solid transparent;" title="Lime"></span>
+            <span style="width:18px; height:18px; border-radius:50%; background:#f3f4f6; cursor:pointer; border:1px solid transparent;" title="Gray"></span>
+          </div>
+          <!-- Delete button -->
+          <button style="width:100%; font-family:inherit; font-size:11px; font-weight:400; padding:2px 8px; background:transparent; color:var(--danger); border:1px solid var(--border); border-radius:3px; cursor:pointer;" onmouseover="this.style.background='rgba(220,38,38,0.08)'" onmouseout="this.style.background='transparent'">Delete tag</button>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-tag-edit">tag-edit
+  Trigger: click ellipsis (&#8226;&#8226;&#8226;) on tag pill hover
+  Popover: background var(--bg); border:1px solid var(--border)
+    border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.15)
+    padding:12px; max-width:220px
+  Rename input: full-width text input with current tag name
+    font: 400 13px inherit; padding:4px 8px
+    border:1px solid var(--border); border-radius:4px
+  Color picker: 12 circles (18px), flex-wrap, gap:6px
+    Each circle: border-radius:50%; cursor:pointer
+    Selected: 2px solid matching text color
+    Unselected: border:1px solid transparent
+    Colors: amber #fef3c7, emerald #d1fae5, sky #e0f2fe,
+      violet #ede9fe, rose #ffe4e6, teal #ccfbf1,
+      orange #ffedd5, indigo #e0e7ff, pink #fce7f3,
+      cyan #cffafe, lime #ecfccb, gray #f3f4f6
+  Delete button: danger-sm style, full-width
+    font 400 11px inherit; padding:2px 8px
+    background:transparent; color:var(--danger)
+    border:1px solid var(--border); border-radius:3px
+    :hover &#x2192; background rgba(220,38,38,0.08)
+  Dismiss: click outside or Escape<button class="copy-btn" onclick="copyBlock('r-tag-edit', this)">Copy</button></div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

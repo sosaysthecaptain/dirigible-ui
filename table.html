@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table — dirigible-ui</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fefefe; --fg: #1a1a1a; --muted: #777777; --border: #e8e6e3;
+      --sidebar-bg: #faf9f8; --hover: #f5f4f2; --accent: #3d8ad3;
+      --success: #22c55e; --warning: #f59e0b; --danger: #dc2626;
+      --code-bg: #f5f5f5; --code-fg: #1f2937; --link: #0066cc;
+      --radius-sm: 4px; --radius-md: 6px;
+    }
+    [data-theme="dark"] {
+      --bg: #181716; --fg: #f2f0ed; --muted: #999795; --border: #302e2b;
+      --sidebar-bg: #1e1d1b; --hover: #232120; --accent: #6ba3d6;
+      --success: #4ec9b0; --warning: #ce9178; --danger: #ef4444;
+      --code-bg: #1e1e1e; --code-fg: #d4d4d4; --link: #58a6ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 20px; color: var(--fg); background: var(--bg);
+      display: flex; min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 180px; min-width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-header { padding: 0 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .sidebar-header h1 { font-size: 13px; font-weight: 600; }
+    .theme-toggle { background: none; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 4px; color: var(--muted); border-radius: var(--radius-sm); }
+    .theme-toggle:hover { color: var(--fg); background: var(--hover); }
+    .nav-section-title { padding: 12px 16px 4px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .sidebar a { display: block; padding: 3px 16px; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .sidebar a:hover { color: var(--fg); background: var(--hover); }
+    .sidebar a.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    .back-link { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px !important; }
+
+    /* ── Main ── */
+    .main { flex: 1; max-width: 900px; padding: 32px 40px 80px; }
+    .main > h1 { font-size: 24px; line-height: 32px; font-weight: 600; margin-bottom: 4px; }
+    .main > .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Recipe cards ── */
+    .recipe { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
+    .recipe-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .recipe-demo { padding: 20px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+    .recipe-demo.col { flex-direction: column; align-items: flex-start; }
+    .recipe-prompt { position: relative; background: var(--code-bg); padding: 12px 16px; padding-right: 70px; font-size: 12px; line-height: 18px; color: var(--code-fg); white-space: pre; overflow-x: auto; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; font-family: inherit; font-size: 11px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; }
+    .copy-btn:hover { color: var(--fg); background: var(--hover); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .theme-toggle { display: flex; align-items: center; }
+    .sun-icon { display: none; }
+    [data-theme="dark"] .sun-icon { display: block; }
+    [data-theme="dark"] .moon-icon { display: none; }
+
+    /* ── Data Table Demo ── */
+    .data-table { display: flex; flex-direction: column; width: 100%; font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Helvetica Neue', sans-serif; }
+    .data-table-header {
+      display: flex; align-items: center; height: 24px;
+      font: 500 10px inherit; color: var(--muted);
+      background: var(--bg); border-bottom: 1px solid var(--border);
+      user-select: none;
+    }
+    .data-table-header .cell { cursor: pointer; }
+    .data-table-header .cell:hover { color: var(--fg); }
+    .data-table-row {
+      display: flex; align-items: center; height: 18px;
+      font: 400 11px inherit; color: var(--fg);
+      cursor: default;
+    }
+    .data-table-row:nth-child(even) { background: var(--bg); }
+    .data-table-row:nth-child(odd) { background: var(--sidebar-bg); }
+    .data-table-row.selected { background: color-mix(in srgb, var(--accent) 15%, var(--bg)); }
+    .data-table-row:hover:not(.selected) { background: var(--hover); }
+    .cell { padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .col-title { flex: 1.5; }
+    .col-artist { flex: 1; }
+    .col-album { flex: 1; }
+    .col-year { width: 44px; min-width: 44px; }
+    .col-time { width: 48px; min-width: 48px; }
+    .sort-chevron { display: inline-block; margin-left: 2px; transition: transform 0.15s; }
+    .sort-chevron.desc { transform: rotate(180deg); }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>dirigible-ui</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
+    </div>
+    <a href="index.html">Overview</a>
+    <div class="nav-section-title">Foundation</div>
+    <a href="tokens.html">Tokens</a>
+    <div class="nav-section-title">Atoms</div>
+    <a href="badge.html">Badge</a>
+    <a href="breadcrumb.html">Breadcrumb</a>
+    <a href="button.html">Button</a>
+    <a href="color-swatch.html">Color Swatch</a>
+    <a href="input.html">Input</a>
+    <a href="radio-button.html">Radio Button</a>
+    <a href="slider.html">Slider</a>
+    <a href="toggle.html">Toggle</a>
+    <a href="toast.html">Toast</a>
+    <div class="nav-section-title">Composites</div>
+    <a href="loading.html">Loading</a>
+    <a href="menu.html">Menu</a>
+    <a href="modal.html">Modal</a>
+    <a href="popover.html">Popover</a>
+    <a href="progress.html">Progress</a>
+    <a href="selection-list.html">Selection List</a>
+    <a href="select.html">Select</a>
+    <a href="tag-input.html">Tag Input</a>
+    <a href="tab-bar.html">Tab Bar</a>
+    <a href="table.html" class="active">Table</a>
+    <div class="nav-section-title">Catalog</div>
+    <a href="icons.html">Icons</a>
+    <a href="recipe-reference.html">Recipe Reference</a>
+  </nav>
+
+  <main class="main">
+    <h1>Table</h1>
+    <p class="subtitle">Compact data table. Flexbox-based, 18px rows, iTunes/Finder style.</p>
+
+    <div class="recipe">
+      <div class="recipe-header">table</div>
+      <div class="recipe-demo col" style="padding: 12px 0; gap: 0;">
+        <div class="data-table" id="demo-table">
+          <div class="data-table-header">
+            <div class="cell col-title" onclick="toggleSort('title')">Title<span id="sort-title" class="sort-chevron" style="display:none;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-artist" onclick="toggleSort('artist')">Artist<span id="sort-artist" class="sort-chevron" style="display:none;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-album" onclick="toggleSort('album')">Album<span id="sort-album" class="sort-chevron" style="display:none;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-year" onclick="toggleSort('year')">Year<span id="sort-year" class="sort-chevron" style="display:none;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-time" onclick="toggleSort('time')">Time<span id="sort-time" class="sort-chevron" style="display:none;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+          </div>
+          <div class="data-table-row" onclick="selectRow(this, event)">
+            <div class="cell col-title">Rhiannon</div>
+            <div class="cell col-artist">Fleetwood Mac</div>
+            <div class="cell col-album">Fleetwood Mac</div>
+            <div class="cell col-year">1975</div>
+            <div class="cell col-time">4:12</div>
+          </div>
+          <div class="data-table-row" onclick="selectRow(this, event)">
+            <div class="cell col-title">Running Up That Hill</div>
+            <div class="cell col-artist">Kate Bush</div>
+            <div class="cell col-album">Hounds of Love</div>
+            <div class="cell col-year">1985</div>
+            <div class="cell col-time">4:58</div>
+          </div>
+          <div class="data-table-row selected" onclick="selectRow(this, event)">
+            <div class="cell col-title">Dreams</div>
+            <div class="cell col-artist">Fleetwood Mac</div>
+            <div class="cell col-album">Rumours</div>
+            <div class="cell col-year">1977</div>
+            <div class="cell col-time">4:14</div>
+          </div>
+          <div class="data-table-row" onclick="selectRow(this, event)">
+            <div class="cell col-title">Ceremony</div>
+            <div class="cell col-artist">New Order</div>
+            <div class="cell col-album">Movement</div>
+            <div class="cell col-year">1981</div>
+            <div class="cell col-time">4:22</div>
+          </div>
+          <div class="data-table-row" onclick="selectRow(this, event)">
+            <div class="cell col-title">Bizarre Love Triangle</div>
+            <div class="cell col-artist">New Order</div>
+            <div class="cell col-album">Brotherhood</div>
+            <div class="cell col-year">1986</div>
+            <div class="cell col-time">4:22</div>
+          </div>
+          <div class="data-table-row" onclick="selectRow(this, event)">
+            <div class="cell col-title">Just Like Heaven</div>
+            <div class="cell col-artist">The Cure</div>
+            <div class="cell col-album">Kiss Me...</div>
+            <div class="cell col-year">1987</div>
+            <div class="cell col-time">3:32</div>
+          </div>
+        </div>
+      </div>
+      <div class="recipe-prompt" id="r-table">table
+  Font: 'Lucida Grande', 'Lucida Sans Unicode', 'Helvetica Neue', sans-serif
+  Layout: flex column; width: 100%
+  Header row: height 24px; display:flex; align-items:center
+    font: 500 10px; color: var(--muted)
+    background: var(--bg); border-bottom: 1px solid var(--border)
+    user-select: none; cursor: pointer (sortable columns)
+  Data row: height 18px; display:flex; align-items:center
+    font: 400 11px; color: var(--fg)
+    Even rows: background var(--bg)
+    Odd rows: background var(--sidebar-bg)
+    Selected: background color-mix(in srgb, var(--accent) 15%, var(--bg))
+  Cell: padding 0 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap
+  Flex columns: Title (flex 1.5), Artist (flex 1), Album (flex 1)
+  Fixed columns: Year (44px), Time (48px)
+  Sort indicator: small chevron SVG, rotates for desc
+  Click row to select; Ctrl+click for multi-select<button class="copy-btn" onclick="copyBlock('r-table', this)">Copy</button></div>
+    </div>
+
+    <div class="recipe">
+      <div class="recipe-header">table-header</div>
+      <div class="recipe-demo col" style="padding: 12px 0; gap: 0;">
+        <div class="data-table" style="width: 100%;">
+          <div class="data-table-header">
+            <div class="cell col-title">Title</div>
+            <div class="cell col-artist">Artist</div>
+            <div class="cell col-album">Album</div>
+            <div class="cell col-year">Year</div>
+            <div class="cell col-time">Time</div>
+          </div>
+        </div>
+        <div style="font-size: 10px; color: var(--muted); padding: 8px 6px 2px; text-transform: uppercase; letter-spacing: 0.5px;">Default (no sort)</div>
+
+        <div class="data-table" style="width: 100%; margin-top: 8px;">
+          <div class="data-table-header">
+            <div class="cell col-title">Title<span class="sort-chevron" style="display:inline-block;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-artist">Artist</div>
+            <div class="cell col-album">Album</div>
+            <div class="cell col-year">Year</div>
+            <div class="cell col-time">Time</div>
+          </div>
+        </div>
+        <div style="font-size: 10px; color: var(--muted); padding: 8px 6px 2px; text-transform: uppercase; letter-spacing: 0.5px;">Sorted ascending</div>
+
+        <div class="data-table" style="width: 100%; margin-top: 8px;">
+          <div class="data-table-header">
+            <div class="cell col-title">Title<span class="sort-chevron desc" style="display:inline-block;"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 5l2-2.5L6 5"/></svg></span></div>
+            <div class="cell col-artist">Artist</div>
+            <div class="cell col-album">Album</div>
+            <div class="cell col-year">Year</div>
+            <div class="cell col-time">Time</div>
+          </div>
+        </div>
+        <div style="font-size: 10px; color: var(--muted); padding: 8px 6px 2px; text-transform: uppercase; letter-spacing: 0.5px;">Sorted descending</div>
+      </div>
+      <div class="recipe-prompt" id="r-table-header">table-header
+  Container: display:flex; align-items:center; height: 24px
+  font: 500 10px inherit; color: var(--muted)
+  background: var(--bg); border-bottom: 1px solid var(--border)
+  user-select: none; cursor: pointer
+  Sort indicator: inline SVG chevron (8x8), margin-left 2px
+    Ascending: chevron points up (default)
+    Descending: transform rotate(180deg)
+    No sort: chevron hidden<button class="copy-btn" onclick="copyBlock('r-table-header', this)">Copy</button></div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dirigible-theme', next);
+    }
+    (function() { const s = localStorage.getItem('dirigible-theme'); if (s) document.documentElement.setAttribute('data-theme', s); })();
+    function copyBlock(id, btn) {
+      const el = document.getElementById(id);
+      const text = el.textContent.replace(/Copy$/, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    }
+
+    /* ── Sort toggle ── */
+    var currentSort = { col: null, dir: null };
+    function toggleSort(col) {
+      var cols = ['title', 'artist', 'album', 'year', 'time'];
+      cols.forEach(function(c) {
+        var el = document.getElementById('sort-' + c);
+        if (c !== col) { el.style.display = 'none'; el.classList.remove('desc'); }
+      });
+      var chevron = document.getElementById('sort-' + col);
+      if (currentSort.col !== col) {
+        currentSort.col = col; currentSort.dir = 'asc';
+        chevron.style.display = 'inline-block'; chevron.classList.remove('desc');
+      } else if (currentSort.dir === 'asc') {
+        currentSort.dir = 'desc';
+        chevron.style.display = 'inline-block'; chevron.classList.add('desc');
+      } else {
+        currentSort.col = null; currentSort.dir = null;
+        chevron.style.display = 'none'; chevron.classList.remove('desc');
+      }
+    }
+
+    /* ── Row selection ── */
+    function selectRow(row, event) {
+      var rows = document.querySelectorAll('#demo-table .data-table-row');
+      if (event.ctrlKey || event.metaKey) {
+        row.classList.toggle('selected');
+      } else {
+        rows.forEach(function(r) { r.classList.remove('selected'); });
+        row.classList.add('selected');
+      }
+    }
+  </script>
+</body>
+</html>
